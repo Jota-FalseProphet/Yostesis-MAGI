@@ -23,6 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!--PANTALLA DE INICIO PRUEBAAAA-->
+        <activity
+            android:name=".activities.MainActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
