@@ -55,8 +55,16 @@
       <version>${spring-boot.version}</version>
       <scope>test</scope>
     </dependency>
+	
+	
+	
+	<!-- recordar quitar esto porque que palo usar hasheos y tonterias -->
+
+
+
 
   </dependencies>
+
 
  
   <build>
