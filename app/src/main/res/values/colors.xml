@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- color principal de M.A.G.I. -->
+    <color name="amarillo_magi">#ffc913</color>
+    <!-- otros colores -->
+    <color name="blanco">#FFFFFF</color>
+    <color name="gris_oscuro">#333333</color>
+    <color name="gris_claro">#F5F5F5</color>
+    <color name="amarillo_magi_50">#f3dc9a</color>
+    <color name="gris_magi">#535353</color>
+</resources>
