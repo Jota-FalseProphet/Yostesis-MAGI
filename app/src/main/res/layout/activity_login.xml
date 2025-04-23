@@ -40,7 +40,7 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilUsername"
+        android:id="@+id/layoutDni"
         android:hint="@string/usuario"
         android:textColorHint="@color/amarillo_magi_50"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -58,6 +58,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logoText">
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editDni"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
@@ -66,7 +67,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilPassword"
+        android:id="@+id/layoutPassword"
         android:hint="@string/contrase_a"
         android:textColorHint="@color/amarillo_magi_50"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -82,9 +83,10 @@
         app:boxCornerRadiusTopStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tilUsername"
+        app:layout_constraintTop_toBottomOf="@id/layoutDni"
         app:passwordToggleEnabled="true">
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
@@ -92,7 +94,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/buttonLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
@@ -103,7 +105,7 @@
         android:textColor="@color/gris_oscuro"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tilPassword" />
+        app:layout_constraintTop_toBottomOf="@id/layoutPassword" />
 
     <TextView
         android:id="@+id/tvForgot"
@@ -112,8 +114,8 @@
         android:layout_marginTop="4dp"
         android:text="@string/olvidaste_tu_contrase_a"
         android:textSize="11sp"
-        app:layout_constraintEnd_toEndOf="@id/btnLogin"
-        app:layout_constraintTop_toBottomOf="@id/btnLogin" />
+        app:layout_constraintEnd_toEndOf="@id/buttonLogin"
+        app:layout_constraintTop_toBottomOf="@id/buttonLogin" />
 
 
 

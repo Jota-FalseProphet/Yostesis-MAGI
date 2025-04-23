@@ -19,105 +19,82 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * LoginActivity sin Retrofit.
- * Hace un POST /api/login usando HttpURLConnection.
- */
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText etDni, etPass;
-    private Button btnLogin;
+    private static final String BASE_URL = "http://159.69.215.108:8080/api/login";
 
-    // Cambia la IP o dominio por el de tu servidor Hetzner
-    private static final String LOGIN_URL = "http://<IP_HETZNER>:8080/api/login";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        etDni = findViewById(R.id.editDni);
-        etPass = findViewById(R.id.editPassword);
-        btnLogin = findViewById(R.id.buttonLogin);
+        EditText editDni       = findViewById(R.id.editDni);
+        EditText editPassword  = findViewById(R.id.editPassword);
+        Button   buttonLogin   = findViewById(R.id.buttonLogin);
 
-        btnLogin.setOnClickListener(v -> {
-            String dni = etDni.getText().toString().trim();
-            String pass = etPass.getText().toString();
+        buttonLogin.setOnClickListener(v -> {
+            String dni  = editDni.getText().toString().trim();
+            String pass = editPassword.getText().toString().trim();
 
             if (dni.isEmpty() || pass.isEmpty()) {
                 toast("Introduce DNI y contraseña");
-            } else {
-                new LoginTask(dni, pass).execute();
+                return;
             }
+            new LoginTask(dni, pass).execute();
         });
     }
 
-    private void toast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
+    private void toast(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }
 
-    /**
-     * Tarea asíncrona que realiza la petición HTTP sin bloquear el hilo UI.
-     */
+    /*-----------------------------------------------------*/
+    /* AsyncTask para hacer POST /api/login                */
+    /*-----------------------------------------------------*/
     private class LoginTask extends AsyncTask<Void, Void, String> {
-        private final String dni;
-        private final String pass;
+        private final String dni, pass;
         private int responseCode = -1;
 
-        LoginTask(String dni, String pass) {
-            this.dni = dni;
-            this.pass = pass;
-        }
+        LoginTask(String dni, String pass){ this.dni = dni; this.pass = pass; }
 
         @Override
         protected String doInBackground(Void... voids) {
-            HttpURLConnection conn = null;
             try {
-                URL url = new URL(LOGIN_URL);
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(5000);
-                conn.setDoOutput(true);
+                URL url = new URL(BASE_URL);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("POST");
+                con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                con.setDoOutput(true);
 
                 JSONObject body = new JSONObject();
                 body.put("dni", dni);
                 body.put("password", pass);
 
-                try (OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream(), "UTF-8")) {
-                    writer.write(body.toString());
-                    writer.flush();
+                try(OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream())){
+                    out.write(body.toString());
+                    out.flush();
                 }
 
-                responseCode = conn.getResponseCode();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(
-                        responseCode == 200 ? conn.getInputStream() : conn.getErrorStream()));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
+                responseCode = con.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    try(BufferedReader br =
+                                new BufferedReader(new InputStreamReader(con.getInputStream()))){
+                        return br.readLine();        // rol en texto llano
+                    }
                 }
-                reader.close();
-
-                // La API devuelve un String con comillas, ej. "ADMIN" -> ADMIN
-                return sb.toString().replace("\"", "").trim();
-
-            } catch (Exception e) {
-                return null;
-            } finally {
-                if (conn != null) conn.disconnect();
-            }
+            } catch (Exception e) { e.printStackTrace(); }
+            return null;
         }
 
         @Override
-        protected void onPostExecute(String role) {
-            if (responseCode == 200 && role != null && !role.isEmpty()) {
-                startActivity(new Intent(LoginActivity.this, MainActivity.class)
-                        .putExtra("ROL", role)
-                        .putExtra("DNI", dni));
+        protected void onPostExecute(String rol) {
+            if (responseCode == HttpURLConnection.HTTP_OK && rol != null) {
+                Intent i = new Intent(LoginActivity.this, MainActivity.class)
+                        .putExtra("ROL", rol)
+                        .putExtra("DNI", dni);
+                startActivity(i);
                 finish();
-            } else if (responseCode == 401) {
+
+            } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 toast("Credenciales incorrectas");
             } else {
                 toast("Sin conexión");
