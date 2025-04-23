@@ -1,9 +1,0 @@
-# src/main/resources/application.properties
-spring.datasource.url=jdbc:postgresql://<IP_HETZNER>:5432/magidb
-spring.datasource.username=magiuser
-spring.datasource.password=2552
-
-# JPA
-spring.jpa.hibernate.ddl-auto=none   # no crear ni borrar tablas
-spring.jpa.show-sql=true             # imprime las consultas en consola
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
