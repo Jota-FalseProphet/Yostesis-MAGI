@@ -20,7 +20,7 @@ public class FichajeController {
     }
 
     @PostMapping("/in")
-    public ResponseEntity<Fichaje> ficharEntrada(@RequestParam String dni) {
+    public ResponseEntity<Fichaje> ficharEntrada(@RequestParam("dni") String dni) {
 
         Fichaje fichaje = new Fichaje(
             dni,
@@ -31,7 +31,7 @@ public class FichajeController {
     }
 
     @PostMapping("/out")
-    public ResponseEntity<Fichaje> ficharSalida(@RequestParam String dni) {
+    public ResponseEntity<Fichaje> ficharSalida(@RequestParam("dni") String dni) {
 
         Fichaje fichaje = new Fichaje(
             dni,
