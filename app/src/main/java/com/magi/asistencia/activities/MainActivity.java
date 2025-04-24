@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private static final String BASE_URL = "https://159.69.215.108:8080/api/fichaje/";
+    private static final String BASE_URL = "https://159.69.215.108/api/fichaje/";
 
     private String dni;
 

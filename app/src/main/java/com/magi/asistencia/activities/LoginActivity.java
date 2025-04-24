@@ -21,7 +21,7 @@ import java.net.URL;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String BASE_URL = "https://159.69.215.108:8080/api/login";
+    private static final String BASE_URL = "https://159.69.215.108/api/login";
 
 
     @Override
