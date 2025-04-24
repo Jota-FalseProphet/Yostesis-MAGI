@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <domain-config cleartextTrafficPermitted="true">
-
+    <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="false">159.69.215.108</domain>
+        <trust-anchors>
+            <certificates src="@raw/magi_cert" />
+        </trust-anchors>
     </domain-config>
 </network-security-config>
