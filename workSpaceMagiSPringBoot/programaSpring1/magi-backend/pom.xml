@@ -56,7 +56,7 @@
       <scope>test</scope>
     </dependency>
 	
-	
+	<!--RECORDAR NO USAR EL PUTO LOMBOK PORQUE DA MUCHOS PROBLEMAS-->
 	
 	<!-- recordar quitar esto porque que palo usar hasheos y tonterias -->
 
