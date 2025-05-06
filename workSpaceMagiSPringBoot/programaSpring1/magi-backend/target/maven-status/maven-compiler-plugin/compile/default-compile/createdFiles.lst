@@ -1,0 +1,8 @@
+com\magi\api\repository\FichajeRepository.class
+com\magi\api\model\Usuario.class
+com\magi\api\repository\UsuarioRepository.class
+com\magi\api\controller\AuthController.class
+com\magi\api\ApiApplication.class
+com\magi\api\service\FichajeService.class
+com\magi\api\controller\FichajeController.class
+com\magi\api\model\Fichaje.class
