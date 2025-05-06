@@ -1,65 +1,58 @@
 package com.magi.api.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "fichaje")
+@Table(name = "fichajes",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"usuario_id", "fecha"}))
 public class Fichaje {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)   
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	
-	private String dni;
-	
-	private LocalDateTime fechaHora;
-	
-	@Enumerated(EnumType.STRING)
-	private Tipo tipo;      
-	
-	public enum Tipo { IN, OUT }
-	
-	public Fichaje() {} //PARA EL JPA
-	public Fichaje(String dni, LocalDateTime fechaHora, Tipo tipo) {
-		this.dni = dni;
-		this.fechaHora = fechaHora;
-		this.tipo = tipo;
-	}
-	
-	 public Long getId(){ 
-		 return id;
-	 }
-	 public String getDni(){ 
-		 return dni; 
-	 }
-	 public LocalDateTime getFechaHora(){ 
-		 return fechaHora; 
-	 }
-	 public Tipo getTipo(){ 
-		 return tipo; 
-	 }
+   
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
-	 public void setId(Long id){ 
-		 this.id = id; 	 
-	 }
-	 public void setDni(String dni){ 
-		 this.dni = dni; 
-	 }
-	 public void setFechaHora(LocalDateTime fechaHora){ 
-		 this.fechaHora = fechaHora; 
-	 }
-	 public void setTipo(Tipo tipo){ 
-		 this.tipo = tipo; 
-	 }	
+    
+    private LocalDate fecha;
+    private LocalTime horaInicio;
+    private LocalTime horaFin;
 
- 
+    
+
+    protected Fichaje() {}               // JPA
+    public Fichaje(Usuario u, LocalDate f) {
+        this.usuario = u;
+        this.fecha   = f;
+    }
+
+
+    public Long getId(){ 
+    	return id;
+    }
+    public Usuario getUsuario(){ 
+    	return usuario; 
+    }
+    public LocalDate  getFecha(){ 
+    	return fecha;
+    }
+    public LocalTime  getHoraInicio(){ 
+    	return horaInicio; 
+    }
+    public LocalTime  getHoraFin(){ 
+    	return horaFin; 
+    }
+    
+    public void setHoraInicio(LocalTime h){ 
+    	this.horaInicio = h; 
+    }
+    public void setHoraFin(LocalTime h){ 
+    	this.horaFin = h; 
+    }
 }

@@ -23,12 +23,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "https://159.69.215.108/api/login";
 
+    //OLVIdÉ QUE VERSiÓN DE ANDROID ESTOY USANDO XDDDD
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        int versionSDK = android.os.Build.VERSION.SDK_INT;
+        System.out.println("la versión de android es: "+versionSDK);
         EditText editDni       = findViewById(R.id.editDni);
         EditText editPassword  = findViewById(R.id.editPassword);
         Button   buttonLogin   = findViewById(R.id.buttonLogin);

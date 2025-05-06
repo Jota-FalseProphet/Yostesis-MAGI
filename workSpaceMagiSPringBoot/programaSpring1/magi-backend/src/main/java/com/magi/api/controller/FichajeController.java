@@ -1,43 +1,32 @@
 package com.magi.api.controller;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import com.magi.api.model.Fichaje;
-import com.magi.api.repository.FichajeRepository;
+import com.magi.api.service.FichajeService;
 
 @RestController
 @RequestMapping("/api/fichaje")
 public class FichajeController {
 
-    private final FichajeRepository repo;
+    private final FichajeService service;
 
-    public FichajeController(FichajeRepository repo) {
-        this.repo = repo;
+    public FichajeController(FichajeService service) { this.service = service; }
+
+    @PostMapping("/start")
+    public Fichaje start(Authentication auth) {
+        return service.iniciar(dniDe(auth));
     }
 
-    @PostMapping("/in")
-    public ResponseEntity<Fichaje> ficharEntrada(@RequestParam("dni") String dni) {
-
-        Fichaje fichaje = new Fichaje(
-            dni,
-            LocalDateTime.now(ZoneId.of("Europe/Madrid")),
-            Fichaje.Tipo.IN
-        );
-        return ResponseEntity.ok(repo.save(fichaje));
+    @PostMapping("/end")
+    public Fichaje end(Authentication auth) {
+        return service.finalizar(dniDe(auth));
     }
 
-    @PostMapping("/out")
-    public ResponseEntity<Fichaje> ficharSalida(@RequestParam("dni") String dni) {
-
-        Fichaje fichaje = new Fichaje(
-            dni,
-            LocalDateTime.now(ZoneId.of("Europe/Madrid")),
-            Fichaje.Tipo.OUT
-        );
-        return ResponseEntity.ok(repo.save(fichaje));
+    /** Extrae el DNI que Spring Security coloca como ‘username’ */
+    private String dniDe(Authentication auth) {
+        return ((UserDetails) auth.getPrincipal()).getUsername();
     }
 }
