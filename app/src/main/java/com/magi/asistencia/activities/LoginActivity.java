@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
 
     /* =========================================================
        Helper: carga @raw/magi_cert y devuelve SSLSocketFactory
-       ========================================================= */
+       ====================================================== */
     private static SSLSocketFactory buildSslSocketFactory(Context ctx) throws Exception {
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
         try (InputStream caInput = ctx.getResources().openRawResource(R.raw.magi_cert)) {
