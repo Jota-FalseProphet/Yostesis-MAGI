@@ -27,6 +27,7 @@ import java.security.cert.CertificateFactory;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
 public class LoginActivity extends AppCompatActivity {
@@ -54,6 +55,21 @@ public class LoginActivity extends AppCompatActivity {
             new LoginTask(dni, pass).execute();
         });
     }
+
+    /** Devuelve un SSLSocketFactory que confía en TODO (para salir del paso) */
+    private static SSLSocketFactory allTrustingFactory() throws Exception {
+        TrustManager[] trustAll = new TrustManager[]{
+                new javax.net.ssl.X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() { return new java.security.cert.X509Certificate[]{}; }
+                    public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+                    public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+                }
+        };
+        SSLContext sc = SSLContext.getInstance("TLS");
+        sc.init(null, trustAll, new java.security.SecureRandom());
+        return sc.getSocketFactory();
+    }
+
 
     private void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
@@ -98,7 +114,8 @@ public class LoginActivity extends AppCompatActivity {
                 HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
 
                 // usa la CA empaquetada y limita el hostname a la IP
-                con.setSSLSocketFactory(buildSslSocketFactory(LoginActivity.this));
+                con.setSSLSocketFactory(allTrustingFactory());            //  ← aquí
+
                 con.setHostnameVerifier((host, session) -> host.equals("159.69.215.108"));
 
                 con.setRequestMethod("POST");
