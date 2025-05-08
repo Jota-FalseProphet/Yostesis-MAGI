@@ -1,53 +1,50 @@
 package com.magi.api.service;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.magi.api.model.Fichaje;
 import com.magi.api.model.Usuario;
 import com.magi.api.repository.FichajeRepository;
 import com.magi.api.repository.UsuarioRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Service
 public class FichajeService {
 
-    private final FichajeRepository fichajes;
-    private final UsuarioRepository usuarios;
+    private final FichajeRepository fichajeRepo;
+    private final UsuarioRepository usuarioRepo;
 
-    public FichajeService(FichajeRepository fichajes, UsuarioRepository usuarios) {
-        this.fichajes = fichajes;
-        this.usuarios = usuarios;
+    public FichajeService(FichajeRepository fichajeRepo,
+                          UsuarioRepository usuarioRepo) {
+        this.fichajeRepo = fichajeRepo;
+        this.usuarioRepo  = usuarioRepo;
     }
 
-    @Transactional
-    public Fichaje iniciar(String string) {
-        Usuario u   = usuarios.findById(string).orElseThrow();
-        LocalDate h = LocalDate.now();
+    public void iniciar(String dni) {
+        // conflicto si ya hay jornada abierta
+        fichajeRepo.findFirstByUsuarioDniAndHoraFinIsNull(dni)
+            .ifPresent(f -> {
+                throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "Ya tienes jornada iniciada");
+            });
 
-        Fichaje f = fichajes.findByUsuarioAndFecha(u, h)
-                            .orElse(new Fichaje(u, h));
+        Usuario u = usuarioRepo.findByDni(dni)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
 
-        if (f.getHoraInicio() != null)
-            throw new IllegalStateException("Ya has fichado la entrada hoy");
-
+        Fichaje f = new Fichaje(u, LocalDate.now());
         f.setHoraInicio(LocalTime.now());
-        return fichajes.save(f);
+        fichajeRepo.save(f);
     }
 
-    @Transactional
-    public Fichaje finalizar(String string) {
-        Usuario u = usuarios.findById(string).orElseThrow();
-
-        Fichaje f = fichajes.findByUsuarioAndFecha(u, LocalDate.now())
-                            .orElseThrow(() -> new IllegalStateException("No has fichado entrada"));
-
-        if (f.getHoraFin() != null)
-            throw new IllegalStateException("Ya habías fichado la salida");
+    public void finalizar(String dni) {
+        Fichaje f = fichajeRepo.findFirstByUsuarioDniAndHoraFinIsNull(dni)
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.CONFLICT, "No tienes jornada abierta"));
 
         f.setHoraFin(LocalTime.now());
-        return fichajes.save(f);
+        fichajeRepo.save(f);
     }
 }
