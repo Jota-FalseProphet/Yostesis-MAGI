@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="false">
+        <!-- IP de tu servidor -->
         <domain includeSubdomains="false">159.69.215.108</domain>
+
         <trust-anchors>
-            <certificates src="@raw/magi_cert" />
+            <!-- PEM autofirmado que vas a poner en /raw  -->
+            <certificates src="@raw/magi_cert"/>
+            <!-- y también las CA del sistema por si acaso -->
+            <certificates src="system"/>
         </trust-anchors>
     </domain-config>
 </network-security-config>
+

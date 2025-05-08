@@ -1,5 +1,6 @@
 package com.magi.asistencia.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,26 +15,32 @@ import com.magi.asistencia.R;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String BASE_URL = "https://159.69.215.108/api/login";
-
-    //OLVIdÉ QUE VERSiÓN DE ANDROID ESTOY USANDO XDDDD
+    private static final String BASE_URL = "https://159.69.215.108:443/api/login";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        int versionSDK = android.os.Build.VERSION.SDK_INT;
-        System.out.println("la versión de android es: "+versionSDK);
-        EditText editDni       = findViewById(R.id.editDni);
-        EditText editPassword  = findViewById(R.id.editPassword);
-        Button   buttonLogin   = findViewById(R.id.buttonLogin);
+
+        EditText editDni      = findViewById(R.id.editDni);
+        EditText editPassword = findViewById(R.id.editPassword);
+        Button   buttonLogin  = findViewById(R.id.buttonLogin);
 
         buttonLogin.setOnClickListener(v -> {
             String dni  = editDni.getText().toString().trim();
@@ -47,22 +54,51 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void toast(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }
+    private void toast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
 
-    /*-----------------------------------------------------*/
-    /* AsyncTask para hacer POST /api/login                */
-    /*-----------------------------------------------------*/
+    /* =========================================================
+       Helper: carga @raw/magi_cert y devuelve SSLSocketFactory
+       ========================================================= */
+    private static SSLSocketFactory buildSslSocketFactory(Context ctx) throws Exception {
+        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+        try (InputStream caInput = ctx.getResources().openRawResource(R.raw.magi_cert)) {
+            Certificate ca = cf.generateCertificate(caInput);
+
+            KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+            ks.load(null, null);
+            ks.setCertificateEntry("ca", ca);
+
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(
+                    TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(ks);
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, tmf.getTrustManagers(), null);
+            return sslContext.getSocketFactory();
+        }
+    }
+
+    /* =========================================================
+       AsyncTask: POST /api/login
+       ========================================================= */
     private class LoginTask extends AsyncTask<Void, Void, String> {
         private final String dni, pass;
         private int responseCode = -1;
 
-        LoginTask(String dni, String pass){ this.dni = dni; this.pass = pass; }
+        LoginTask(String dni, String pass) { this.dni = dni; this.pass = pass; }
 
         @Override
         protected String doInBackground(Void... voids) {
             try {
                 URL url = new URL(BASE_URL);
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+
+                /* CA autofirmada y verificación del hostname */
+                con.setSSLSocketFactory(buildSslSocketFactory(LoginActivity.this));
+                con.setHostnameVerifier((h, s) -> h.equals("159.69.215.108"));
+
                 con.setRequestMethod("POST");
                 con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
                 con.setDoOutput(true);
@@ -71,19 +107,21 @@ public class LoginActivity extends AppCompatActivity {
                 body.put("dni", dni);
                 body.put("password", pass);
 
-                try(OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream())){
+                try (OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream())) {
                     out.write(body.toString());
                     out.flush();
                 }
 
                 responseCode = con.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
-                    try(BufferedReader br =
-                                new BufferedReader(new InputStreamReader(con.getInputStream()))){
-                        return br.readLine();        // rol en texto llano
+                    try (BufferedReader br = new BufferedReader(
+                            new InputStreamReader(con.getInputStream()))) {
+                        return br.readLine();   // devuelve el rol
                     }
                 }
-            } catch (Exception e) { e.printStackTrace(); }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
@@ -95,7 +133,6 @@ public class LoginActivity extends AppCompatActivity {
                         .putExtra("DNI", dni);
                 startActivity(i);
                 finish();
-
             } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 toast("Credenciales incorrectas");
             } else {
