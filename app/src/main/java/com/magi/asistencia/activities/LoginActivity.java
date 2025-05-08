@@ -31,6 +31,7 @@ import javax.net.ssl.TrustManagerFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
+    /** END-POINT del backend */
     private static final String BASE_URL = "https://159.69.215.108:443/api/login";
 
     @Override
@@ -58,9 +59,9 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    /* =========================================================
-       Helper: carga @raw/magi_cert y devuelve SSLSocketFactory
-       ====================================================== */
+    /* ------------------------------------------------------------------
+       Carga  res/raw/magi_cert.pem  como CA raíz del trust-store local
+       ------------------------------------------------------------------ */
     private static SSLSocketFactory buildSslSocketFactory(Context ctx) throws Exception {
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
         try (InputStream caInput = ctx.getResources().openRawResource(R.raw.magi_cert)) {
@@ -80,10 +81,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    /* =========================================================
-       AsyncTask: POST /api/login
-       ========================================================= */
+    /* ------------------------------------------------------------------
+       AsyncTask: hace POST /api/login con el DNI y la contraseña
+       ------------------------------------------------------------------ */
     private class LoginTask extends AsyncTask<Void, Void, String> {
+
         private final String dni, pass;
         private int responseCode = -1;
 
@@ -95,9 +97,9 @@ public class LoginActivity extends AppCompatActivity {
                 URL url = new URL(BASE_URL);
                 HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
 
-                /* CA autofirmada y verificación del hostname */
+                // usa la CA empaquetada y limita el hostname a la IP
                 con.setSSLSocketFactory(buildSslSocketFactory(LoginActivity.this));
-                con.setHostnameVerifier((h, s) -> h.equals("159.69.215.108"));
+                con.setHostnameVerifier((host, session) -> host.equals("159.69.215.108"));
 
                 con.setRequestMethod("POST");
                 con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -116,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     try (BufferedReader br = new BufferedReader(
                             new InputStreamReader(con.getInputStream()))) {
-                        return br.readLine();   // devuelve el rol
+                        return br.readLine();          // ← rol devuelto por el backend
                     }
                 }
             } catch (Exception e) {
