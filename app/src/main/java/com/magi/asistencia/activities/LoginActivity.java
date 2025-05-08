@@ -33,7 +33,7 @@ import javax.net.ssl.TrustManagerFactory;
 public class LoginActivity extends AppCompatActivity {
 
     /** END-POINT del backend */
-    private static final String BASE_URL = "https://159.69.215.108:443/api/login";
+    private static final String BASE_URL = "https://magi.it.com/api/fichaje";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
