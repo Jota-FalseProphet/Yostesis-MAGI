@@ -1,18 +1,13 @@
 package com.magi.api.repository;
 
-import com.magi.api.model.Fichaje;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
+import java.time.LocalDate;
 import java.util.Optional;
 
-@Repository
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.magi.api.model.Fichaje;
+import com.magi.api.model.Usuario;
+
 public interface FichajeRepository extends JpaRepository<Fichaje, Long> {
-
-    /**
-     * Busca la primera jornada iniciada (horaFin == null)
-     * para el usuario identificado por su DNI.
-     */
-    Optional<Fichaje> findFirstByUsuarioDniAndHoraFinIsNull(String dni);
-
+    Optional<Fichaje> findByUsuarioAndFecha(Usuario usuario, LocalDate fecha);
 }

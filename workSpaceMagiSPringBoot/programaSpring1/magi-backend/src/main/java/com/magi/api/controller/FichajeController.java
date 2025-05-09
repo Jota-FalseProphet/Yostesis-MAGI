@@ -1,11 +1,8 @@
 package com.magi.api.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import com.magi.api.model.Fichaje;
 import com.magi.api.service.FichajeService;
 
 @RestController
@@ -18,15 +15,23 @@ public class FichajeController {
         this.service = service;
     }
 
+    /** 
+     * Inicia fichaje.
+     * Ejemplo de llamada:
+     *   POST https://159.69.215.108:8443/api/fichaje/start?dni=12345678A
+     */
     @PostMapping("/start")
-    public ResponseEntity<String> start(Authentication auth) {
-        service.iniciar(auth.getName());
-        return ResponseEntity.ok("INICIADO");
+    public Fichaje start(@RequestParam("dni") String dni) {
+        return service.iniciar(dni.trim());
     }
 
-    @PostMapping("/stop")
-    public ResponseEntity<String> stop(Authentication auth) {
-        service.finalizar(auth.getName());
-        return ResponseEntity.ok("FINALIZADO");
+    /** 
+     * Finaliza fichaje.
+     * Ejemplo de llamada:
+     *   POST https://159.69.215.108:8443/api/fichaje/end?dni=12345678A
+     */
+    @PostMapping("/end")
+    public Fichaje end(@RequestParam("dni") String dni) {
+        return service.finalizar(dni.trim());
     }
 }
