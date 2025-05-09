@@ -7,17 +7,16 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>3.4.4</version>
-    <relativePath/> 
+    <relativePath/>
   </parent>
 
   <groupId>com.magi</groupId>
   <artifactId>magi-backend</artifactId>
-  <version>0.0.5</version>
+  <version>0.0.5.2</version>
   <name>magi-backend</name>
   <description>API Spring Boot para M.A.G.I</description>
   <packaging>jar</packaging>
@@ -29,50 +28,54 @@
   </properties>
 
   <dependencies>
-    
+    <!-- Spring Web y JPA -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
-
-   
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
 
-    
+    <!-- Conector PostgreSQL -->
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>${postgresql.version}</version>
       <scope>runtime</scope>
     </dependency>
-    
+
+    <!-- Tests -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <!-- Spring Security Crypto para BCryptPasswordEncoder -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-crypto</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      
+      <!-- Compilador -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        
+        <version>${maven-compiler-plugin.version}</version>
         <configuration>
           <release>${java.version}</release>
         </configuration>
       </plugin>
 
-      
+      <!-- Empaquetado con Spring Boot -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        
         <executions>
           <execution>
             <goals>
