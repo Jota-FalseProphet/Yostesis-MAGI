@@ -1,10 +1,15 @@
 package com.magi.api.service;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.magi.api.model.Fichaje;
 import com.magi.api.model.Usuario;
@@ -22,32 +27,71 @@ public class FichajeService {
         this.usuarios = usuarios;
     }
 
+    /**
+     * Inicia un nuevo tramo de fichaje.
+     * Lanza BAD_REQUEST si ya hay un tramo abierto sin cerrar.
+     */
     @Transactional
-    public Fichaje iniciar(String string) {
-        Usuario u   = usuarios.findById(string).orElseThrow();
-        LocalDate h = LocalDate.now();
+    public Fichaje iniciar(String dni) {
+        Usuario u = usuarios.findById(dni)
+            .orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado")
+            );
 
-        Fichaje f = fichajes.findByUsuarioAndFecha(u, h)
-                            .orElse(new Fichaje(u, h));
+        LocalDate hoy = LocalDate.now();
 
-        if (f.getHoraInicio() != null)
-            throw new IllegalStateException("Ya has fichado la entrada hoy");
+        // Si ya hay un tramo abierto, no permitimos otro inicio
+        fichajes
+            .findTopByUsuarioAndFechaAndHoraFinIsNullOrderByHoraInicioDesc(u, hoy)
+            .ifPresent(f -> {
+                throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Tienes un fichaje sin cerrar"
+                );
+            });
 
-        f.setHoraInicio(LocalTime.now());
-        return fichajes.save(f);
+        // Creamos un nuevo tramo para hoy, con total a 0, truncando a segundos
+        Fichaje nuevo = new Fichaje(u, hoy);
+        nuevo.setHoraInicio(LocalTime.now().truncatedTo(ChronoUnit.SECONDS));
+        nuevo.setTotal(Duration.ZERO);
+        return fichajes.save(nuevo);
     }
 
+    /**
+     * Finaliza el tramo de fichaje abierto más reciente,
+     * acumula el total de todos los tramos de hoy (en segundos) y lo guarda.
+     * Lanza BAD_REQUEST si no hay ningún tramo abierto.
+     */
     @Transactional
-    public Fichaje finalizar(String string) {
-        Usuario u = usuarios.findById(string).orElseThrow();
+    public Fichaje finalizar(String dni) {
+        Usuario u = usuarios.findById(dni)
+            .orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado")
+            );
 
-        Fichaje f = fichajes.findByUsuarioAndFecha(u, LocalDate.now())
-                            .orElseThrow(() -> new IllegalStateException("No has fichado entrada"));
+        LocalDate hoy = LocalDate.now();
 
-        if (f.getHoraFin() != null)
-            throw new IllegalStateException("Ya habías fichado la salida");
+        // Buscamos el tramo abierto más reciente
+        Fichaje abierto = fichajes
+            .findTopByUsuarioAndFechaAndHoraFinIsNullOrderByHoraInicioDesc(u, hoy)
+            .orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.BAD_REQUEST, "No tienes ningún fichaje abierto")
+            );
 
-        f.setHoraFin(LocalTime.now());
-        return fichajes.save(f);
+        // Cerramos este tramo, truncando a segundos
+        abierto.setHoraFin(LocalTime.now().truncatedTo(ChronoUnit.SECONDS));
+
+        // Recalculamos el total de TODOS los tramos de hoy en Duration
+        List<Fichaje> tramosHoy = fichajes.findByUsuarioAndFecha(u, hoy);
+        Duration total = tramosHoy.stream()
+            .filter(f -> f.getHoraInicio() != null && f.getHoraFin() != null)
+            .map(f -> Duration.between(
+                f.getHoraInicio().truncatedTo(ChronoUnit.SECONDS),
+                f.getHoraFin().truncatedTo(ChronoUnit.SECONDS)
+            ))
+            .reduce(Duration.ZERO, Duration::plus);
+
+        abierto.setTotal(total);
+        return fichajes.save(abierto);
     }
 }
