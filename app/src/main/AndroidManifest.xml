@@ -24,8 +24,12 @@
         </activity>
         <!--PANTALLA DE INICIO PRUEBAAA-->
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.DashboardActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.FichajeActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

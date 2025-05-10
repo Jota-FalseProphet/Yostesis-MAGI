@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/nav_fichajes"
+        android:icon="@drawable/ic_clock"
+        android:title="@string/modulo_fichajes"
+        app:showAsAction="never"
+        app:tint="@color/amarillo_magi"/>
+
+
+    <item
+        android:id="@+id/nav_guardias"
+        android:icon="@drawable/ic_guardias"
+        android:title="@string/modulo_guardias"
+        app:showAsAction="never"
+        app:tint="@color/amarillo_magi"/>
+    <item
+        android:id="@+id/nav_informes"
+        android:icon="@drawable/ic_reports"
+        android:title="@string/modulo_informes"
+        app:showAsAction="never"
+        app:tint="@color/amarillo_magi"/>
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@drawable/ic_logout"
+        android:title="@string/cerrar_sesion"
+        app:showAsAction="never"
+        app:tint="@color/amarillo_magi"/>
+</menu>

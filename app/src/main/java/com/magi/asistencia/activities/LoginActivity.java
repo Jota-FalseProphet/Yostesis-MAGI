@@ -27,12 +27,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-/**
- * LoginActivity modificado para:
- *  - Confiar en cualquier certificado SSL
- *  - Enviar JSON al endpoint (application/json)
- *  - Leer y loguear el errorStream para depurar respuestas >400
- */
 public class LoginActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "https://magi.it.com/api";
@@ -41,9 +35,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        // Asegúrate de tener en tu AndroidManifest.xml:
-        // <uses-permission android:name="android.permission.INTERNET"/>
 
         EditText editDni      = findViewById(R.id.editDni);
         EditText editPassword = findViewById(R.id.editPassword);
@@ -59,8 +50,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
-    // Bypass completo de SSL y hostname >>>>
     private static void trustAllCertificates(HttpsURLConnection conn) {
         try {
             TrustManager[] trustAll = new TrustManager[]{
@@ -143,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String rol) {
             if (code == HttpURLConnection.HTTP_OK && rol != null) {
-                Intent i = new Intent(LoginActivity.this, MainActivity.class)
+                Intent i = new Intent(LoginActivity.this, DashboardActivity.class)
                         .putExtra("ROL", rol)
                         .putExtra("DNI", dni);
                 startActivity(i);

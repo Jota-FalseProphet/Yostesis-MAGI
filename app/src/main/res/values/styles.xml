@@ -10,8 +10,10 @@
         <item name="colorOnSecondary">@color/blanco</item>
 
         <!-- Status / Navigation bar -->
-        <item name="android:statusBarColor">@color/amarillo_magi</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="colorPrimaryDark">@color/blanco</item>
         <item name="android:navigationBarColor">@color/blanco</item>
+
 
         <!-- Tipografía por defecto -->
         <item name="android:fontFamily">@font/montserrat_regular</item>

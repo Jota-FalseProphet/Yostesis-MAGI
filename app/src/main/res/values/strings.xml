@@ -8,4 +8,11 @@
     <string name="iniciar_sesi_n">Iniciar sesión</string>
     <string name="logo_magi">Logo MAGI</string>
     <string name="no_tienes_cuenta_reg_strate">¿No tienes cuenta? Regístrate</string>
+    <string name="bienvenido_magi">Bienvenido a M.A.G.I</string>
+    <string name="modulo_fichajes">Fichajes</string>
+    <string name="modulo_informes">Informes</string>
+    <string name="modulo_guardias">Guardias</string>
+    <string name="modulo_otros">Más</string>
+    <string name="cerrar_sesion">Cerrar sesión</string>
+    <string name="abrir_menu">Abrir Menu</string>
 </resources>

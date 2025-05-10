@@ -13,7 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class FichajeActivity extends AppCompatActivity {
 
     /* Usa el mismo host y puerto que LoginActivity */
     private static final String BASE_URL = "https://magi.it.com/api/fichaje";
@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_fichaje);
 
         dni = getIntent().getStringExtra("DNI");
 
@@ -57,14 +57,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override protected void onPostExecute(Boolean ok) {
             if (ok) {
-                Toast.makeText(MainActivity.this,
+                Toast.makeText(FichajeActivity.this,
                         tipo.equals("start") ? "Entrada registrada" : "Salida registrada",
                         Toast.LENGTH_SHORT).show();
             } else if (code == HttpURLConnection.HTTP_CONFLICT) {
-                Toast.makeText(MainActivity.this,
+                Toast.makeText(FichajeActivity.this,
                         "Fichaje no válido", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(MainActivity.this,
+                Toast.makeText(FichajeActivity.this,
                         "Error de red (" + code + ")", Toast.LENGTH_LONG).show();
             }
         }
