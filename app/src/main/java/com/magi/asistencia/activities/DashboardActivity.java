@@ -1,7 +1,6 @@
 package com.magi.asistencia.activities;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +12,13 @@ import android.widget.PopupMenu;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.magi.asistencia.R;
@@ -23,19 +29,35 @@ public class DashboardActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //La toolBar y la StatusBar se Hace desde Aquí
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            Window window = this.getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(this.getResources().getColor(R.color.blanco));
-        }
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false); // FULL edge-to-edge
+
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.blanco));
+
+        WindowInsetsControllerCompat insetsController =
+                new WindowInsetsControllerCompat(window, window.getDecorView());
+        insetsController.setAppearanceLightStatusBars(true); // dark icons
+        View root = findViewById(R.id.drawer_layout);
+        ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
+            Insets statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+            v.setPadding(0, statusBars.top, 0, 0); // Push content down
+            return insets;
+        });
+
         topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
+    //ToolBar y Status Bar hasta aquí
 
-        // 1) Configuramos el logo como "home" y lo dejamos clicable
+    // 1) Configuramos el logo como "home" y lo dejamos clicable
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setDisplayShowTitleEnabled(false);       // ocultamos el título si no lo quieres
@@ -89,4 +111,10 @@ public class DashboardActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private int getStatusBarHeight() {
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        return resourceId > 0 ? getResources().getDimensionPixelSize(resourceId) : 0;
+    }
+
 }

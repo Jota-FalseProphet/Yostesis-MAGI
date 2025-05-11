@@ -3,7 +3,8 @@
     <!-- color principal de M.A.G.I. -->
     <color name="amarillo_magi">#ffc913</color>
     <!-- otros colores -->
-    <color name="blanco">#FFFFFF</color>
+    <color name="blanco">#FFFFFFFF</color> <!-- FULL white with alpha -->
+
     <color name="gris_oscuro">#333333</color>
     <color name="gris_oscuro_2">#595959</color>
     <color name="gris_claro">#D3D3D3</color>
