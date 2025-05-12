@@ -15,8 +15,8 @@ import java.util.Locale;
 
 public class FichajeActivity extends AppCompatActivity {
 
-    /* Usa el mismo host y puerto que LoginActivity */
-    private static final String BASE_URL = "https://magi.it.com/api/fichaje";
+
+    private static final String BASE_URL = "https://magi.it.com/fichaje";
 
     private String dni;
 
