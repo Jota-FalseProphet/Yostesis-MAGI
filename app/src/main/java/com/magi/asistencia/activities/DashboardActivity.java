@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -22,6 +23,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.card.MaterialCardView;
 import com.magi.asistencia.R;
 
 public class DashboardActivity extends AppCompatActivity {
@@ -31,14 +33,14 @@ public class DashboardActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Siempre en modo claro
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
         // Obtener DNI desde Login
         dni = getIntent().getStringExtra("DNI");
+
+        // Siempre en modo claro
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         // Edge-to-edge + status bar blanca + iconos oscuros
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
@@ -49,11 +51,11 @@ public class DashboardActivity extends AppCompatActivity {
         new WindowInsetsControllerCompat(window, window.getDecorView())
                 .setAppearanceLightStatusBars(true);
 
-        // Ajuste de padding top igual al alto de la status bar
+        // Ajuste de padding top al DrawerLayout
         View root = findViewById(R.id.activity_login_drawer_layout);
         ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
-            Insets sb = insets.getInsets(WindowInsetsCompat.Type.statusBars());
-            v.setPadding(0, sb.top, 0, 0);
+            Insets statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+            v.setPadding(0, statusBars.top, 0, 0);
             return insets;
         });
 
@@ -61,11 +63,9 @@ public class DashboardActivity extends AppCompatActivity {
         topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
         ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            ab.setDisplayShowTitleEnabled(false); // oculta el texto de título automático
-        }
+        if (ab != null) ab.setDisplayShowTitleEnabled(false);
 
-        // LOGO TEXTO REDIRIGE AL DASHBOARD
+        // ——— LOGO: REDIRIGE AL DASHBOARD ———
         ImageView logo = findViewById(R.id.logoText_toolbar);
         logo.setOnClickListener(v -> {
             Intent i = new Intent(this, DashboardActivity.class)
@@ -73,13 +73,43 @@ public class DashboardActivity extends AppCompatActivity {
             startActivity(i);
         });
 
-        // MENU ICON ABRE EL MENU DESPLEGABLE
-        topAppBar.setOnClickListener(v -> {
-            startActivity(new Intent(this, DashboardActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
-        });
+        // ——— MENÚ ICON: ABRE DESPLEGABLE ———
         ImageView menuIcon = findViewById(R.id.ic_menu_toolbar);
         menuIcon.setOnClickListener(this::showModulesMenu);
+
+        // —————————————————————
+        // LÓGICA DE LAS CARDS
+        // —————————————————————
+
+        // Card Fichajes
+        MaterialCardView cardFichajes = findViewById(R.id.cardFichajes);
+        cardFichajes.setOnClickListener(v -> {
+            Intent intent = new Intent(this, FichajeActivity.class);
+            intent.putExtra("DNI", dni);
+            startActivity(intent);
+        });
+
+        // Card Guardias
+        MaterialCardView cardGuardias = findViewById(R.id.cardGuardias);
+        cardGuardias.setOnClickListener(v -> {
+            Intent intent = new Intent(this, GuardiasActivity.class);
+            intent.putExtra("DNI", dni);
+            startActivity(intent);
+        });
+
+        // Card Informes
+        MaterialCardView cardInformes = findViewById(R.id.cardInformes);
+        cardInformes.setOnClickListener(v -> {
+            Intent intent = new Intent(this, InformesActivity.class);
+            intent.putExtra("DNI", dni);
+            startActivity(intent);
+        });
+
+        // Card Otros
+        MaterialCardView cardOtros = findViewById(R.id.cardOtros);
+        cardOtros.setOnClickListener(v -> {
+            Toast.makeText(this, "Módulo Otros en desarrollo", Toast.LENGTH_SHORT).show();
+        });
     }
 
     // MENU DESPLEGABLE
@@ -102,19 +132,22 @@ public class DashboardActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.nav_fichajes) {
-            // Pasamos el DNI a FichajeActivity
             Intent intent = new Intent(this, FichajeActivity.class);
             intent.putExtra("DNI", dni);
             startActivity(intent);
             return true;
         } else if (id == R.id.nav_guardias) {
-            // …
+            Intent intent = new Intent(this, GuardiasActivity.class);
+            intent.putExtra("DNI", dni);
+            startActivity(intent);
             return true;
         } else if (id == R.id.nav_informes) {
-            // …
+            Intent intent = new Intent(this, InformesActivity.class);
+            intent.putExtra("DNI", dni);
+            startActivity(intent);
             return true;
         } else if (id == R.id.nav_logout) {
-            // …
+            // Lógica de logout aquí
             return true;
         }
         return super.onOptionsItemSelected(item);

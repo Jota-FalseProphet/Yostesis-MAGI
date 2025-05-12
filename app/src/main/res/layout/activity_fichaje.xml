@@ -1,23 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:id="@+id/activity_fichaje_coordinator_layout"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    android:orientation="vertical">
+    android:background="@color/blanco">
 
-    <Button
-        android:id="@+id/btnIn"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Iniciar jornada"/>
+        android:background="@color/blanco"
+        android:elevation="4dp">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="12dp"/>
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:contentInsetStart="0dp"
+            app:title=""
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
-    <Button
-        android:id="@+id/btnOut"
+            <ImageView
+                android:id="@+id/logoText_toolbar"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:src="@drawable/logo_text"/>
+
+            <ImageView
+                android:id="@+id/ic_menu_toolbar"
+                android:layout_width="35dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:src="@drawable/ic_menu"
+                app:tint="@color/gris_oscuro_2"/>
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@drawable/toolbar_dropshadow"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Finalizar jornada"/>
-</LinearLayout>
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:padding="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnIn"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Iniciar jornada"
+                android:layout_marginBottom="16dp"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_clock"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnOut"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Finalizar jornada"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_clock"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

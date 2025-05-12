@@ -2,6 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_login_drawer_layout"
+    android:background="@color/blanco"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
@@ -19,8 +20,6 @@
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/blanco"
-
-
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -69,9 +68,13 @@
 
             <!-- Card Fichajes -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardFichajes"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:cardBackgroundColor="@color/blanco"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
@@ -103,9 +106,13 @@
 
             <!-- Card Guardias -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardGuardias"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:cardBackgroundColor="@color/blanco"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
@@ -137,9 +144,13 @@
 
             <!-- Card Informes -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardInformes"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:cardBackgroundColor="@color/blanco"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
@@ -171,9 +182,13 @@
 
             <!-- Card Otros -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardOtros"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:cardBackgroundColor="@color/blanco"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"

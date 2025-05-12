@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
 
-        //La toolBar y la StatusBar se Hace desde Aquí
+        //la StatusBar se Hace desde Aquí
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false); // FULL edge-to-edge
