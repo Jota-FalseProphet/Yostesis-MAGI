@@ -15,4 +15,9 @@
     <string name="modulo_otros">Más</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
     <string name="abrir_menu">Abrir Menu</string>
+
+    <string name="open_drawer">Abrir menú</string>
+    <string name="close_drawer">Cerrar menú</string>
+
+
 </resources>

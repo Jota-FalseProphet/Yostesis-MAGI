@@ -1,13 +1,15 @@
 package com.magi.asistencia.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.PopupMenu;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -29,92 +31,104 @@ public class DashboardActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        //La toolBar y la StatusBar se Hace desde Aquí
+        // Siempre en modo claro
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false); // FULL edge-to-edge
-
+        // Edge-to-edge + status bar blanca + iconos oscuros
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.blanco));
+        new WindowInsetsControllerCompat(window, window.getDecorView())
+                .setAppearanceLightStatusBars(true);
 
-        WindowInsetsControllerCompat insetsController =
-                new WindowInsetsControllerCompat(window, window.getDecorView());
-        insetsController.setAppearanceLightStatusBars(true); // dark icons
-        View root = findViewById(R.id.drawer_layout);
+        // Ajuste de padding top igual al alto de la status bar
+        View root = findViewById(R.id.activity_login_drawer_layout);
         ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
-            Insets statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
-            v.setPadding(0, statusBars.top, 0, 0); // Push content down
+            Insets sb = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+            v.setPadding(0, sb.top, 0, 0);
             return insets;
         });
 
+        // Configuramos toolbar
         topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
-    //ToolBar y Status Bar hasta aquí
-
-    // 1) Configuramos el logo como "home" y lo dejamos clicable
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
-            ab.setDisplayShowTitleEnabled(false);       // ocultamos el título si no lo quieres
-            ab.setDisplayUseLogoEnabled(true);          // hacemos visible el logo
+            ab.setDisplayShowTitleEnabled(false); // oculta el texto de título automático (es que pone MAGI en gigante)
         }
+
+        //LOGO TEXTO REDIRIGE AL DASHBOARD
+        ImageView logo = findViewById(R.id.logoText_toolbar);
+        logo.setOnClickListener(v -> {
+            Intent i = new Intent(this, DashboardActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(i);
+        });
+
+        //MENU ICON ABRE EL MENU DESPLEGABLE
         topAppBar.setOnClickListener(v -> {
-            // Si pinchan en cualquier parte del toolbar (incluido el logo), recargamos Dashboard
-            startActivity(new Intent(this, DashboardActivity.class));
+            startActivity(new Intent(this, DashboardActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
         });
+        ImageView menuIcon = findViewById(R.id.ic_menu_toolbar);
+        menuIcon.setOnClickListener(this::showModulesMenu);
 
-        // 2) Cuando pinchen la hamburguesa, les abrimos un PopupMenu con los módulos
-        //    (podrías usar un DrawerLayout / NavigationView si quieres algo más "oficial")
-        topAppBar.setNavigationOnClickListener(v -> {
-            showModulesMenu(v);
-        });
     }
 
-    // Inflamos el menú vacío para que reserve espacio para los iconos
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Nota: no añadimos aquí items, reservamos el menú para el PopupMenu
-        return true;
-    }
-
-    // Este método muestra tu menú de módulos como un PopupMenu
+    // MENU DESPLEGABLE
     private void showModulesMenu(View anchor) {
-        PopupMenu popup = new PopupMenu(this, anchor);
+        // 1. Contexto con estilo personalizado (ThemeOverlay, no Widget)
+        Context wrapper = new ContextThemeWrapper(this, R.style.ThemeOverlay_PopupMAGI);
+
+        // 2. Crear el PopupMenu con ese wrapper
+        androidx.appcompat.widget.PopupMenu popup =
+                new androidx.appcompat.widget.PopupMenu(wrapper, anchor);
+
+        // 3. Inflar el menú
         popup.inflate(R.menu.menu_dashboard);
+
+        // 4. Aplicar tinte a los íconos manualmente (por si tu estilo no lo aplica)
+        for (int i = 0; i < popup.getMenu().size(); i++) {
+            MenuItem item = popup.getMenu().getItem(i);
+            if (item.getIcon() != null) {
+                item.getIcon().setTint(ContextCompat.getColor(this, R.color.amarillo_magi));
+            }
+        }
+
+        // 5. Listener de clicks
         popup.setOnMenuItemClickListener(this::onOptionsItemSelected);
+
+        // 6. Mostrar
         popup.show();
     }
 
-    // Aquí manejas los clicks sobre los items del menú_dashboard.xml
+
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // aquí tus rutas
         int id = item.getItemId();
-
         if (id == R.id.nav_fichajes) {
             startActivity(new Intent(this, FichajeActivity.class));
             return true;
-        } else if (id == R.id.nav_guardias) {
-            // lanzar GuardiasActivity
-            return true;
-        } else if (id == R.id.nav_informes) {
-            // lanzar InformesActivity
-            return true;
-        } else if (id == R.id.nav_logout) {
-            // cerrar sesión
+        }
+        else if (id == R.id.nav_guardias) {
+            // …
             return true;
         }
-
+        else if (id == R.id.nav_informes) {
+            // …
+            return true;
+        }
+        else if (id == R.id.nav_logout) {
+            // …
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
-
-    private int getStatusBarHeight() {
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        return resourceId > 0 ? getResources().getDimensionPixelSize(resourceId) : 0;
-    }
-
 }

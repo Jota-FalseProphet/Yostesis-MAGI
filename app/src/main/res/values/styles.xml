@@ -39,4 +39,18 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+
+    <!-- Estilo del menú desplegable -->
+    <style name="PopupMenuTextAppearance.RightAlign" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:gravity">end</item> <!-- or "right" -->
+        <item name="android:textAlignment">viewEnd</item>
+    </style>
+    <style name="PopupMenuStyle.Magi" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@color/blanco</item>
+        <item name="android:textColor">@color/gris_oscuro</item>
+        <item name="android:textAppearance">@style/PopupMenuTextAppearance.RightAlign</item>
+    </style>
+    <style name="ThemeOverlay.PopupMAGI" parent="ThemeOverlay.AppCompat.Light">
+        <item name="popupMenuStyle">@style/PopupMenuStyle.Magi</item>
+    </style>
 </resources>

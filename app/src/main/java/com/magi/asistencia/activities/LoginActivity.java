@@ -4,11 +4,21 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.magi.asistencia.R;
 
@@ -35,6 +45,27 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
+        //La toolBar y la StatusBar se Hace desde Aquí
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false); // FULL edge-to-edge
+
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.blanco));
+
+        WindowInsetsControllerCompat insetsController =
+                new WindowInsetsControllerCompat(window, window.getDecorView());
+        insetsController.setAppearanceLightStatusBars(true); // dark icons
+        View root = findViewById(R.id.activity_login_constraint_layout);
+        ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
+            Insets statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+            v.setPadding(0, statusBars.top, 0, 0); // Push content down
+            return insets;
+        });
 
         EditText editDni      = findViewById(R.id.editDni);
         EditText editPassword = findViewById(R.id.editPassword);

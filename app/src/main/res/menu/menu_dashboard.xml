@@ -5,7 +5,8 @@
         android:icon="@drawable/ic_clock"
         android:title="@string/modulo_fichajes"
         app:showAsAction="never"
-        app:tint="@color/amarillo_magi"/>
+        app:tint="@color/amarillo_magi"
+        />
 
 
     <item
