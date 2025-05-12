@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextThemeWrapper;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -28,6 +27,7 @@ import com.magi.asistencia.R;
 public class DashboardActivity extends AppCompatActivity {
 
     private MaterialToolbar topAppBar;
+    private String dni;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +36,9 @@ public class DashboardActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        // Obtener DNI desde Login
+        dni = getIntent().getStringExtra("DNI");
 
         // Edge-to-edge + status bar blanca + iconos oscuros
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
@@ -59,10 +62,10 @@ public class DashboardActivity extends AppCompatActivity {
         setSupportActionBar(topAppBar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
-            ab.setDisplayShowTitleEnabled(false); // oculta el texto de título automático (es que pone MAGI en gigante)
+            ab.setDisplayShowTitleEnabled(false); // oculta el texto de título automático
         }
 
-        //LOGO TEXTO REDIRIGE AL DASHBOARD
+        // LOGO TEXTO REDIRIGE AL DASHBOARD
         ImageView logo = findViewById(R.id.logoText_toolbar);
         logo.setOnClickListener(v -> {
             Intent i = new Intent(this, DashboardActivity.class)
@@ -70,62 +73,47 @@ public class DashboardActivity extends AppCompatActivity {
             startActivity(i);
         });
 
-        //MENU ICON ABRE EL MENU DESPLEGABLE
+        // MENU ICON ABRE EL MENU DESPLEGABLE
         topAppBar.setOnClickListener(v -> {
             startActivity(new Intent(this, DashboardActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
         });
         ImageView menuIcon = findViewById(R.id.ic_menu_toolbar);
         menuIcon.setOnClickListener(this::showModulesMenu);
-
     }
 
     // MENU DESPLEGABLE
     private void showModulesMenu(View anchor) {
-        // 1. Contexto con estilo personalizado (ThemeOverlay, no Widget)
         Context wrapper = new ContextThemeWrapper(this, R.style.ThemeOverlay_PopupMAGI);
-
-        // 2. Crear el PopupMenu con ese wrapper
         androidx.appcompat.widget.PopupMenu popup =
                 new androidx.appcompat.widget.PopupMenu(wrapper, anchor);
-
-        // 3. Inflar el menú
         popup.inflate(R.menu.menu_dashboard);
-
-        // 4. Aplicar tinte a los íconos manualmente (por si tu estilo no lo aplica)
         for (int i = 0; i < popup.getMenu().size(); i++) {
             MenuItem item = popup.getMenu().getItem(i);
             if (item.getIcon() != null) {
                 item.getIcon().setTint(ContextCompat.getColor(this, R.color.amarillo_magi));
             }
         }
-
-        // 5. Listener de clicks
         popup.setOnMenuItemClickListener(this::onOptionsItemSelected);
-
-        // 6. Mostrar
         popup.show();
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        // aquí tus rutas
         int id = item.getItemId();
         if (id == R.id.nav_fichajes) {
-            startActivity(new Intent(this, FichajeActivity.class));
+            // Pasamos el DNI a FichajeActivity
+            Intent intent = new Intent(this, FichajeActivity.class);
+            intent.putExtra("DNI", dni);
+            startActivity(intent);
             return true;
-        }
-        else if (id == R.id.nav_guardias) {
+        } else if (id == R.id.nav_guardias) {
             // …
             return true;
-        }
-        else if (id == R.id.nav_informes) {
+        } else if (id == R.id.nav_informes) {
             // …
             return true;
-        }
-        else if (id == R.id.nav_logout) {
+        } else if (id == R.id.nav_logout) {
             // …
             return true;
         }
