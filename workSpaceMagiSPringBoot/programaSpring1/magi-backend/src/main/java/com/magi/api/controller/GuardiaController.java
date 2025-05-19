@@ -1,4 +1,3 @@
-// src/main/java/com/magi/api/controller/GuardiaController.java
 package com.magi.api.controller;
 
 import java.time.LocalDate;

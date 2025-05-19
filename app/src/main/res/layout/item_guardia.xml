@@ -1,21 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Tarjeta individual para cada sesión de guardia -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:elevation="2dp">
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardUseCompatPadding="true"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="12dp">
 
     <LinearLayout
-        android:padding="12dp"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <TextView android:id="@+id/txtGrupo"   android:textStyle="bold" android:layout_height="40dp" android:layout_width="40dp"/>
-        <TextView android:id="@+id/txtFranja"   android:layout_height="40dp" android:layout_width="40dp"/>
-        <Button   android:id="@+id/btnCubrir"
+        <!-- Grupo -->
+        <TextView
+            android:id="@+id/tvGrupo"
+            style="@style/TextTitleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cubrir"/>
+            android:text="1º ESO B" />
+
+        <!-- Aula + Hora en una fila -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp">
+
+            <TextView
+                android:id="@+id/tvAula"
+                style="@style/TextBodySmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Aula B-12" />
+
+            <TextView
+                android:id="@+id/tvHora"
+                style="@style/TextBodySmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="09:55 – 10:50" />
+        </LinearLayout>
+
+        <!-- Chip de estado -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipEstado"
+            style="@style/Widget.Material3.Chip.Assist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Libre" />
+
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

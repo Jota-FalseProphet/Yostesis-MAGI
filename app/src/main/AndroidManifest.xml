@@ -29,6 +29,10 @@
         <activity
             android:name=".activities.FichajeActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.GuardiasActivity"
+            android:exported="false" />
+
 
     </application>
 

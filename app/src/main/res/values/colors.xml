@@ -10,4 +10,6 @@
     <color name="gris_claro">#D3D3D3</color>
     <color name="amarillo_magi_50">#f3dc9a</color>
     <color name="gris_magi">#535353</color>
+    <color name="green_200">#4CAF6D</color>
+    <color name="red_200">#6BF43636</color>
 </resources>

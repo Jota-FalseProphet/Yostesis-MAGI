@@ -53,4 +53,12 @@
     <style name="ThemeOverlay.PopupMAGI" parent="ThemeOverlay.AppCompat.Light">
         <item name="popupMenuStyle">@style/PopupMenuStyle.Magi</item>
     </style>
+
+
+    <!-- Estilo del modulo Guardias -->
+    <style name="TextTitleSmall"
+        parent="TextAppearance.Material3.TitleSmall"/>
+    <style name="TextBodySmall"
+        parent="TextAppearance.Material3.BodySmall"/>
+
 </resources>
