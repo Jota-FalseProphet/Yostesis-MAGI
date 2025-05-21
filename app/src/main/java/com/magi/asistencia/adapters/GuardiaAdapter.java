@@ -3,15 +3,13 @@ package com.magi.asistencia.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.chip.Chip;
+import com.google.android.material.button.MaterialButton;
 import com.magi.asistencia.R;
 import com.magi.asistencia.model.SessionHorario;
-
+import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +21,9 @@ public class GuardiaAdapter extends RecyclerView.Adapter<GuardiaAdapter.VH> {
     private final OnItemClick callback;
     private final List<SessionHorario> datos = new ArrayList<>();
 
-    public GuardiaAdapter(OnItemClick cb) { this.callback = cb; }
+    public GuardiaAdapter(OnItemClick cb) {
+        this.callback = cb;
+    }
 
     public void setData(List<SessionHorario> nuevos){
         datos.clear();
@@ -34,14 +34,14 @@ public class GuardiaAdapter extends RecyclerView.Adapter<GuardiaAdapter.VH> {
     /* ——— ViewHolder ——— */
     static class VH extends RecyclerView.ViewHolder {
         TextView tvGrupo, tvAula, tvHora;
-        Chip chipEstado;
+        MaterialButton btnCubrir;
 
         VH(View v) {
             super(v);
-            tvGrupo = v.findViewById(R.id.tvGrupo);
-            tvAula  = v.findViewById(R.id.tvAula);
-            tvHora  = v.findViewById(R.id.tvHora);
-            chipEstado = v.findViewById(R.id.chipEstado);
+            tvGrupo   = v.findViewById(R.id.tvGrupo);
+            tvAula    = v.findViewById(R.id.tvAula);
+            tvHora    = v.findViewById(R.id.tvHora);
+            btnCubrir = v.findViewById(R.id.btnCubrir);
         }
 
         void bind(SessionHorario s, OnItemClick cb){
@@ -50,22 +50,34 @@ public class GuardiaAdapter extends RecyclerView.Adapter<GuardiaAdapter.VH> {
             tvHora.setText(s.getHoraInicio() + " – " + s.getHoraFin());
 
             boolean libre = Boolean.FALSE.equals(s.getCubierta());
-            chipEstado.setText(libre ? "Libre" : "Asignada");
-            chipEstado.setChipBackgroundColorResource(
-                    libre ? R.color.red_200 : R.color.green_200);
-
-            itemView.setOnClickListener(v -> cb.onItemClick(s));
+            // Texto del botón
+            btnCubrir.setText(libre ? "Libre" : "Asignada");
+            // Color de fondo según estado
+            int color = libre
+                    ? R.color.red_200
+                    : R.color.green_200;
+            btnCubrir.setBackgroundTintList(
+                    ContextCompat.getColorStateList(itemView.getContext(), color)
+            );
+            // Click sobre el botón
+            btnCubrir.setOnClickListener(v -> cb.onItemClick(s));
         }
     }
 
     @NonNull @Override
-    public VH onCreateViewHolder(@NonNull ViewGroup p, int vType){
-        View v = LayoutInflater.from(p.getContext())
-                .inflate(R.layout.item_guardia, p, false);
+    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_guardia, parent, false);
         return new VH(v);
     }
-    @Override public void onBindViewHolder(@NonNull VH h, int pos){
-        h.bind(datos.get(pos), callback);
+
+    @Override
+    public void onBindViewHolder(@NonNull VH holder, int position){
+        holder.bind(datos.get(position), callback);
     }
-    @Override public int getItemCount(){ return datos.size(); }
+
+    @Override
+    public int getItemCount(){
+        return datos.size();
+    }
 }

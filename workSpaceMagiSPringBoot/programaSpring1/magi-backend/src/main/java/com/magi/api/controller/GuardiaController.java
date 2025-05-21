@@ -14,6 +14,7 @@ import com.magi.api.service.GuardiaService;
 
 @RestController
 @RequestMapping("/api/guardias")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class GuardiaController {
 
     private final GuardiaService service;

@@ -14,6 +14,7 @@ com\magi\api\model\Guardia.class
 com\magi\api\repository\DocentRepository.class
 com\magi\api\repository\SessionHorarioRepository.class
 com\magi\api\controller\GuardiaController.class
+com\magi\api\dto\SessionGuardiaDTO.class
 com\magi\api\model\SessionHorario.class
 com\magi\api\repository\AusenciaRepository.class
 com\magi\api\repository\FichajeRepository.class

@@ -7,6 +7,9 @@ public class SessionGuardiaDTO {
     private Integer idSessio;        // <-- de Long a Integer
     private String  diaSetmana;
     private LocalTime horaDesde;
+    private LocalTime horaHasta;     // ← nuevo
+    private String grupo;            // ← nuevo
+    private String aula;             // ← nuevo
     private String  absenteDni;
     private String  absenteNombre;
     private String  sustitutoDni;
@@ -15,9 +18,12 @@ public class SessionGuardiaDTO {
     public SessionGuardiaDTO() {}
 
     public SessionGuardiaDTO(
-        Integer idSessio,           // <-- Integer aquí
+        Integer idSessio,
         String  diaSetmana,
         LocalTime horaDesde,
+        LocalTime horaHasta,
+        String	grupo,
+        String	aula,
         String  absenteDni,
         String  absenteNombre,
         String  sustitutoDni,
@@ -26,6 +32,9 @@ public class SessionGuardiaDTO {
         this.idSessio        = idSessio;
         this.diaSetmana      = diaSetmana;
         this.horaDesde       = horaDesde;
+        this.horaHasta		 = horaHasta;
+        this.grupo			 = grupo;
+        this.aula			 = aula;
         this.absenteDni      = absenteDni;
         this.absenteNombre   = absenteNombre;
         this.sustitutoDni    = sustitutoDni;
@@ -87,4 +96,28 @@ public class SessionGuardiaDTO {
     public void setSustitutoNombre(String sustitutoNombre) {
         this.sustitutoNombre = sustitutoNombre;
     }
+
+	public LocalTime getHoraHasta() {
+		return horaHasta;
+	}
+
+	public void setHoraHasta(LocalTime horaHasta) {
+		this.horaHasta = horaHasta;
+	}
+
+	public String getGrupo() {
+		return grupo;
+	}
+
+	public void setGrupo(String grupo) {
+		this.grupo = grupo;
+	}
+
+	public String getAula() {
+		return aula;
+	}
+
+	public void setAula(String aula) {
+		this.aula = aula;
+	}
 }

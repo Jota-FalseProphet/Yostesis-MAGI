@@ -16,7 +16,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Grupo -->
+        <!-- Grupo (o identificador de sesión) -->
         <TextView
             android:id="@+id/tvGrupo"
             style="@style/TextTitleSmall"
@@ -47,10 +47,10 @@
                 android:text="09:55 – 10:50" />
         </LinearLayout>
 
-        <!-- Chip de estado -->
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipEstado"
-            style="@style/Widget.Material3.Chip.Assist"
+        <!-- Botón de cubrir guardia -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCubrir"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

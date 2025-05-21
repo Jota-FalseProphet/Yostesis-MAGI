@@ -32,33 +32,23 @@ import com.google.android.material.snackbar.Snackbar;
 import com.magi.asistencia.R;
 import com.magi.asistencia.adapters.GuardiaAdapter;
 import com.magi.asistencia.model.SessionHorario;
+import com.magi.asistencia.network.HttpHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-/**
- * Activity del módulo Guardias – sin Retrofit, 100 % Java (HttpURLConnection),
- * replicando la barra y status bar de FichajeActivity.
- */
 public class GuardiasActivity extends AppCompatActivity {
 
     private static final String TAG = "GuardiasTask";
-
     private static final String BASE_URL = "https://magi.it.com/api/guardias";
 
     private MaterialToolbar topAppBar;
     private String dni;
-
     private GuardiaAdapter adapter;
 
     @Override
@@ -69,7 +59,7 @@ public class GuardiasActivity extends AppCompatActivity {
         // —— DNI desde Login ——
         dni = getIntent().getStringExtra("DNI");
 
-        // —— Modo claro ——
+        // —— Forzar modo claro ——
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         // —— Edge-to-edge + status bar blanca ——
@@ -81,7 +71,7 @@ public class GuardiasActivity extends AppCompatActivity {
         new WindowInsetsControllerCompat(w, w.getDecorView())
                 .setAppearanceLightStatusBars(true);
 
-        // Padding top al Coordinator
+        // Ajustar padding top del root para status bar
         View root = findViewById(R.id.activity_guardias_coordinator_layout);
         ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
             Insets sb = insets.getInsets(WindowInsetsCompat.Type.statusBars());
@@ -105,32 +95,26 @@ public class GuardiasActivity extends AppCompatActivity {
         ImageView menuIcon = findViewById(R.id.ic_menu_toolbar);
         menuIcon.setOnClickListener(this::showModulesMenu);
 
-        // —— RecyclerView + FAB ——
+        // —— RecyclerView + Adapter ——
         RecyclerView rv = findViewById(R.id.recyclerGuardias);
         rv.setLayoutManager(new LinearLayoutManager(this));
         adapter = new GuardiaAdapter(this::onGuardiaClick);
         rv.setAdapter(adapter);
 
-        List<SessionHorario> mock = Arrays.asList(
-                new SessionHorario(1,"1º ESO B","B-12","09:55","10:50",false,null),
-                new SessionHorario(2,"2º ESO C","A-14","10:50","11:45",true,"12345678A")
-        );
-        adapter.setData(mock);
-
-
+        // —— FAB Histórico ——
         ExtendedFloatingActionButton fab = findViewById(R.id.fabHistorico);
-        fab.setOnClickListener(v -> startActivity(new Intent(this, HistoricoGuardiasActivity.class)));
+        fab.setOnClickListener(v ->
+                startActivity(new Intent(this, HistoricoGuardiasActivity.class))
+        );
 
-        // Primera descarga
+        // —— Primera carga de datos ——
         new CargarAusenciasTask().execute();
     }
 
-    /**
-     * Menú emergente (idéntico al de FichajeActivity).
-     */
     private void showModulesMenu(View anchor) {
         Context wrapper = new ContextThemeWrapper(this, R.style.ThemeOverlay_PopupMAGI);
-        androidx.appcompat.widget.PopupMenu popup = new androidx.appcompat.widget.PopupMenu(wrapper, anchor);
+        androidx.appcompat.widget.PopupMenu popup =
+                new androidx.appcompat.widget.PopupMenu(wrapper, anchor);
         popup.inflate(R.menu.menu_dashboard);
         for (int i = 0; i < popup.getMenu().size(); i++) {
             MenuItem mi = popup.getMenu().getItem(i);
@@ -141,42 +125,25 @@ public class GuardiasActivity extends AppCompatActivity {
         popup.show();
     }
 
-    // ————————————————————— NETWORK TASKS —————————————————————
+    // ————————————————— NETWORK TASKS —————————————————
 
     private class CargarAusenciasTask extends AsyncTask<Void, Void, List<SessionHorario>> {
         private String errorMsg;
-        @Override
-        protected List<SessionHorario> doInBackground(Void... p) {
-            HttpURLConnection c = null;
-            try {
-                String urlStr = BASE_URL + "/ausencias/vigentes";
-                Log.d(TAG, "GET " + urlStr);
-                URL url = new URL(urlStr);
-                c = (HttpURLConnection) url.openConnection();
-                c.setRequestMethod("GET");
-                c.setConnectTimeout(5000);
-                c.setReadTimeout(5000);
 
-                int code = c.getResponseCode();
-                if (code == HttpURLConnection.HTTP_OK) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) sb.append(line);
-                    br.close();
-                    return parseLista(sb.toString());
-                } else {
-                    errorMsg = c.getResponseMessage();
-                }
-            } catch (Exception e) {
+        @Override
+        protected List<SessionHorario> doInBackground(Void... voids) {
+            try {
+                String json = HttpHelper.get(BASE_URL + "/ausencias/vigentes");
+                return parseLista(json);
+            } catch (IOException | JSONException e) {
                 Log.e(TAG, "Error GET ausencias", e);
                 errorMsg = e.getMessage();
-            } finally {
-                if (c != null) c.disconnect();
+                return null;
             }
-            return null;
         }
-        @Override protected void onPostExecute(List<SessionHorario> lista) {
+
+        @Override
+        protected void onPostExecute(List<SessionHorario> lista) {
             if (lista != null) {
                 adapter.setData(lista);
             } else {
@@ -188,72 +155,75 @@ public class GuardiasActivity extends AppCompatActivity {
     private class AsignarGuardiaTask extends AsyncTask<Void, Void, Boolean> {
         private final long idSes;
         private String errorMsg;
-        AsignarGuardiaTask(long id){ this.idSes = id; }
-        @Override protected Boolean doInBackground(Void... p){
-            HttpURLConnection c = null;
-            try {
-                String urlStr = BASE_URL + "?dniAsignat="+dni+"&idSessio="+idSes;
-                Log.d(TAG, "POST " + urlStr);
-                URL url = new URL(urlStr);
-                c = (HttpURLConnection) url.openConnection();
-                c.setRequestMethod("POST");
-                c.setConnectTimeout(5000);
-                c.setReadTimeout(5000);
-                int code = c.getResponseCode();
-                if (code == HttpURLConnection.HTTP_OK) return true;
-                errorMsg = c.getResponseMessage();
-            } catch (Exception e){
-                Log.e(TAG,"Error POST asignar",e);
-                errorMsg = e.getMessage();
-            } finally { if(c!=null) c.disconnect(); }
-            return false;
+
+        AsignarGuardiaTask(long id) {
+            this.idSes = id;
         }
-        @Override protected void onPostExecute(Boolean ok){
-            if(ok){ new CargarAusenciasTask().execute(); }
-            else mostrarError(errorMsg!=null? errorMsg : "Error al asignar");
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                return HttpHelper.post(BASE_URL + "?dniAsignat=" + dni + "&idSessio=" + idSes);
+            } catch (IOException e) {
+                Log.e(TAG, "Error POST asignar", e);
+                errorMsg = e.getMessage();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean ok) {
+            if (ok) {
+                new CargarAusenciasTask().execute();
+            } else {
+                mostrarError(errorMsg != null ? errorMsg : "Error al asignar");
+            }
         }
     }
 
-    // ————————————————————— UI EVENTS —————————————————————
+    // ————————————————— UI EVENTS —————————————————
 
-    private void onGuardiaClick(SessionHorario s){
-        if(Boolean.TRUE.equals(s.getCubierta())){
-            Toast.makeText(this, "Ya está cubierta", Toast.LENGTH_SHORT).show();
+    private void onGuardiaClick(SessionHorario s) {
+        if (Boolean.TRUE.equals(s.getCubierta())) {
+            Toast.makeText(this, "Guardia ya cubierta", Toast.LENGTH_SHORT).show();
             return;
         }
         new MaterialAlertDialogBuilder(this)
                 .setTitle("¿Te asignas esta guardia?")
-                .setMessage(s.getGrupo()+" · Aula "+s.getAula()+" ("+s.getHoraInicio()+")")
-                .setPositiveButton("Sí", (d,w)-> new AsignarGuardiaTask(s.getIdSessio()).execute())
+                .setMessage(
+                        s.getGrupo() + " · Aula " + s.getAula() +
+                                " (" + s.getHoraInicio() + "–" + s.getHoraFin() + ")"
+                )
+                .setPositiveButton("Sí", (d, w) ->
+                        new AsignarGuardiaTask(s.getIdSessio()).execute()
+                )
                 .setNegativeButton("No", null)
                 .show();
     }
 
-    private void mostrarError(String m){
-        Snackbar.make(findViewById(android.R.id.content), m, Snackbar.LENGTH_LONG).show();
+    private void mostrarError(String msg) {
+        Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG).show();
     }
 
-    // ————————————————————— JSON —————————————————————
-    // ————————————————————— JSON —————————————————————
+    // ————————————————— JSON —————————————————
+
     private List<SessionHorario> parseLista(String json) throws JSONException {
         JSONArray arr = new JSONArray(json);
         List<SessionHorario> lista = new ArrayList<>();
 
         for (int i = 0; i < arr.length(); i++) {
             JSONObject o = arr.getJSONObject(i);
-
             SessionHorario s = new SessionHorario(
                     o.getLong("idSessio"),
-                    o.optString("plantilla", "—"),   // grupo → plantilla
-                    null,                            // aula aún no llega
-                    o.optString("horaDesde"),        // horaInicio
-                    o.optString("horaFins"),         // horaFin
+                    o.optString("grupo", "—"),
+                    o.optString("aula", "—"),
+                    o.optString("horaDesde"),
+                    o.optString("horaHasta"),
                     o.optBoolean("cubierta", false),
-                    null                             // profesorGuardia
+                    o.optString("profesorGuardia", null)
             );
             lista.add(s);
         }
         return lista;
     }
-
 }
