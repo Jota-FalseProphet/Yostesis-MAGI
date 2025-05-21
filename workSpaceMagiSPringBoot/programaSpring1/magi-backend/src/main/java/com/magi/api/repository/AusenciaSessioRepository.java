@@ -11,16 +11,15 @@ import org.springframework.data.repository.query.Param;
 import com.magi.api.dto.SessionGuardiaDTO;
 import com.magi.api.model.AusenciaSessio;
 import com.magi.api.model.AusenciaSessioId;
+import com.magi.api.model.Docent;
 import com.magi.api.model.DocentSessio;
 import com.magi.api.model.SessionHorario;
-import com.magi.api.model.Docent;
 
 public interface AusenciaSessioRepository
     extends JpaRepository<AusenciaSessio, AusenciaSessioId> {
 
-    /** 
-     * Devuelve cada sesión con ausencia y, si existe, el guardián asignado
-     * mapeado al DTO SessionGuardiaDTO, filtrando sólo sesiones sin codocencia
+    /**
+     * Devuelve sesión con ausencia y datos de guardia, incluyendo grupo y aula mapeados como entidades
      */
     @Query("""
       SELECT new com.magi.api.dto.SessionGuardiaDTO(
@@ -28,7 +27,7 @@ public interface AusenciaSessioRepository
         s.session.diaSetmana,
         s.session.horaDesde,
         s.session.horaFins,
-        s.session.plantilla,
+        s.session.grupo.nombre,
         s.session.aula.nombre,
         s.ausencia.docent.dni,
         s.ausencia.docent.nom,
@@ -46,9 +45,6 @@ public interface AusenciaSessioRepository
     """)
     List<SessionGuardiaDTO> findGuardiasVigentes(@Param("fecha") LocalDate fecha);
 
-    /**
-     * Obtiene las sesiones programadas para un día dado
-     */
     @Query("""
         SELECT s.session
           FROM AusenciaSessio s
@@ -56,9 +52,6 @@ public interface AusenciaSessioRepository
     """)
     List<SessionHorario> findSessionsByFecha(@Param("fecha") LocalDate fecha);
 
-    /**
-     * Obtiene el docent ausente para una sesión en una fecha concreta
-     */
     @Query("""
         SELECT s.ausencia.docent
           FROM AusenciaSessio s
