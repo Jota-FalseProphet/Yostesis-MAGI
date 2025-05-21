@@ -29,8 +29,11 @@ public class AutogeneraAusenciasJob {
     @Scheduled(cron = "0 */5 * * * *", zone = "Europe/Madrid")
     @Transactional
     public void ejecutar() {
-        jdbc.execute("SELECT public.autogenera_ausencias()"); 
-        LOG.info("autogenera_ausencias() lanzado");
+    	Integer n = jdbc.queryForObject(
+    	        "SELECT public.autogenera_ausencias('5 min','366781135')",
+    	        Integer.class);
+    	LOG.info("autogenera_ausencias(): filas afectadas={}", n);
+
     }
 
 }
