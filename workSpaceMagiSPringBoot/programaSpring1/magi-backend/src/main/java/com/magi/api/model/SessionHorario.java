@@ -2,14 +2,12 @@
 package com.magi.api.model;
 
 import java.time.LocalTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "sessions_horari")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Table(name = "sessions_horari")  // según :contentReference[oaicite:0]{index=0}
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class SessionHorario {
 
     @Id
@@ -17,8 +15,10 @@ public class SessionHorario {
     @Column(name = "id_sessio")
     private Integer idSessio;
 
-    @Column(name = "plantilla")
-    private String plantilla;
+    // Si quieres mapear también Grupo, crea la entidad Grupo y sustituye:
+    // @Column(name="plantilla") private String plantilla;
+    // por:
+    // @ManyToOne @JoinColumn(name="id_grupo") private Grupo grupo;
 
     @Column(name = "dia_setmana")
     private String diaSetmana;
@@ -32,47 +32,30 @@ public class SessionHorario {
     @Column(name = "hora_fins")
     private LocalTime horaFins;
 
+    // —— Relación a Aula ——
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_aula", nullable = false)
+    private Aula aula;
+
     public SessionHorario() {}
 
-    public Integer getIdSessio() {
-        return idSessio;
-    }
-    public void setIdSessio(Integer idSessio) {
-        this.idSessio = idSessio;
-    }
+    // getters y setters
 
-    public String getPlantilla() {
-        return plantilla;
-    }
-    public void setPlantilla(String plantilla) {
-        this.plantilla = plantilla;
-    }
+    public Integer getIdSessio() { return idSessio; }
+    public void setIdSessio(Integer idSessio) { this.idSessio = idSessio; }
 
-    public String getDiaSetmana() {
-        return diaSetmana;
-    }
-    public void setDiaSetmana(String diaSetmana) {
-        this.diaSetmana = diaSetmana;
-    }
+    public String getDiaSetmana() { return diaSetmana; }
+    public void setDiaSetmana(String diaSetmana) { this.diaSetmana = diaSetmana; }
 
-    public Integer getSessioOrdre() {
-        return sessioOrdre;
-    }
-    public void setSessioOrdre(Integer sessioOrdre) {
-        this.sessioOrdre = sessioOrdre;
-    }
+    public Integer getSessioOrdre() { return sessioOrdre; }
+    public void setSessioOrdre(Integer sessioOrdre) { this.sessioOrdre = sessioOrdre; }
 
-    public LocalTime getHoraDesde() {
-        return horaDesde;
-    }
-    public void setHoraDesde(LocalTime horaDesde) {
-        this.horaDesde = horaDesde;
-    }
+    public LocalTime getHoraDesde() { return horaDesde; }
+    public void setHoraDesde(LocalTime horaDesde) { this.horaDesde = horaDesde; }
 
-    public LocalTime getHoraFins() {
-        return horaFins;
-    }
-    public void setHoraFins(LocalTime horaFins) {
-        this.horaFins = horaFins;
-    }
+    public LocalTime getHoraFins() { return horaFins; }
+    public void setHoraFins(LocalTime horaFins) { this.horaFins = horaFins; }
+
+    public Aula getAula() { return aula; }
+    public void setAula(Aula aula) { this.aula = aula; }
 }
