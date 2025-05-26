@@ -2,12 +2,12 @@
 package com.magi.api.model;
 
 import java.time.LocalTime;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "sessions_horari")  // según :contentReference[oaicite:0]{index=0}
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+@Table(name = "sessions_horari")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class SessionHorario {
 
     @Id
@@ -15,47 +15,73 @@ public class SessionHorario {
     @Column(name = "id_sessio")
     private Integer idSessio;
 
-    // Si quieres mapear también Grupo, crea la entidad Grupo y sustituye:
-    // @Column(name="plantilla") private String plantilla;
-    // por:
-    // @ManyToOne @JoinColumn(name="id_grupo") private Grupo grupo;
+    // mapea la columna plantilla (tu "grupo" en DTO)
+    @Column(name = "plantilla", nullable = false)
+    private String plantilla;
 
-    @Column(name = "dia_setmana")
+    @Column(name = "dia_setmana", nullable = false)
     private String diaSetmana;
 
-    @Column(name = "sessio_ordre")
-    private Integer sessioOrdre;
-
-    @Column(name = "hora_desde")
+    @Column(name = "hora_desde", nullable = false)
     private LocalTime horaDesde;
 
-    @Column(name = "hora_fins")
+    @Column(name = "hora_fins", nullable = false)
     private LocalTime horaFins;
 
-    // —— Relación a Aula ——
+    // relación ManyToOne con Aula
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_aula", nullable = false)
+    @JoinColumn(name = "id_aula")
     private Aula aula;
 
     public SessionHorario() {}
 
-    // getters y setters
+    // getters y setters para todas las propiedades
 
-    public Integer getIdSessio() { return idSessio; }
-    public void setIdSessio(Integer idSessio) { this.idSessio = idSessio; }
+    public Integer getIdSessio() {
+        return idSessio;
+    }
 
-    public String getDiaSetmana() { return diaSetmana; }
-    public void setDiaSetmana(String diaSetmana) { this.diaSetmana = diaSetmana; }
+    public void setIdSessio(Integer idSessio) {
+        this.idSessio = idSessio;
+    }
 
-    public Integer getSessioOrdre() { return sessioOrdre; }
-    public void setSessioOrdre(Integer sessioOrdre) { this.sessioOrdre = sessioOrdre; }
+    public String getPlantilla() {
+        return plantilla;
+    }
 
-    public LocalTime getHoraDesde() { return horaDesde; }
-    public void setHoraDesde(LocalTime horaDesde) { this.horaDesde = horaDesde; }
+    public void setPlantilla(String plantilla) {
+        this.plantilla = plantilla;
+    }
 
-    public LocalTime getHoraFins() { return horaFins; }
-    public void setHoraFins(LocalTime horaFins) { this.horaFins = horaFins; }
+    public String getDiaSetmana() {
+        return diaSetmana;
+    }
 
-    public Aula getAula() { return aula; }
-    public void setAula(Aula aula) { this.aula = aula; }
+    public void setDiaSetmana(String diaSetmana) {
+        this.diaSetmana = diaSetmana;
+    }
+
+    public LocalTime getHoraDesde() {
+        return horaDesde;
+    }
+
+    public void setHoraDesde(LocalTime horaDesde) {
+        this.horaDesde = horaDesde;
+    }
+
+    public LocalTime getHoraFins() {
+        return horaFins;
+    }
+
+    public void setHoraFins(LocalTime horaFins) {
+        this.horaFins = horaFins;
+    }
+
+    public Aula getAula() {
+        return aula;
+    }
+
+    public void setAula(Aula aula) {
+        this.aula = aula;
+    }
 }

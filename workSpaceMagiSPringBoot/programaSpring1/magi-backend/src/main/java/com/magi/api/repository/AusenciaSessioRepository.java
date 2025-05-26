@@ -22,28 +22,29 @@ public interface AusenciaSessioRepository
      * Devuelve sesión con ausencia y datos de guardia, incluyendo grupo y aula mapeados como entidades
      */
     @Query("""
-      SELECT new com.magi.api.dto.SessionGuardiaDTO(
-        s.session.idSessio,
-        s.session.diaSetmana,
-        s.session.horaDesde,
-        s.session.horaFins,
-        s.session.grupo.nombre,
-        s.session.aula.nombre,
-        s.ausencia.docent.dni,
-        s.ausencia.docent.nom,
-        NULL,
-        NULL
-      )
-      FROM AusenciaSessio s
-      WHERE s.ausencia.fechaAusencia = :fecha
-        AND s.ausencia.fullDay = false
-        AND (
-          SELECT COUNT(ds)
-            FROM DocentSessio ds
-           WHERE ds.session.idSessio = s.session.idSessio
-        ) = 1
-    """)
+              SELECT new com.magi.api.dto.SessionGuardiaDTO(
+                s.session.idSessio,
+                s.session.diaSetmana,
+                s.session.horaDesde,
+                s.session.horaFins,
+                s.session.plantilla,
+                s.session.aula.nombre,
+                s.ausencia.docent.dni,
+                s.ausencia.docent.nom,
+                NULL,
+                NULL
+              )
+              FROM AusenciaSessio s
+              WHERE s.ausencia.fechaAusencia = :fecha
+                AND s.ausencia.fullDay = false
+                AND (
+                  SELECT COUNT(ds)
+                    FROM DocentSessio ds
+                   WHERE ds.session.idSessio = s.session.idSessio
+                ) = 1
+            """)
     List<SessionGuardiaDTO> findGuardiasVigentes(@Param("fecha") LocalDate fecha);
+
 
     @Query("""
         SELECT s.session
@@ -55,7 +56,7 @@ public interface AusenciaSessioRepository
     @Query("""
         SELECT s.ausencia.docent
           FROM AusenciaSessio s
-         WHERE s.idSessio = :idSessio
+         WHERE s.session.idSessio     = :idSessio
            AND s.ausencia.fechaAusencia = :fecha
     """)
     Optional<Docent> findDocentAbsentBySessionAndFecha(

@@ -8,16 +8,28 @@ import jakarta.persistence.*;
 public class Aula {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_aula")
     private Integer idAula;
 
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    // getters y setters
-    public Integer getIdAula() { return idAula; }
-    public void setIdAula(Integer idAula) { this.idAula = idAula; }
+    public Aula() {}
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public Integer getIdAula() {
+        return idAula;
+    }
+
+    public void setIdAula(Integer idAula) {
+        this.idAula = idAula;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 }

@@ -1,3 +1,4 @@
+com\magi\api\model\DocentSessio.class
 com\magi\api\model\Usuario.class
 com\magi\api\model\Ausencia.class
 com\magi\api\repository\GuardiaRepository.class
@@ -9,6 +10,7 @@ com\magi\api\ApiApplication.class
 com\magi\api\repository\AusenciaSessioRepository.class
 com\magi\api\controller\FichajeController.class
 com\magi\api\model\Fichaje.class
+com\magi\api\model\Aula.class
 com\magi\api\controller\AuthController.class
 com\magi\api\model\Guardia.class
 com\magi\api\repository\DocentRepository.class

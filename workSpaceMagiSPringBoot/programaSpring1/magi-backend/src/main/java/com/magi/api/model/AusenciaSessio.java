@@ -1,49 +1,53 @@
-// src/main/java/com/magi/api/model/AusenciaSessio.java
 package com.magi.api.model;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "ausencies_sessio")
-@IdClass(AusenciaSessioId.class)
 public class AusenciaSessio {
 
-    @Id
-    @Column(name = "id_ausencia")
-    private Integer idAusencia;
+    @EmbeddedId
+    private AusenciaSessioId id;
 
-    @Id
-    @Column(name = "id_sessio")
-    private Integer idSessio;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_ausencia", insertable = false, updatable = false)
+    @MapsId("idAusencia")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_ausencia", nullable = false)
     private Ausencia ausencia;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_sessio", insertable = false, updatable = false)
+    @MapsId("idSessio")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_sessio", nullable = false)
     private SessionHorario session;
 
     public AusenciaSessio() {}
 
-    public Integer getIdAusencia() {
-        return idAusencia;
-    }
-    public void setIdAusencia(Integer idAusencia) {
-        this.idAusencia = idAusencia;
+    public AusenciaSessio(AusenciaSessioId id, Ausencia ausencia, SessionHorario session) {
+        this.id = id;
+        this.ausencia = ausencia;
+        this.session = session;
     }
 
-    public Integer getIdSessio() {
-        return idSessio;
+    public AusenciaSessioId getId() {
+        return id;
     }
-    public void setIdSessio(Integer idSessio) {
-        this.idSessio = idSessio;
+
+    public void setId(AusenciaSessioId id) {
+        this.id = id;
     }
 
     public Ausencia getAusencia() {
         return ausencia;
     }
+
+    public void setAusencia(Ausencia ausencia) {
+        this.ausencia = ausencia;
+    }
+
     public SessionHorario getSession() {
         return session;
+    }
+
+    public void setSession(SessionHorario session) {
+        this.session = session;
     }
 }
