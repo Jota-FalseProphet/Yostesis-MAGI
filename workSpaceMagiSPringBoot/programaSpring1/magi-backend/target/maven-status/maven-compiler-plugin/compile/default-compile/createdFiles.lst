@@ -1,5 +1,6 @@
 com\magi\api\model\DocentSessio.class
 com\magi\api\model\Usuario.class
+com\magi\api\config\AusenciasProperties.class
 com\magi\api\model\Ausencia.class
 com\magi\api\repository\GuardiaRepository.class
 com\magi\api\service\GuardiaService.class

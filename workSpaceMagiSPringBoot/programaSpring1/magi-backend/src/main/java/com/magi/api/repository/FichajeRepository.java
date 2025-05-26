@@ -11,6 +11,7 @@ import com.magi.api.model.Fichaje;
 import com.magi.api.model.Usuario;
 
 public interface FichajeRepository extends JpaRepository<Fichaje, Long> {
+	boolean existsByUsuarioAndFecha(Usuario usuario, LocalDate fecha);
 
     // Todos los fichajes del usuario en esa fecha
     List<Fichaje> findByUsuarioAndFecha(Usuario usuario, LocalDate fecha);

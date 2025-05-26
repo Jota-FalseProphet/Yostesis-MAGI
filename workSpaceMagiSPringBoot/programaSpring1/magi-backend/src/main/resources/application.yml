@@ -21,4 +21,8 @@ spring:
 logging:
   level:
     org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: DEBUG
-
+magi:
+  centre-id: 366781135       
+  ausencias:
+    gracia-min: 5
+     
