@@ -16,7 +16,7 @@
 
   <groupId>com.magi</groupId>
   <artifactId>magi-backend</artifactId>
-  <version>0.1.7.7</version>
+  <version>0.1.8.0</version>
   <name>magi-backend</name>
   <description>API Spring Boot para M.A.G.I</description>
   <packaging>jar</packaging>

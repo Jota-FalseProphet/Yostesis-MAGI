@@ -26,7 +26,11 @@ public class AutogeneraAusenciasJob {
         this.props = props;
     }
 
-    @Scheduled(cron = "0 */5 * * * *", zone = "Europe/Madrid")
+    /**
+     * Ejecuta autogenera_ausencias() cada minuto exacto (segundo 0),
+     * en horario de Europa/Madrid.
+     */
+    @Scheduled(cron = "0 * * * * *", zone = "Europe/Madrid")
     @Transactional
     public void ejecutar() {
         Integer n = jdbc.queryForObject(
@@ -38,4 +42,3 @@ public class AutogeneraAusenciasJob {
         LOG.info("autogenera_ausencias(): filas afectadas={}", n);
     }
 }
-
