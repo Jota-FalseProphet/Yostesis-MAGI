@@ -1,44 +1,43 @@
-// src/main/java/com/magi/api/dto/SessionGuardiaDTO.java
 package com.magi.api.dto;
 
-import java.time.LocalTime;
+import java.sql.Time;
 
 public class SessionGuardiaDTO {
-    private Integer idSessio;        // <-- de Long a Integer
-    private String  diaSetmana;
-    private LocalTime horaDesde;
-    private LocalTime horaHasta;     // ← nuevo
-    private String grupo;            // ← nuevo
-    private String aula;             // ← nuevo
-    private String  absenteDni;
-    private String  absenteNombre;
-    private String  sustitutoDni;
-    private String  sustitutoNombre;
 
-    public SessionGuardiaDTO() {}
+    private Integer idSessio;
+    private String diaSetmana;
+    private Time horaDesde;
+    private Time horaHasta;
+    private String grupo;
+    private String aula;
+    private String absenteDni;
+    private String absenteNombre;
+    private Boolean cubierta;
+    private String profesorGuardia;
 
-    public SessionGuardiaDTO(
-        Integer idSessio,
-        String  diaSetmana,
-        LocalTime horaDesde,
-        LocalTime horaHasta,
-        String	grupo,
-        String	aula,
-        String  absenteDni,
-        String  absenteNombre,
-        String  sustitutoDni,
-        String  sustitutoNombre
-    ) {
-        this.idSessio        = idSessio;
-        this.diaSetmana      = diaSetmana;
-        this.horaDesde       = horaDesde;
-        this.horaHasta		 = horaHasta;
-        this.grupo			 = grupo;
-        this.aula			 = aula;
-        this.absenteDni      = absenteDni;
-        this.absenteNombre   = absenteNombre;
-        this.sustitutoDni    = sustitutoDni;
-        this.sustitutoNombre = sustitutoNombre;
+    public SessionGuardiaDTO() {
+    }
+
+    public SessionGuardiaDTO(Integer idSessio,
+                             String diaSetmana,
+                             Time horaDesde,
+                             Time horaHasta,
+                             String grupo,
+                             String aula,
+                             String absenteDni,
+                             String absenteNombre,
+                             Boolean cubierta,
+                             String profesorGuardia) {
+        this.idSessio = idSessio;
+        this.diaSetmana = diaSetmana;
+        this.horaDesde = horaDesde;
+        this.horaHasta = horaHasta;
+        this.grupo = grupo;
+        this.aula = aula;
+        this.absenteDni = absenteDni;
+        this.absenteNombre = absenteNombre;
+        this.cubierta = cubierta;
+        this.profesorGuardia = profesorGuardia;
     }
 
     public Integer getIdSessio() {
@@ -57,12 +56,36 @@ public class SessionGuardiaDTO {
         this.diaSetmana = diaSetmana;
     }
 
-    public LocalTime getHoraDesde() {
+    public Time getHoraDesde() {
         return horaDesde;
     }
 
-    public void setHoraDesde(LocalTime horaDesde) {
+    public void setHoraDesde(Time horaDesde) {
         this.horaDesde = horaDesde;
+    }
+
+    public Time getHoraHasta() {
+        return horaHasta;
+    }
+
+    public void setHoraHasta(Time horaHasta) {
+        this.horaHasta = horaHasta;
+    }
+
+    public String getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(String grupo) {
+        this.grupo = grupo;
+    }
+
+    public String getAula() {
+        return aula;
+    }
+
+    public void setAula(String aula) {
+        this.aula = aula;
     }
 
     public String getAbsenteDni() {
@@ -81,43 +104,19 @@ public class SessionGuardiaDTO {
         this.absenteNombre = absenteNombre;
     }
 
-    public String getSustitutoDni() {
-        return sustitutoDni;
+    public Boolean getCubierta() {
+        return cubierta;
     }
 
-    public void setSustitutoDni(String sustitutoDni) {
-        this.sustitutoDni = sustitutoDni;
+    public void setCubierta(Boolean cubierta) {
+        this.cubierta = cubierta;
     }
 
-    public String getSustitutoNombre() {
-        return sustitutoNombre;
+    public String getProfesorGuardia() {
+        return profesorGuardia;
     }
 
-    public void setSustitutoNombre(String sustitutoNombre) {
-        this.sustitutoNombre = sustitutoNombre;
+    public void setProfesorGuardia(String profesorGuardia) {
+        this.profesorGuardia = profesorGuardia;
     }
-
-	public LocalTime getHoraHasta() {
-		return horaHasta;
-	}
-
-	public void setHoraHasta(LocalTime horaHasta) {
-		this.horaHasta = horaHasta;
-	}
-
-	public String getGrupo() {
-		return grupo;
-	}
-
-	public void setGrupo(String grupo) {
-		this.grupo = grupo;
-	}
-
-	public String getAula() {
-		return aula;
-	}
-
-	public void setAula(String aula) {
-		this.aula = aula;
-	}
 }

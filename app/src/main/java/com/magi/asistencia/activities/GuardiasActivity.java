@@ -39,6 +39,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -163,8 +167,11 @@ public class GuardiasActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
-                return HttpHelper.post(BASE_URL + "?dniAsignat=" + dni + "&idSessio=" + idSes);
-            } catch (IOException e) {
+                JSONObject body = new JSONObject()
+                        .put("dniAsignat", dni)
+                        .put("idSessio", idSes);
+                return postJson(BASE_URL + "/asignar", body.toString());
+            } catch (IOException | JSONException e) {
                 Log.e(TAG, "Error POST asignar", e);
                 errorMsg = e.getMessage();
                 return false;
@@ -179,6 +186,21 @@ public class GuardiasActivity extends AppCompatActivity {
                 mostrarError(errorMsg != null ? errorMsg : "Error al asignar");
             }
         }
+    }
+
+    public static boolean postJson(String url, String json) throws IOException {
+        URL u = new URL(url);
+        HttpURLConnection c = (HttpURLConnection) u.openConnection();
+        c.setRequestMethod("POST");
+        c.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+        c.setDoOutput(true);
+        try (OutputStream os = c.getOutputStream()) {
+            os.write(json.getBytes(StandardCharsets.UTF_8));
+        }
+        int code = c.getResponseCode();
+        Log.d(TAG, "POST /asignar response code = " + code);
+        c.disconnect();
+        return code >= 200 && code < 300;
     }
 
     // ————————————————— UI EVENTS —————————————————

@@ -13,6 +13,7 @@ com\magi\api\controller\FichajeController.class
 com\magi\api\model\Fichaje.class
 com\magi\api\model\Aula.class
 com\magi\api\controller\AuthController.class
+com\magi\api\controller\AsignacionRequest.class
 com\magi\api\model\Guardia.class
 com\magi\api\repository\DocentRepository.class
 com\magi\api\repository\SessionHorarioRepository.class
@@ -22,9 +23,11 @@ com\magi\api\model\SessionHorario.class
 com\magi\api\repository\AusenciaRepository.class
 com\magi\api\repository\FichajeRepository.class
 com\magi\api\repository\HorarioDocenteSesionRepository.class
+com\magi\api\model\Grupo.class
 com\magi\api\repository\UsuarioRepository.class
 com\magi\api\controller\HorarioDocenteSesionController.class
 com\magi\api\model\HorarioDocenteSesion.class
 com\magi\api\service\FichajeService.class
 com\magi\api\tasks\AutogeneraAusenciasJob.class
+com\magi\api\controller\GuardiaController$AsignacionRequest.class
 com\magi\api\service\HorarioDocenteSesionService.class

@@ -1,6 +1,10 @@
 package com.magi.asistencia.network;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -33,4 +37,21 @@ public class HttpHelper {
             return resp.isSuccessful();
         }
     }
+
+    public static boolean postJson(String url, String json) throws IOException {
+        URL u = new URL(url);
+        HttpURLConnection c = (HttpURLConnection) u.openConnection();
+        c.setRequestMethod("POST");
+        c.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+        c.setDoOutput(true);
+
+        try (OutputStream os = c.getOutputStream()) {
+            os.write(json.getBytes(StandardCharsets.UTF_8));
+        }
+
+        int code = c.getResponseCode();
+        c.disconnect();
+        return code >= 200 && code < 300;
+    }
+
 }

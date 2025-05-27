@@ -11,9 +11,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.magi.api.config.AusenciasProperties;
 import com.magi.api.dto.SessionGuardiaDTO;
-import com.magi.api.model.Docent;
-import com.magi.api.model.Guardia;
-import com.magi.api.model.SessionHorario;
 import com.magi.api.repository.AusenciaSessioRepository;
 import com.magi.api.repository.DocentRepository;
 import com.magi.api.repository.GuardiaRepository;
@@ -42,57 +39,40 @@ public class GuardiaService {
         this.props              = props;
     }
 
-    /** 1) Devuelve las sesiones sin cubrir hoy, con DTO */
     @Transactional(readOnly = true)
     public List<SessionGuardiaDTO> listarAusenciasVigentes(LocalDate fecha) {
         return ausenciaSessioRepo.findGuardiasVigentes(
-                fecha,
-                LocalTime.now(),
-                props.getGraciaMin());
+            fecha,
+            LocalTime.now(),
+            props.getGraciaMin()
+        );
     }
 
-    /** 2) Crea una guardia a partir de DNI del asignado y id de sesión */
     @Transactional
-    public Guardia asignarGuardia(String dniAsignat, Long idSessioLong) {
+    public void asignarGuardia(String dniAsignat, Long idSessioLong) {
         Integer idSessio = idSessioLong.intValue();
         LocalDate hoy = LocalDate.now();
 
-        // 2.1) Buscar docente que cubrirá la guardia
-        Docent asignat = docentRepo.findByDni(dniAsignat.trim())
+        var asignat = docentRepo.findByDni(dniAsignat.trim())
             .orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Profesor asignado no encontrado")
             );
 
-        // 2.2) Obtener la sesión lectiva
-        SessionHorario session = sessionRepo.findById(idSessio)
+        var session = sessionRepo.findById(idSessio)
             .orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sesión no encontrada")
             );
 
-        // 2.3) Encontrar el docente ausente para esa sesión y fecha
-        Docent absent = ausenciaSessioRepo
-            .findDocentAbsentBySessionAndFecha(idSessio, hoy)
+        var absent = ausenciaSessioRepo.findDocentAbsentBySessionAndFecha(idSessio, hoy)
             .orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.BAD_REQUEST, "No hay ausencia para esa sesión")
             );
 
-        // 2.4) Chequear duplicado antes de persistir
-        if (guardiaRepo.existsByDocentAbsentAndSessionAndFechaGuardia(absent, session, hoy)) {
-            throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "Ya existe una guardia para ese profesor, sesión y fecha"
-            );
-        }
-
-        // 2.5) Crear y guardar la guardia
-        Guardia g = new Guardia(asignat, absent, session);
-        g.setFechaGuardia(hoy);
-        return guardiaRepo.save(g);
+        guardiaRepo.cubrir(session.getIdSessio(), hoy, asignat.getIdDocent());
     }
 
-    /** 3) Histórico completo de todas las guardias realizadas */
     @Transactional(readOnly = true)
-    public List<Guardia> historicoGuardias() {
+    public List<com.magi.api.model.Guardia> historicoGuardias() {
         return guardiaRepo.findAll();
     }
 }

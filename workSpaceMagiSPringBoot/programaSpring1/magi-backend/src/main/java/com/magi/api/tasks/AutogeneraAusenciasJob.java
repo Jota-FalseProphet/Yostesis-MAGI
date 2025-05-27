@@ -11,45 +11,43 @@ import org.springframework.transaction.annotation.Transactional;
 import com.magi.api.config.AusenciasProperties;
 
 /**
- * Job programado que ejecuta el procedimiento almacenado
- * <pre>public.autogenera_ausencias(margen :: interval, centre_id bigint)</pre>
- * cada cinco minutos. El margen de cortesía (en minutos) y el identificador
- * del centro se leen de <code>application.yml</code> → <code>magi.*</code>.
- * <p>
- * Zona horaria explícita: <b>Europe/Madrid</b>.
+ * Job programado para generar ausencias automáticas de docentes que no han fichado
+ * dentro de un margen de gracia configurable.
  */
 @Component
 public class AutogeneraAusenciasJob {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AutogeneraAusenciasJob.class);
+    private static final Logger LOG =
+            LoggerFactory.getLogger(AutogeneraAusenciasJob.class);
 
     private final JdbcTemplate jdbc;
     private final AusenciasProperties props;
-    private final Long centreId;
+    private final String centreId;
 
-    public AutogeneraAusenciasJob(JdbcTemplate jdbc,
-                                  AusenciasProperties props,
-                                  @Value("${magi.centre-id}") Long centreId) {
+    public AutogeneraAusenciasJob(
+            JdbcTemplate jdbc,
+            AusenciasProperties props,
+            @Value("${magi.centre-id}") Long centreId
+    ) {
         this.jdbc     = jdbc;
         this.props    = props;
-        this.centreId = centreId;
+        this.centreId = centreId.toString();
     }
 
     /**
-     * Ejecuta <code>public.autogenera_ausencias(...)</code> cada 5&nbsp;minutos.
-     * Envía el margen de cortesía ("<i>N</i> min") y el <code>centreId</code>.
-     * Devuelve cuántas filas se generaron en <code>ausencies</code>.
+     * Ejecuta cada 5 minutos (cron) en zona Europe/Madrid.
+     * Llama al procedimiento almacenado autogenera_ausencias(interval, text).
      */
     @Scheduled(cron = "0 */5 * * * *", zone = "Europe/Madrid")
     @Transactional
     public void ejecutar() {
-        String margen = props.getGraciaMin() + " min";
-        Integer filas = jdbc.queryForObject(
-                "SELECT public.autogenera_ausencias(?::interval, ?)",
-                Integer.class,
-                margen,
-                centreId);
+        Integer n = jdbc.queryForObject(
+            "SELECT public.autogenera_ausencias(?::interval, ?::text)",
+            Integer.class,
+            props.getGraciaMin() + " min",
+            centreId
+        );
 
-        LOG.info("autogenera_ausencias(): margen={} centreId={} filas={} ", margen, centreId, filas);
+        LOG.info("autogenera_ausencias(): filas afectadas={}", n);
     }
 }
