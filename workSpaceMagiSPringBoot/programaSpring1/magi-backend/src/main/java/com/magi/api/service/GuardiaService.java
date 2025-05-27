@@ -2,6 +2,7 @@ package com.magi.api.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;               // ← import añadido
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -43,9 +44,11 @@ public class GuardiaService {
 
     @Transactional(readOnly = true)
     public List<SessionGuardiaDTO> listarAusenciasVigentes(LocalDate fecha) {
+        // Usamos CET (Europe/Madrid) para filtrar correctamente las sesiones de tarde
+        LocalTime ahora = LocalTime.now(ZoneId.of("Europe/Madrid"));
         return ausenciaSessioRepo.findGuardiasVigentes(
             fecha,
-            LocalTime.now(),
+            ahora,
             props.getGraciaMin()
         );
     }

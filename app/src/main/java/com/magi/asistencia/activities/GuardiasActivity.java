@@ -50,7 +50,7 @@ import java.util.List;
 public class GuardiasActivity extends AppCompatActivity {
 
     private static final String TAG = "GuardiasTask";
-    private static final String BASE_URL = "https://magi.it.com/api/guardias";
+    private static final String BASE_URL = "https://magi.it.com/api";
     private static final String PREFS = "MAGI_PREFS";
     private static final String PREF_DNI = "PREF_DNI";
 
@@ -155,7 +155,7 @@ public class GuardiasActivity extends AppCompatActivity {
         @Override
         protected List<SessionHorario> doInBackground(Void... voids) {
             try {
-                String json = HttpHelper.get(BASE_URL + "/ausencias/dia");
+                String json = HttpHelper.get(BASE_URL + "/guardias/ausencias/vigentes");
                 return parseLista(json);
             } catch (IOException | JSONException e) {
                 Log.e(TAG, "Error GET ausencias", e);
@@ -192,7 +192,7 @@ public class GuardiasActivity extends AppCompatActivity {
                 JSONObject body = new JSONObject()
                         .put("dniAsignat", dni)
                         .put("idSessio", idSes);
-                return postJson(BASE_URL + "/asignar", body.toString());
+                return postJson(BASE_URL + "/guardias/asignar", body.toString());
             } catch (IOException | JSONException e) {
                 Log.e(TAG, "Error POST asignar", e);
                 errorMsg = e.getMessage();
