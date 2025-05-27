@@ -48,6 +48,12 @@ public class GuardiaService {
         );
     }
 
+   
+    @Transactional(readOnly = true)
+    public List<SessionGuardiaDTO> listarAusenciasDelDia(LocalDate fecha) {
+        return ausenciaSessioRepo.findGuardiasDelDia(fecha);
+    }
+
     @Transactional
     public void asignarGuardia(String dniAsignat, Long idSessioLong) {
         Integer idSessio = idSessioLong.intValue();

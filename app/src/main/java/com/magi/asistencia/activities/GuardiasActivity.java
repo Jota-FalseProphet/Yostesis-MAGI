@@ -137,7 +137,7 @@ public class GuardiasActivity extends AppCompatActivity {
         @Override
         protected List<SessionHorario> doInBackground(Void... voids) {
             try {
-                String json = HttpHelper.get(BASE_URL + "/ausencias/vigentes");
+                String json = HttpHelper.get(BASE_URL + "/ausencias/dia");
                 return parseLista(json);
             } catch (IOException | JSONException e) {
                 Log.e(TAG, "Error GET ausencias", e);

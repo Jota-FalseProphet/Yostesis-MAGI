@@ -3,6 +3,7 @@ package com.magi.api.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,14 @@ public class GuardiaController {
         return service.listarAusenciasVigentes(LocalDate.now());
     }
 
+    @GetMapping("/ausencias/dia")
+    public List<SessionGuardiaDTO> ausenciasDelDia(
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
+        LocalDate dia = (fecha != null ? fecha : LocalDate.now());
+        return service.listarAusenciasDelDia(dia);
+    }
+
     @PostMapping(path = "/asignar", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> crear(@RequestBody AsignacionRequest req) {
         try {
@@ -47,7 +56,7 @@ public class GuardiaController {
             return ResponseEntity.status(ex.getStatusCode()).build();
         }
     }
-
+    
     @GetMapping("/historico")
     public List<Guardia> historico() {
         return service.historicoGuardias();
@@ -74,3 +83,4 @@ public class GuardiaController {
         }
     }
 }
+

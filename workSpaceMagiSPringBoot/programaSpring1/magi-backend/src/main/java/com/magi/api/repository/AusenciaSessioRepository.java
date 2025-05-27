@@ -69,7 +69,47 @@ public interface AusenciaSessioRepository
 
 
     /* ------------------------------------------------------------- */
+	
+	
+	/**
+	 * Devuelve TODAS las ausencias del día, de 06:00 a 23:00,
+	 * marcando si ya están cubiertas y quién cubre.
+	 */
+	@Query(value = """
+	    SELECT 
+	      sh.id_sessio                      AS idSessio,
+	      sh.dia_setmana                    AS diaSetmana,      
+	      sh.hora_desde                     AS horaDesde,
+	      sh.hora_fins                      AS horaHasta,       
+	      COALESCE(g.nombre, sh.plantilla)  AS grupo,
+	      aul.nombre                        AS aula,
+	      d.document                        AS absenteDni,
+	      d.nom                             AS absenteNombre,   
+	      CASE 
+	        WHEN gu.docent_assignat IS NULL 
+	        THEN FALSE 
+	        ELSE TRUE 
+	      END                                AS cubierta,
+	      dc.nom                            AS profesorGuardia
+	    FROM ausencies_sessio ass
+	    JOIN sessions_horari  sh  ON sh.id_sessio  = ass.id_sessio
+	    JOIN ausencies        au  ON au.id_ausencia = ass.id_ausencia
+	    JOIN docent           d   ON d.id_docent    = au.id_docent
+	    JOIN aula             aul ON aul.id_aula     = sh.id_aula
+	    LEFT JOIN grupo       g   ON g.id_grupo      = sh.id_grupo
+	    LEFT JOIN guardies    gu  
+	      ON gu.id_sessio    = sh.id_sessio
+	     AND gu.fecha_guardia = :fecha
+	    LEFT JOIN docent      dc 
+	      ON dc.id_docent    = gu.docent_assignat
+	    WHERE au.fecha_ausencia = :fecha
+	      AND sh.hora_desde BETWEEN CAST('06:00' AS time) AND CAST('23:00' AS time)
+	    ORDER BY sh.hora_desde DESC
+	""", nativeQuery = true)
+	List<SessionGuardiaDTO> findGuardiasDelDia(@Param("fecha") LocalDate fecha);
 
+	
+	/*---------------------------------------------------*/
     @Query("""
            SELECT s.session
              FROM AusenciaSessio s
