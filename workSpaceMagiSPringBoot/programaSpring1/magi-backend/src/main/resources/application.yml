@@ -14,7 +14,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        jdbc.time_zone: UTC
         format_sql: true          
         default_schema: public
 

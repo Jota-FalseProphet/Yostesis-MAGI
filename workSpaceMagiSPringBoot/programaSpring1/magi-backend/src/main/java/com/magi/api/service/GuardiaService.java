@@ -61,7 +61,7 @@ public class GuardiaService {
     @Transactional
     public void asignarGuardia(String dniAsignat, Long idSessioLong) {
         Integer idSessio = idSessioLong.intValue();
-        LocalDate hoy = LocalDate.now();
+        LocalDate hoy    = LocalDate.now();
 
         // 1. Obtiene el docente que va a cubrir
         Docent asignat = docentRepo.findByDni(dniAsignat.trim())
@@ -69,8 +69,8 @@ public class GuardiaService {
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Profesor asignado no encontrado")
             );
 
-        // 2. Verifica que existe una ausencia previa para esa sesión y fecha
-        ausenciaSessioRepo.findDocentAbsentBySessionAndFecha(idSessio, hoy)
+        // 2. Verifica que exista AL MENOS una ausencia previa para esa sesión y fecha
+        ausenciaSessioRepo.findFirstDocentAbsentBySessionAndFecha(idSessio, hoy)
             .orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.BAD_REQUEST, "No hay ausencia para esa sesión")
             );

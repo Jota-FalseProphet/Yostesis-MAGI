@@ -50,6 +50,9 @@ public interface AusenciaSessioRepository
               JOIN docent           d   ON d.id_docent    = au.id_docent
               JOIN aula             aul ON aul.id_aula     = sh.id_aula
               LEFT JOIN grupo       g   ON g.id_grupo      = sh.id_grupo
+              LEFT JOIN guardies    gu  ON gu.id_sessio     = sh.id_sessio
+                                     AND gu.fecha_guardia = :fecha
+              LEFT JOIN docent      dc  ON dc.id_docent    = gu.docent_assignat
              WHERE au.fecha_ausencia  = :fecha
                AND au.is_full_day     = FALSE
                -- ya ha empezado (inicio + gracia)
@@ -59,18 +62,13 @@ public interface AusenciaSessioRepository
                      sh.hora_desde BETWEEN CAST('08:15' AS time) AND CAST('15:15' AS time)
                   OR sh.hora_desde BETWEEN CAST('15:30' AS time) AND CAST('21:00' AS time)
                )
-               AND (
-                     SELECT COUNT(*)
-                       FROM docent_sessio ds
-                      WHERE ds.id_sessio = sh.id_sessio
-                   ) = 1
              ORDER BY sh.hora_desde DESC
         """, nativeQuery = true)
-        List<SessionGuardiaDTO> findGuardiasVigentes(
-            @Param("fecha")     LocalDate fecha,
-            @Param("ahora")     LocalTime ahora,
-            @Param("graciaMin") int       graciaMin);
-
+    List<SessionGuardiaDTO> findGuardiasVigentes(
+        @Param("fecha")     LocalDate fecha,
+        @Param("ahora")     LocalTime ahora,
+        @Param("graciaMin") int       graciaMin
+    );
 
     /* ------------------------------------------------------------- */
 
@@ -100,16 +98,29 @@ public interface AusenciaSessioRepository
         JOIN docent           d   ON d.id_docent    = au.id_docent
         JOIN aula             aul ON aul.id_aula     = sh.id_aula
         LEFT JOIN grupo       g   ON g.id_grupo      = sh.id_grupo
-        LEFT JOIN guardies    gu  
-          ON gu.id_sessio    = sh.id_sessio
-         AND gu.fecha_guardia = :fecha
-        LEFT JOIN docent      dc 
-          ON dc.id_docent    = gu.docent_assignat
+        LEFT JOIN guardies    gu  ON gu.id_sessio    = sh.id_sessio AND gu.fecha_guardia = :fecha
+        LEFT JOIN docent      dc  ON dc.id_docent    = gu.docent_assignat
         WHERE au.fecha_ausencia = :fecha
           AND sh.hora_desde BETWEEN CAST('06:00' AS time) AND CAST('23:00' AS time)
         ORDER BY sh.hora_desde DESC
     """, nativeQuery = true)
     List<SessionGuardiaDTO> findGuardiasDelDia(@Param("fecha") LocalDate fecha);
+    
+    
+    /*---------------------------------------------------*/
+    @Query(value = """
+            SELECT d.*
+              FROM public.ausencies_sessio s
+              JOIN public.ausencies a ON a.id_ausencia = s.id_ausencia
+              JOIN public.docent d   ON d.id_docent    = a.id_docent
+             WHERE s.id_sessio       = :idSessio
+               AND a.fecha_ausencia  = :fecha
+             LIMIT 1
+            """, nativeQuery = true)
+        Optional<Docent> findFirstDocentAbsentBySessionAndFecha(
+            @Param("idSessio") Integer idSessio,
+            @Param("fecha")    LocalDate fecha
+        );
 
     /*---------------------------------------------------*/
     @Query("""

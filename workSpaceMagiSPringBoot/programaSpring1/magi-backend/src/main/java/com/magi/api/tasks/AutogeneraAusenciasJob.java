@@ -7,8 +7,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.magi.api.config.AusenciasProperties;
-
 @Component
 public class AutogeneraAusenciasJob {
 
@@ -16,14 +14,9 @@ public class AutogeneraAusenciasJob {
         LoggerFactory.getLogger(AutogeneraAusenciasJob.class);
 
     private final JdbcTemplate jdbc;
-    private final AusenciasProperties props;
 
-    public AutogeneraAusenciasJob(
-            JdbcTemplate jdbc,
-            AusenciasProperties props
-    ) {
-        this.jdbc  = jdbc;
-        this.props = props;
+    public AutogeneraAusenciasJob(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
     }
 
     /**
@@ -34,10 +27,8 @@ public class AutogeneraAusenciasJob {
     @Transactional
     public void ejecutar() {
         Integer n = jdbc.queryForObject(
-            "SELECT public.autogenera_ausencias(?::interval, ?::text)",
-            Integer.class,
-            props.getGraciaMin() + " min",
-            props.getPlantilla()
+            "SELECT public.autogenera_ausencias()",
+            Integer.class
         );
         LOG.info("autogenera_ausencias(): filas afectadas={}", n);
     }
