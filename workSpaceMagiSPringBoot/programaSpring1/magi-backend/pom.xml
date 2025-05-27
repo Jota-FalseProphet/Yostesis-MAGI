@@ -16,7 +16,7 @@
 
   <groupId>com.magi</groupId>
   <artifactId>magi-backend</artifactId>
-  <version>0.1.6.8</version>
+  <version>0.1.7.0</version>
   <name>magi-backend</name>
   <description>API Spring Boot para M.A.G.I</description>
   <packaging>jar</packaging>
@@ -63,6 +63,11 @@
   		<version>2.21.1</version>
 	</dependency>
 
+    <dependency>
+    	<groupId>org.springframework.boot</groupId>
+    	<artifactId>spring-boot-configuration-processor</artifactId>
+    	<optional>true</optional>
+    </dependency>
   </dependencies>
   
  

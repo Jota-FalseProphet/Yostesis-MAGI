@@ -22,18 +22,19 @@ public interface GuardiaRepository extends JpaRepository<Guardia, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = """
-        INSERT INTO guardies (id_sessio, fecha_guardia, docent_assignat)
-        VALUES (:sessio, :fecha, :docent)
-        ON CONFLICT (id_sessio, fecha_guardia)
-        DO UPDATE SET docent_assignat = :docent
-        """, nativeQuery = true)
-    void cubrir(
-        @Param("sessio") Integer idSessio,
-        @Param("fecha") LocalDate fecha,
-        @Param("docent") Integer idDocent
+    @Query("""
+        UPDATE Guardia g
+          SET g.docentAssignat = :docentAsignat
+        WHERE g.session.idSessio     = :idSessio
+          AND g.fechaGuardia         = :fechaGuardia
+        """)
+    int asignarGuardia(
+        @Param("docentAsignat") Docent   docentAsignat,
+        @Param("idSessio")       Integer idSessio,
+        @Param("fechaGuardia")   LocalDate fechaGuardia
     );
 
+ 
     default Guardia crearGuardiaEnMemoria(
         Docent absent,
         SessionHorario session,

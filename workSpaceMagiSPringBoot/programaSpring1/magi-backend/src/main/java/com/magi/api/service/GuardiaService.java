@@ -11,6 +11,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.magi.api.config.AusenciasProperties;
 import com.magi.api.dto.SessionGuardiaDTO;
+import com.magi.api.model.Docent;
+import com.magi.api.model.Guardia;
 import com.magi.api.repository.AusenciaSessioRepository;
 import com.magi.api.repository.DocentRepository;
 import com.magi.api.repository.GuardiaRepository;
@@ -48,7 +50,6 @@ public class GuardiaService {
         );
     }
 
-   
     @Transactional(readOnly = true)
     public List<SessionGuardiaDTO> listarAusenciasDelDia(LocalDate fecha) {
         return ausenciaSessioRepo.findGuardiasDelDia(fecha);
@@ -59,26 +60,36 @@ public class GuardiaService {
         Integer idSessio = idSessioLong.intValue();
         LocalDate hoy = LocalDate.now();
 
-        var asignat = docentRepo.findByDni(dniAsignat.trim())
+        // 1. Obtiene el docente que va a cubrir
+        Docent asignat = docentRepo.findByDni(dniAsignat.trim())
             .orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Profesor asignado no encontrado")
             );
 
-        var session = sessionRepo.findById(idSessio)
-            .orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sesión no encontrada")
-            );
-
-        var absent = ausenciaSessioRepo.findDocentAbsentBySessionAndFecha(idSessio, hoy)
+        // 2. Verifica que existe una ausencia previa para esa sesión y fecha
+        ausenciaSessioRepo.findDocentAbsentBySessionAndFecha(idSessio, hoy)
             .orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.BAD_REQUEST, "No hay ausencia para esa sesión")
             );
 
-        guardiaRepo.cubrir(session.getIdSessio(), hoy, asignat.getIdDocent());
+        // 3. Ejecuta el UPDATE sobre la guardia ya generada
+        int updated = guardiaRepo.asignarGuardia(
+            asignat,
+            idSessio,
+            hoy
+        );
+
+        // 4. Si no actualiza ninguna fila, significa que no había guardia pendiente
+        if (updated == 0) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "No existe guardia pendiente para la sesión " + idSessio + " en " + hoy
+            );
+        }
     }
 
     @Transactional(readOnly = true)
-    public List<com.magi.api.model.Guardia> historicoGuardias() {
+    public List<Guardia> historicoGuardias() {
         return guardiaRepo.findAll();
     }
 }

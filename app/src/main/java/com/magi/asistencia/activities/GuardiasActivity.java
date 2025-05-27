@@ -2,6 +2,7 @@ package com.magi.asistencia.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,18 +51,36 @@ public class GuardiasActivity extends AppCompatActivity {
 
     private static final String TAG = "GuardiasTask";
     private static final String BASE_URL = "https://magi.it.com/api/guardias";
+    private static final String PREFS = "MAGI_PREFS";
+    private static final String PREF_DNI = "PREF_DNI";
 
     private MaterialToolbar topAppBar;
     private String dni;
     private GuardiaAdapter adapter;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guardias);
 
-        // —— DNI desde Login ——
+        // —— SharedPreferences ——
+        prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+
+        // —— DNI desde Login o SharedPreferences ——
         dni = getIntent().getStringExtra("DNI");
+        if (dni == null) {
+            dni = prefs.getString(PREF_DNI, null);
+        } else {
+            // guardamos el DNI para futuros arranques
+            prefs.edit().putString(PREF_DNI, dni).apply();
+        }
+        Log.d(TAG, "DNI recibido = " + dni);
+        if (dni == null) {
+            Toast.makeText(this, "Error: no se ha obtenido el DNI del usuario", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
 
         // —— Forzar modo claro ——
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -75,7 +94,6 @@ public class GuardiasActivity extends AppCompatActivity {
         new WindowInsetsControllerCompat(w, w.getDecorView())
                 .setAppearanceLightStatusBars(true);
 
-        // Ajustar padding top del root para status bar
         View root = findViewById(R.id.activity_guardias_coordinator_layout);
         ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
             Insets sb = insets.getInsets(WindowInsetsCompat.Type.statusBars());
@@ -83,7 +101,7 @@ public class GuardiasActivity extends AppCompatActivity {
             return insets;
         });
 
-        // —— Toolbar (logo + menú) ——
+        // —— Toolbar ——
         topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
         ActionBar ab = getSupportActionBar();
@@ -166,6 +184,10 @@ public class GuardiasActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
+            if (dni == null) {
+                errorMsg = "DNI no disponible";
+                return false;
+            }
             try {
                 JSONObject body = new JSONObject()
                         .put("dniAsignat", dni)

@@ -1,14 +1,11 @@
-# Conversion to YAML from Properties formar report
-# Warnings:
-# - The yaml file had comments which are lost in the refactoring!
 spring:
   datasource:
     url: jdbc:postgresql://159.69.215.108:5432/magiDB
     username: magiuser
     password: 2552
     driver-class-name: org.postgresql.Driver
-jackson:
-  time-zone: Europe/Madrid
+  jackson:
+    time-zone: Europe/Madrid
 
   jpa:
     hibernate:
@@ -20,12 +17,13 @@ jackson:
         jdbc.time_zone: UTC
         format_sql: true          
         default_schema: public
+
 logging:
   level:
     org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: DEBUG
+
 magi:
   centre-id: 366781135       
   ausencias:
     gracia-min: 5
-
-     
+    plantilla: PL1     

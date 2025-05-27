@@ -3,6 +3,7 @@ com\magi\api\model\Usuario.class
 com\magi\api\config\AusenciasProperties.class
 com\magi\api\model\Ausencia.class
 com\magi\api\repository\GuardiaRepository.class
+META-INF\spring-configuration-metadata.json
 com\magi\api\service\GuardiaService.class
 com\magi\api\model\AusenciaSessio.class
 com\magi\api\model\Docent.class
