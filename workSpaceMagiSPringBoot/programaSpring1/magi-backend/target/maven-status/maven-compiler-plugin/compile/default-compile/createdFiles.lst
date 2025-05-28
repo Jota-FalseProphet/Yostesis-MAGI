@@ -30,5 +30,4 @@ com\magi\api\controller\HorarioDocenteSesionController.class
 com\magi\api\model\HorarioDocenteSesion.class
 com\magi\api\service\FichajeService.class
 com\magi\api\tasks\AutogeneraAusenciasJob.class
-com\magi\api\controller\GuardiaController$AsignacionRequest.class
 com\magi\api\service\HorarioDocenteSesionService.class

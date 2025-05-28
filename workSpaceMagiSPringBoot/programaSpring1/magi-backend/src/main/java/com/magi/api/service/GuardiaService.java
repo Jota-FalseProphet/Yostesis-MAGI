@@ -3,6 +3,7 @@ package com.magi.api.service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -65,24 +66,27 @@ public class GuardiaService {
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Profesor asignado no encontrado")
             );
 
-        // 2. Verifica que haya al menos UNA ausencia para esa sesión hoy
-        ausenciaRepo.findFirstDocentAbsentBySessionAndFecha(idSessio, hoy)
+        // 2. Verifica que haya al menos una ausencia
+        Docent absent = ausenciaRepo.findFirstDocentAbsentBySessionAndFecha(idSessio, hoy)
             .orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.BAD_REQUEST, "No hay ausencia para esa sesión")
             );
 
-        // 3. Asigna la guardia
-        int updated = guardiaRepo.asignarGuardia(asignat, idSessio, hoy);
-        if (updated == 0) {
-            throw new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "No existe guardia pendiente para la sesión " + idSessio + " en " + hoy
-            );
-        }
+        // 3. Inserta o actualiza en un solo paso (INSERT … ON CONFLICT)
+        //   Convertimos los Integer a Long para que encajen con el método del repo:
+        guardiaRepo.cubrir(
+            asignat.getIdDocent().longValue(),   // <-- aquí
+            absent.getIdDocent().longValue(),    // <-- y aquí
+            idSessio,
+            hoy
+        );
     }
 
     @Transactional(readOnly = true)
     public List<Guardia> historicoGuardias() {
-        return guardiaRepo.findAll();
+        Iterable<Guardia> it = guardiaRepo.findAll();
+        List<Guardia> lista = new ArrayList<>();
+        it.forEach(lista::add);
+        return lista;
     }
 }

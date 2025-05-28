@@ -40,9 +40,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ import java.util.List;
 public class GuardiasActivity extends AppCompatActivity {
 
     private static final String TAG = "GuardiasTask";
-    private static final String BASE_URL = "https://magi.it.com/api";
+    private static final String BASE_URL = "https://magi.it.com/api/guardias";
     private static final String PREFS = "MAGI_PREFS";
     private static final String PREF_DNI = "PREF_DNI";
 
@@ -64,28 +64,19 @@ public class GuardiasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guardias);
 
-        // —— SharedPreferences ——
         prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-
-        // —— DNI desde Login o SharedPreferences ——
         dni = getIntent().getStringExtra("DNI");
         if (dni == null) {
             dni = prefs.getString(PREF_DNI, null);
         } else {
-            // guardamos el DNI para futuros arranques
             prefs.edit().putString(PREF_DNI, dni).apply();
         }
-        Log.d(TAG, "DNI recibido = " + dni);
         if (dni == null) {
             Toast.makeText(this, "Error: no se ha obtenido el DNI del usuario", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
-
-        // —— Forzar modo claro ——
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
-        // —— Edge-to-edge + status bar blanca ——
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         Window w = getWindow();
         w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -93,7 +84,6 @@ public class GuardiasActivity extends AppCompatActivity {
         w.setStatusBarColor(ContextCompat.getColor(this, R.color.blanco));
         new WindowInsetsControllerCompat(w, w.getDecorView())
                 .setAppearanceLightStatusBars(true);
-
         View root = findViewById(R.id.activity_guardias_coordinator_layout);
         ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
             Insets sb = insets.getInsets(WindowInsetsCompat.Type.statusBars());
@@ -101,7 +91,6 @@ public class GuardiasActivity extends AppCompatActivity {
             return insets;
         });
 
-        // —— Toolbar ——
         topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
         ActionBar ab = getSupportActionBar();
@@ -113,23 +102,19 @@ public class GuardiasActivity extends AppCompatActivity {
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(i);
         });
-
         ImageView menuIcon = findViewById(R.id.ic_menu_toolbar);
         menuIcon.setOnClickListener(this::showModulesMenu);
 
-        // —— RecyclerView + Adapter ——
         RecyclerView rv = findViewById(R.id.recyclerGuardias);
         rv.setLayoutManager(new LinearLayoutManager(this));
         adapter = new GuardiaAdapter(this::onGuardiaClick);
         rv.setAdapter(adapter);
 
-        // —— FAB Histórico ——
         ExtendedFloatingActionButton fab = findViewById(R.id.fabHistorico);
         fab.setOnClickListener(v ->
                 startActivity(new Intent(this, HistoricoGuardiasActivity.class))
         );
 
-        // —— Primera carga de datos ——
         new CargarAusenciasTask().execute();
     }
 
@@ -147,7 +132,7 @@ public class GuardiasActivity extends AppCompatActivity {
         popup.show();
     }
 
-    // ————————————————— NETWORK TASKS —————————————————
+    // ─────────────────── NETWORK TASKS ───────────────────
 
     private class CargarAusenciasTask extends AsyncTask<Void, Void, List<SessionHorario>> {
         private String errorMsg;
@@ -155,7 +140,7 @@ public class GuardiasActivity extends AppCompatActivity {
         @Override
         protected List<SessionHorario> doInBackground(Void... voids) {
             try {
-                String json = HttpHelper.get(BASE_URL + "/guardias/ausencias/vigentes");
+                String json = HttpHelper.get(BASE_URL + "/ausencias/vigentes");
                 return parseLista(json);
             } catch (IOException | JSONException e) {
                 Log.e(TAG, "Error GET ausencias", e);
@@ -177,6 +162,7 @@ public class GuardiasActivity extends AppCompatActivity {
     private class AsignarGuardiaTask extends AsyncTask<Void, Void, Boolean> {
         private final long idSes;
         private String errorMsg;
+        private int code = -1;
 
         AsignarGuardiaTask(long id) {
             this.idSes = id;
@@ -188,15 +174,29 @@ public class GuardiasActivity extends AppCompatActivity {
                 errorMsg = "DNI no disponible";
                 return false;
             }
+            HttpURLConnection c = null;
             try {
-                JSONObject body = new JSONObject()
-                        .put("dniAsignat", dni)
-                        .put("idSessio", idSes);
-                return postJson(BASE_URL + "/guardias/asignar", body.toString());
-            } catch (IOException | JSONException e) {
+                String urlStr = BASE_URL
+                        + "/asignar"
+                        + "?dniAsignat=" + URLEncoder.encode(dni, "UTF-8")
+                        + "&idSessio="  + idSes;
+                Log.d(TAG, "Llamando a URL: " + urlStr);
+                URL url = new URL(urlStr);
+                c = (HttpURLConnection) url.openConnection();
+                c.setRequestMethod("POST");
+                c.setConnectTimeout(5000);
+                c.setReadTimeout(5000);
+
+                code = c.getResponseCode();
+                Log.d(TAG, "Código HTTP: " + code + " – " + c.getResponseMessage());
+                return code == HttpURLConnection.HTTP_NO_CONTENT || code == HttpURLConnection.HTTP_OK;
+
+            } catch (Exception e) {
                 Log.e(TAG, "Error POST asignar", e);
                 errorMsg = e.getMessage();
                 return false;
+            } finally {
+                if (c != null) c.disconnect();
             }
         }
 
@@ -205,27 +205,12 @@ public class GuardiasActivity extends AppCompatActivity {
             if (ok) {
                 new CargarAusenciasTask().execute();
             } else {
-                mostrarError(errorMsg != null ? errorMsg : "Error al asignar");
+                mostrarError(errorMsg != null ? errorMsg : "Error al asignar (" + code + ")");
             }
         }
     }
 
-    public static boolean postJson(String url, String json) throws IOException {
-        URL u = new URL(url);
-        HttpURLConnection c = (HttpURLConnection) u.openConnection();
-        c.setRequestMethod("POST");
-        c.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-        c.setDoOutput(true);
-        try (OutputStream os = c.getOutputStream()) {
-            os.write(json.getBytes(StandardCharsets.UTF_8));
-        }
-        int code = c.getResponseCode();
-        Log.d(TAG, "POST /asignar response code = " + code);
-        c.disconnect();
-        return code >= 200 && code < 300;
-    }
-
-    // ————————————————— UI EVENTS —————————————————
+    // ─────────────────── UI EVENTS ───────────────────
 
     private void onGuardiaClick(SessionHorario s) {
         if (Boolean.TRUE.equals(s.getCubierta())) {
@@ -249,12 +234,11 @@ public class GuardiasActivity extends AppCompatActivity {
         Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG).show();
     }
 
-    // ————————————————— JSON —————————————————
+    // ─────────────────── JSON ───────────────────
 
     private List<SessionHorario> parseLista(String json) throws JSONException {
         JSONArray arr = new JSONArray(json);
         List<SessionHorario> lista = new ArrayList<>();
-
         for (int i = 0; i < arr.length(); i++) {
             JSONObject o = arr.getJSONObject(i);
             SessionHorario s = new SessionHorario(
