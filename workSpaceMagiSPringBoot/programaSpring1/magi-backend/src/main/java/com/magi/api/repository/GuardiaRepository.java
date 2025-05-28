@@ -20,13 +20,17 @@ public interface GuardiaRepository extends JpaRepository<Guardia, Long> {
         LocalDate fechaGuardia
     );
 
+    /**
+     * 1) Si ya existe una fila en guardies para (id_sessio, fechaGuardia),
+     *    actualiza docentAssignat y devuelve el número de filas afectadas.
+     */
     @Modifying
     @Transactional
     @Query("""
         UPDATE Guardia g
-          SET g.docentAssignat = :docentAsignat
-        WHERE g.session.idSessio     = :idSessio
-          AND g.fechaGuardia         = :fechaGuardia
+           SET g.docentAssignat = :docentAsignat
+         WHERE g.session.idSessio   = :idSessio
+           AND g.fechaGuardia       = :fechaGuardia
         """)
     int asignarGuardia(
         @Param("docentAsignat") Docent   docentAsignat,
@@ -34,15 +38,23 @@ public interface GuardiaRepository extends JpaRepository<Guardia, Long> {
         @Param("fechaGuardia")   LocalDate fechaGuardia
     );
 
- 
-    default Guardia crearGuardiaEnMemoria(
-        Docent absent,
-        SessionHorario session,
-        LocalDate fechaGuardia,
-        Docent asignat
-    ) {
-        Guardia g = new Guardia(asignat, absent, session);
-        g.setFechaGuardia(fechaGuardia);
-        return save(g);
-    }
+    /**
+     * 2) Inserta directamente una nueva guardia en la tabla.
+     *    Úsalo cuando el UPDATE anterior devolvió 0 filas.
+     */
+    @Modifying
+    @Transactional
+    @Query(value = """
+        INSERT INTO guardies
+          (docent_assignat, docent_absent, id_sessio, fecha_guardia)
+        VALUES
+          (:docentAsignat, :docentAbsent, :idSessio, :fechaGuardia)
+        """, nativeQuery = true)
+    void insertarGuardia(
+        @Param("docentAsignat") Docent     docentAsignat,
+        @Param("docentAbsent")   Docent     docentAbsent,
+        @Param("idSessio")       Integer    idSessio,
+        @Param("fechaGuardia")   LocalDate  fechaGuardia
+    );
+
 }
