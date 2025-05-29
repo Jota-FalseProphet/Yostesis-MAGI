@@ -83,65 +83,21 @@ public class GuardiaService {
         }
     }
 
- // dentro de GuardiaService…
-
+    /**
+     * Historico para un usuario: usa el nativeQuery que mapea directamente al DTO.
+     */
     @Transactional(readOnly=true)
     public List<GuardiaHistoricoDTO> historicoGuardiasPorDni(String dni) {
-        return guardiaRepo.findByDocentAssignatDni(dni).stream()
-            .map(g -> {
-                var ses = g.getSession();
-                String grupo = (ses!=null && ses.getGrupo()!=null)
-                              ? ses.getGrupo().getNomGrupo() : "—";
-                String aula  = (ses!=null && ses.getAula()!=null)
-                              ? ses.getAula().getNombre()   : "—";
-
-                // extraer ID y hora de la sesión
-                Integer sessionId = (ses != null) ? ses.getIdSessio() : null;
-                String hora = (ses != null)
-                              ? ses.getHoraDesde().toString() + "-" + ses.getHoraFins().toString()
-                              : "";
-
-                return new GuardiaHistoricoDTO(
-                    g.getId(),
-                    g.getDocentAssignat().getDni(),
-                    g.getDocentAbsent().getDni(),
-                    grupo,
-                    aula,
-                    g.getFechaGuardia(),
-                    sessionId,
-                    hora
-                );
-            })
-            .collect(Collectors.toList());
+        return guardiaRepo.findHistoricoNativePorDni(dni);
     }
 
+    /**
+     * Historico para el admin: recupera todas las guardias (nativeQuery)
+     * y las agrupa por DNI del asignado.
+     */
     @Transactional(readOnly=true)
     public Map<String,List<GuardiaHistoricoDTO>> historicoAgrupadoPorDocente() {
-        return guardiaRepo.findAll().stream()
-            .map(g -> {
-                var ses = g.getSession();
-                String grupo = (ses!=null && ses.getGrupo()!=null)
-                              ? ses.getGrupo().getNomGrupo() : "—";
-                String aula  = (ses!=null && ses.getAula()!=null)
-                              ? ses.getAula().getNombre()   : "—";
-
-                Integer sessionId = (ses != null) ? ses.getIdSessio() : null;
-                String hora = (ses != null)
-                              ? ses.getHoraDesde().toString() + "-" + ses.getHoraFins().toString()
-                              : "";
-
-                return new GuardiaHistoricoDTO(
-                    g.getId(),
-                    g.getDocentAssignat().getDni(),
-                    g.getDocentAbsent().getDni(),
-                    grupo,
-                    aula,
-                    g.getFechaGuardia(),
-                    sessionId,
-                    hora
-                );
-            })
+        return guardiaRepo.findHistoricoNativeAll().stream()
             .collect(Collectors.groupingBy(GuardiaHistoricoDTO::getDniAsignat));
     }
-
 }

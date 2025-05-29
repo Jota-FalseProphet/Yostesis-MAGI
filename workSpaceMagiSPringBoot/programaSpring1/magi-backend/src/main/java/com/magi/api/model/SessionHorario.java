@@ -33,7 +33,9 @@ public class SessionHorario {
 
     @Column(name = "hora_fins", nullable = false)
     private LocalTime horaFins;
-
+    
+    @Column(name = "sessio_ordre", nullable = false)
+    private Integer sessioOrdre;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_aula")
@@ -58,12 +60,19 @@ public class SessionHorario {
     public LocalTime getHoraDesde() { return horaDesde;   }
     public LocalTime getHoraFins()  { return horaFins;    }
     public Aula    getAula()        { return aula;        }
+    public Integer getSessioOrdre() {
+        return sessioOrdre;
+    }
 
     public void setGrupo(Grupo grupo)             { this.grupo = grupo; }
     public void setDiaSetmana(String diaSetmana)  { this.diaSetmana = diaSetmana; }
     public void setHoraDesde(LocalTime horaDesde) { this.horaDesde  = horaDesde; }
     public void setHoraFins(LocalTime horaFins)   { this.horaFins   = horaFins;  }
     public void setAula(Aula aula)                { this.aula = aula; }
+    public void setSessioOrdre(Integer sessioOrdre) {
+        this.sessioOrdre = sessioOrdre;
+    }
+
 
  
 

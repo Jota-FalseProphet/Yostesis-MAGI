@@ -54,8 +54,9 @@ public class GuardiaController {
 
     /**
      * Histórico de guardias:
-     * – Con ?dni=… devuelve solo sus guardias (DTO).
-     * – Con ?admin=true devuelve todas agrupadas por DNI (DTO).
+     * - Si se pasa ?dni=XXX (y admin=false), devuelve sólo las guardias de ese DNI.
+     * - Si se pasa ?admin=true, devuelve todas las guardias de todos los docentes,
+     *   agrupadas en un Map<dni, List<DTO>>.
      */
     @GetMapping("/historico")
     public ResponseEntity<?> historico(
@@ -63,13 +64,13 @@ public class GuardiaController {
             @RequestParam(value = "admin", required = false, defaultValue = "false") boolean admin) {
 
         if (admin) {
-            // ADMIN: devuelve todas agrupadas por DNI
-            Map<String, List<GuardiaHistoricoDTO>> agrupado =
+            // ADMIN: devolver todas agrupadas por DNI
+            Map<String, List<GuardiaHistoricoDTO>> todas =
                 service.historicoAgrupadoPorDocente();
-            return ResponseEntity.ok(agrupado);
+            return ResponseEntity.ok(todas);
         }
 
-        // Usuario normal: requiere el parámetro 'dni'
+        // Usuario normal: necesita parámetro 'dni'
         if (dni != null && !dni.isBlank()) {
             List<GuardiaHistoricoDTO> lista =
                 service.historicoGuardiasPorDni(dni.trim());

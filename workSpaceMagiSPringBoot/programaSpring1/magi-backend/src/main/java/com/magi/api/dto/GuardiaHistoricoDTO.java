@@ -14,22 +14,25 @@ public class GuardiaHistoricoDTO {
     private Integer sessionId;
     private String  hora;        
 
-    public GuardiaHistoricoDTO() {
-    }
-
-    public GuardiaHistoricoDTO(Long id, String dniAsignat, String dniAbsent,
-                               String grupo, String aula, LocalDate fechaGuardia,
-                               Integer sessionId,
-                               String hora) {
-        this.id = id;
-        this.dniAsignat = dniAsignat;
-        this.dniAbsent = dniAbsent;
-        this.grupo = grupo;
-        this.aula = aula;
-        this.fechaGuardia = fechaGuardia;
-        this.sessionId     = sessionId;
-        this.hora          = hora;
-    }
+    public GuardiaHistoricoDTO(
+            Long           id,
+            String         dniAsignat,
+            String         dniAbsent,
+            String         grupo,
+            String         aula,
+            java.sql.Date  fechaGuardia,  
+            Integer        sessionId,
+            String         hora
+      ) {
+          this.id           = id;
+          this.dniAsignat   = dniAsignat;
+          this.dniAbsent    = dniAbsent;
+          this.grupo        = grupo;
+          this.aula         = aula;
+          this.fechaGuardia = fechaGuardia.toLocalDate();
+          this.sessionId    = sessionId;
+          this.hora         = hora;
+      }
 
     public Long getId() {
         return id;
