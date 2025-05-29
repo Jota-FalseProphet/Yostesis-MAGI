@@ -24,7 +24,8 @@ public interface AusenciaSessioRepository
              sh.dia_setmana       AS diaSetmana,
              sh.hora_desde        AS horaDesde,
              sh.hora_fins         AS horaHasta,
-             COALESCE(g.nombre, sh.plantilla) AS grupo,
+             g.nombre 			  AS grupo,
+
              aul.nombre           AS aula,
              d.document           AS absenteDni,
              d.nom                AS absenteNombre,
@@ -59,7 +60,7 @@ public interface AusenciaSessioRepository
              sh.dia_setmana       AS diaSetmana,
              sh.hora_desde        AS horaDesde,
              sh.hora_fins         AS horaHasta,
-             COALESCE(g.nombre, sh.plantilla) AS grupo,
+             g.nombre 			  AS grupo,
              aul.nombre           AS aula,
              d.document           AS absenteDni,
              d.nom                AS absenteNombre,
