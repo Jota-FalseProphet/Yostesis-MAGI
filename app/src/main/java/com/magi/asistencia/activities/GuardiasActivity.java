@@ -31,7 +31,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.magi.asistencia.R;
-import com.magi.asistencia.adapters.GuardiaAdapter;
+import com.magi.asistencia.adapters.GuardiaHistoricoAdapter;
 import com.magi.asistencia.model.SessionHorario;
 import com.magi.asistencia.network.HttpHelper;
 
@@ -59,7 +59,7 @@ public class GuardiasActivity extends AppCompatActivity {
 
     private MaterialToolbar topAppBar;
     private String dni;
-    private GuardiaAdapter adapter;
+    private GuardiaHistoricoAdapter adapter;
     private SharedPreferences prefs;
 
     @Override
@@ -110,13 +110,19 @@ public class GuardiasActivity extends AppCompatActivity {
 
         RecyclerView rv = findViewById(R.id.recyclerGuardias);
         rv.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new GuardiaAdapter(this::onGuardiaClick);
+        adapter = new GuardiaHistoricoAdapter(this::onGuardiaClick);
         rv.setAdapter(adapter);
 
+
         ExtendedFloatingActionButton fab = findViewById(R.id.fabHistorico);
-        fab.setOnClickListener(v ->
-                startActivity(new Intent(this, HistoricoGuardiasActivity.class))
-        );
+
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(GuardiasActivity.this,
+                    HistoricoGuardiasActivity.class);
+
+            intent.putExtra("DNI_USUARIO", dni);
+            startActivity(intent);
+        });
 
         new CargarAusenciasTask().execute();
     }

@@ -1,16 +1,18 @@
 package com.magi.api.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.repository.CrudRepository;
 
 import com.magi.api.model.Guardia;
 
-public interface GuardiaRepository extends CrudRepository<Guardia, Long> {
+public interface GuardiaRepository extends JpaRepository<Guardia, Long> {
 
     /**
      * Inserta o actualiza en un solo paso (INSERT ... ON CONFLICT).
@@ -32,4 +34,10 @@ public interface GuardiaRepository extends CrudRepository<Guardia, Long> {
         @Param("idSessio")         Integer  idSessio,
         @Param("fechaGuardia")     LocalDate fechaGuardia
     );
+
+    /**
+     * Devuelve todas las guardias asignadas al docente con el DNI indicado.
+     * Usa la propiedad Java 'dni' de la entidad Docent.
+     */
+    List<Guardia> findByDocentAssignatDni(String dni);
 }

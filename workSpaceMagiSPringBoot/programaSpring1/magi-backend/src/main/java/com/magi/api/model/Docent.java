@@ -17,7 +17,7 @@ public class Docent {
     private Integer idDocent;
 
     @Column(name = "document", nullable = false)
-    private String dni;  // mapeado a la columna 'document'
+    private String dni;  
 
     @Column(name = "nom")
     private String nom;
@@ -37,7 +37,7 @@ public class Docent {
     @Column(name = "data_ingres")
     private LocalDate dataIngres;
 
-    // … resto de campos …
+    
 
     public Docent() {}
 
@@ -105,5 +105,5 @@ public class Docent {
         this.dataIngres = dataIngres;
     }
 
-    // … getters/setters para el resto de campos …
+    
 }

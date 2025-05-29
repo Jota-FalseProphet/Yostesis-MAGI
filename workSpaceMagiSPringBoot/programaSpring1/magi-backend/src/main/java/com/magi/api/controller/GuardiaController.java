@@ -2,14 +2,14 @@ package com.magi.api.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
+import com.magi.api.dto.GuardiaHistoricoDTO;
 import com.magi.api.dto.SessionGuardiaDTO;
-import com.magi.api.model.Guardia;
 import com.magi.api.service.GuardiaService;
 
 @RestController
@@ -36,46 +36,49 @@ public class GuardiaController {
         return service.listarAusenciasDelDia(dia);
     }
 
-    /**
-     * Asigna un docente a una guardia existente.
-     * Ejemplo:
-     *   POST https://magi.it.com/api/guardias/asignar
-     *         ?dniAsignat=070374673Z
-     *         &idSessio=598
-     */
     @PostMapping("/asignar")
     public ResponseEntity<Void> crear(
             @RequestParam("dniAsignat") String dniAsignat,
             @RequestParam("idSessio")  Long   idSessio) {
-        try {
-            service.asignarGuardia(dniAsignat.trim(), idSessio);
-            return ResponseEntity.ok().build();
-        } catch (ResponseStatusException ex) {
-            return ResponseEntity.status(ex.getStatusCode()).build();
-        }
+        service.asignarGuardia(dniAsignat.trim(), idSessio);
+        return ResponseEntity.ok().build();
     }
 
-    /**
-     * Cubre una guardia (misma lógica que asignar).
-     * Ejemplo:
-     *   POST https://magi.it.com/api/guardias/cubrir
-     *         ?dniAsignat=070374673Z
-     *         &idSessio=598
-     */
     @PostMapping("/cubrir")
     public ResponseEntity<Void> cubrir(
             @RequestParam("dniAsignat") String dniAsignat,
             @RequestParam("idSessio")  Long   idSessio) {
-        try {
-            service.asignarGuardia(dniAsignat.trim(), idSessio);
-            return ResponseEntity.ok().build();
-        } catch (ResponseStatusException ex) {
-            return ResponseEntity.status(ex.getStatusCode()).build();
-        }
+        service.asignarGuardia(dniAsignat.trim(), idSessio);
+        return ResponseEntity.ok().build();
     }
-    
+
+    /**
+     * Histórico de guardias:
+     * – Con ?dni=… devuelve solo sus guardias (DTO).
+     * – Con ?admin=true devuelve todas agrupadas por DNI (DTO).
+     */
     @GetMapping("/historico")
-    public List<Guardia> historico() {
-        return service.historicoGuardias();
+    public ResponseEntity<?> historico(
+            @RequestParam(value = "dni",   required = false) String dni,
+            @RequestParam(value = "admin", required = false, defaultValue = "false") boolean admin) {
+
+        if (admin) {
+            // ADMIN: devuelve todas agrupadas por DNI
+            Map<String, List<GuardiaHistoricoDTO>> agrupado =
+                service.historicoAgrupadoPorDocente();
+            return ResponseEntity.ok(agrupado);
+        }
+
+        // Usuario normal: requiere el parámetro 'dni'
+        if (dni != null && !dni.isBlank()) {
+            List<GuardiaHistoricoDTO> lista =
+                service.historicoGuardiasPorDni(dni.trim());
+            return ResponseEntity.ok(lista);
+        }
+
+        // Ni admin ni DNI ⇒ Bad Request
+        return ResponseEntity
+                .badRequest()
+                .body("Parámetro 'dni' obligatorio para usuarios no administradores.");
     }
 }

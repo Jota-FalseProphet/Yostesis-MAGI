@@ -32,6 +32,16 @@
         <activity
             android:name=".activities.GuardiasActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.HistoricoGuardiasActivity"
+            android:exported="false"
+            android:label="Histórico de guardias">
+            <!-- Si quieres que sea pantalla “up” desde la barra -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.DashboardActivity" />
+        </activity>
+
 
 
     </application>

@@ -1,4 +1,3 @@
-// src/main/java/com/magi/api/model/SessionHorario.java
 package com.magi.api.model;
 
 import java.time.LocalTime;

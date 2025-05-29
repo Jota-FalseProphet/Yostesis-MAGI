@@ -12,34 +12,32 @@ public class Grupo {
     @Column(name = "id_grupo")
     private Integer idGrupo;
 
-
-    @Column(name = "nom_grupo", nullable = false, unique = true, length = 100)
+    // Mapeamos a la columna 'nombre' de la tabla
+    @Column(name = "nombre", nullable = false, unique = true, length = 50)
     private String nomGrupo;
 
-   
     @Column(length = 20)
     private String etapa;
 
-   
-    private Integer curso;
+    @Column(length = 10)
+    private String curso;
 
     protected Grupo() {}
 
-    public Grupo(String nomGrupo, String etapa, Integer curso) {
+    public Grupo(String nomGrupo, String etapa, String curso) {
         this.nomGrupo = nomGrupo;
         this.etapa    = etapa;
         this.curso    = curso;
     }
 
-
     public Integer getIdGrupo()   { return idGrupo; }
     public String  getNomGrupo()  { return nomGrupo; }
     public String  getEtapa()     { return etapa; }
-    public Integer getCurso()     { return curso; }
+    public String  getCurso()     { return curso; }
 
     public void setNomGrupo(String nomGrupo) { this.nomGrupo = nomGrupo; }
     public void setEtapa(String etapa)       { this.etapa    = etapa; }
-    public void setCurso(Integer curso)      { this.curso    = curso; }
+    public void setCurso(String curso)       { this.curso    = curso; }
 
     @Override
     public boolean equals(Object o) {

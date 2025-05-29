@@ -27,10 +27,7 @@ public class FichajeService {
         this.usuarios = usuarios;
     }
 
-    /**
-     * Inicia un nuevo tramo de fichaje.
-     * Lanza BAD_REQUEST si ya hay un tramo abierto sin cerrar.
-     */
+  
     @Transactional
     public Fichaje iniciar(String dni) {
         Usuario u = usuarios.findById(dni)
@@ -40,7 +37,7 @@ public class FichajeService {
 
         LocalDate hoy = LocalDate.now();
 
-        // Si ya hay un tramo abierto, no permitimos otro inicio
+       
         fichajes
             .findTopByUsuarioAndFechaAndHoraFinIsNullOrderByHoraInicioDesc(u, hoy)
             .ifPresent(f -> {
@@ -50,18 +47,14 @@ public class FichajeService {
                 );
             });
 
-        // Creamos un nuevo tramo para hoy, con total a 0, truncando a segundos
+        
         Fichaje nuevo = new Fichaje(u, hoy);
         nuevo.setHoraInicio(LocalTime.now().truncatedTo(ChronoUnit.SECONDS));
         nuevo.setTotal(Duration.ZERO);
         return fichajes.save(nuevo);
     }
 
-    /**
-     * Finaliza el tramo de fichaje abierto más reciente,
-     * acumula el total de todos los tramos de hoy (en segundos) y lo guarda.
-     * Lanza BAD_REQUEST si no hay ningún tramo abierto.
-     */
+    
     @Transactional
     public Fichaje finalizar(String dni) {
         Usuario u = usuarios.findById(dni)

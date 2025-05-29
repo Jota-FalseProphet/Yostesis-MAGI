@@ -2,6 +2,7 @@ package com.magi.api.model;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
@@ -60,6 +61,7 @@ public class Guardia {
         this.docentAbsent = docentAbsent;
     }
 
+    @JsonIgnore
     public SessionHorario getSession() {
         return session;
     }

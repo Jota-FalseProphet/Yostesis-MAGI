@@ -9,6 +9,7 @@ com\magi\api\model\AusenciaSessio.class
 com\magi\api\model\Docent.class
 com\magi\api\model\AusenciaSessioId.class
 com\magi\api\ApiApplication.class
+com\magi\api\dto\GuardiaHistoricoDTO.class
 com\magi\api\repository\AusenciaSessioRepository.class
 com\magi\api\controller\FichajeController.class
 com\magi\api\model\Fichaje.class
