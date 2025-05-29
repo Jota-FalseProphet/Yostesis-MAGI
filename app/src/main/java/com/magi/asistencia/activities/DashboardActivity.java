@@ -3,6 +3,7 @@ package com.magi.asistencia.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,15 +30,19 @@ import com.magi.asistencia.R;
 public class DashboardActivity extends AppCompatActivity {
 
     private MaterialToolbar topAppBar;
-    private String dni;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        // Obtener DNI desde Login
-        dni = getIntent().getStringExtra("DNI");
+        Bundle extras = getIntent().getExtras();
+        String dni      = extras.getString("DNI");
+        boolean isAdmin = extras.getBoolean("IS_ADMIN", false);
+
+        Log.d("HISTORICO", "DNI="+dni+"  isAdmin="+isAdmin);
 
         // Siempre en modo claro
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -85,7 +90,7 @@ public class DashboardActivity extends AppCompatActivity {
         MaterialCardView cardFichajes = findViewById(R.id.cardFichajes);
         cardFichajes.setOnClickListener(v -> {
             Intent intent = new Intent(this, FichajeActivity.class);
-            intent.putExtra("DNI", dni);
+            intent.putExtras(getIntent().getExtras());  // ← copiamos DNI e IS_ADMIN juntos
             startActivity(intent);
         });
 
@@ -93,7 +98,7 @@ public class DashboardActivity extends AppCompatActivity {
         MaterialCardView cardGuardias = findViewById(R.id.cardGuardias);
         cardGuardias.setOnClickListener(v -> {
             Intent intent = new Intent(this, GuardiasActivity.class);
-            intent.putExtra("DNI", dni);
+            intent.putExtras(getIntent().getExtras());  // ← copiamos DNI e IS_ADMIN juntos
             startActivity(intent);
         });
 
@@ -101,7 +106,7 @@ public class DashboardActivity extends AppCompatActivity {
         MaterialCardView cardInformes = findViewById(R.id.cardInformes);
         cardInformes.setOnClickListener(v -> {
             Intent intent = new Intent(this, InformesActivity.class);
-            intent.putExtra("DNI", dni);
+            intent.putExtras(getIntent().getExtras());  // ← copiamos DNI e IS_ADMIN juntos
             startActivity(intent);
         });
 
@@ -133,17 +138,17 @@ public class DashboardActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.nav_fichajes) {
             Intent intent = new Intent(this, FichajeActivity.class);
-            intent.putExtra("DNI", dni);
+            intent.putExtras(getIntent().getExtras());
             startActivity(intent);
             return true;
         } else if (id == R.id.nav_guardias) {
             Intent intent = new Intent(this, GuardiasActivity.class);
-            intent.putExtra("DNI", dni);
+            intent.putExtras(getIntent().getExtras());
             startActivity(intent);
             return true;
         } else if (id == R.id.nav_informes) {
             Intent intent = new Intent(this, InformesActivity.class);
-            intent.putExtra("DNI", dni);
+            intent.putExtras(getIntent().getExtras());
             startActivity(intent);
             return true;
         } else if (id == R.id.nav_logout) {

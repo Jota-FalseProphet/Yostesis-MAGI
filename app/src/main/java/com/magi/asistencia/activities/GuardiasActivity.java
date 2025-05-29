@@ -59,6 +59,7 @@ public class GuardiasActivity extends AppCompatActivity {
 
     private MaterialToolbar topAppBar;
     private String dni;
+    private boolean isAdmin;
     private GuardiaHistoricoAdapter adapter;
     private SharedPreferences prefs;
 
@@ -68,7 +69,11 @@ public class GuardiasActivity extends AppCompatActivity {
         setContentView(R.layout.activity_guardias);
 
         prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+
+        // Obtener DNI / ROL desde Login
         dni = getIntent().getStringExtra("DNI");
+        isAdmin = getIntent().getBooleanExtra("IS_ADMIN", false);
+        Log.d("HISTORICO", "DNI="+dni+"  isAdmin="+isAdmin);
         if (dni == null) {
             dni = prefs.getString(PREF_DNI, null);
         } else {
@@ -119,10 +124,10 @@ public class GuardiasActivity extends AppCompatActivity {
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(GuardiasActivity.this,
                     HistoricoGuardiasActivity.class);
-
-            intent.putExtra("DNI_USUARIO", dni);
+            intent.putExtras(getIntent().getExtras());
             startActivity(intent);
         });
+
 
         new CargarAusenciasTask().execute();
     }

@@ -2,6 +2,7 @@ package com.magi.asistencia.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -36,13 +37,26 @@ import java.util.List;
 
 public class HistoricoGuardiasActivity extends AppCompatActivity {
     private HistoricoAdapter adapter;
-    private String dni;
-    private boolean isAdmin;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historico_guardias);
+
+        // ——— Leer extras de sesión ———
+        Bundle extras = getIntent().getExtras();
+        String dni;
+        boolean isAdmin;
+        if (extras != null) {
+            // Si en tus Intents estás usando la clave "DNI"
+            dni     = extras.getString("DNI", "");
+            isAdmin = extras.getBoolean("IS_ADMIN", false);
+        } else {
+            // Fallback por si acaso
+            dni     = "";
+            isAdmin = false;
+        }
 
         // ——— UI setup ———
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -68,8 +82,11 @@ public class HistoricoGuardiasActivity extends AppCompatActivity {
         }
         toolbar.setNavigationOnClickListener(v -> finish());
         toolbar.findViewById(R.id.logoText_toolbar).setOnClickListener(v -> {
-            startActivity(new Intent(this, DashboardActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP));
+            Intent intent = new Intent(this, DashboardActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            // opcional: reenviar extras si el Dashboard los necesita
+            intent.putExtras(extras);
+            startActivity(intent);
             finish();
         });
         toolbar.findViewById(R.id.ic_menu_toolbar).setOnClickListener(this::showModulesMenu);
@@ -92,9 +109,6 @@ public class HistoricoGuardiasActivity extends AppCompatActivity {
         rv.setAdapter(adapter);
 
         // ——— Carga de datos ———
-        dni     = getIntent().getStringExtra("DNI_USUARIO");
-        isAdmin = getIntent().getBooleanExtra("IS_ADMIN", false);
-
         String endpoint;
         if (isAdmin) {
             endpoint = "https://magi.it.com/api/guardias/historico?admin=true";
@@ -103,7 +117,11 @@ public class HistoricoGuardiasActivity extends AppCompatActivity {
             endpoint = "https://magi.it.com/api/guardias/historico?dni=" + encDni;
         }
         new CargarHistoricoTask(endpoint).execute();
+
+        Log.d("HISTORICO", "DNI="+dni+"  isAdmin="+isAdmin);
+
     }
+
 
     private class CargarHistoricoTask extends android.os.AsyncTask<Void, Void, List<GuardiaHistorico>> {
         private final String endpoint;

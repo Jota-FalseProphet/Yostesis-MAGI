@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -97,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.w("LoginActivity", "Error confiando en certificados", e);
         }
+
     }
 
     private class LoginTask extends AsyncTask<Void, Void, String> {
@@ -163,9 +165,17 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String rol) {
             if (code == HttpURLConnection.HTTP_OK && rol != null) {
+
+                String rolLimpio = rol.trim().toUpperCase(Locale.ROOT);
+
+                boolean soyAdmin = "ADMIN".equals(rolLimpio);
+
+
                 Intent i = new Intent(LoginActivity.this, DashboardActivity.class)
-                        .putExtra("ROL", rol)
-                        .putExtra("DNI", dni);
+                        .putExtra("DNI",      dni)
+                        .putExtra("ROL",      rol.trim())
+                        .putExtra("IS_ADMIN", soyAdmin);
+
                 startActivity(i);
                 finish();
 
@@ -180,6 +190,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG).show();
             }
+
         }
+
     }
 }
