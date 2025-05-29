@@ -19,9 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:contentInsetStart="0dp"
-            app:title=""
             android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:paddingEnd="16dp"
+            app:title="">
 
             <ImageView
                 android:id="@+id/logoText_toolbar"
@@ -46,7 +46,6 @@
             android:background="@drawable/toolbar_dropshadow"/>
 
     </com.google.android.material.appbar.AppBarLayout>
-
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeHistorico"

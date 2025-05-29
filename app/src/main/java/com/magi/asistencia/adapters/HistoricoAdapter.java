@@ -1,4 +1,3 @@
-// app/src/main/java/com/magi/asistencia/adapters/HistoricoAdapter.java
 package com.magi.asistencia.adapters;
 
 import android.view.LayoutInflater;
@@ -15,7 +14,7 @@ import com.magi.asistencia.model.GuardiaHistorico;
 import java.util.ArrayList;
 import java.util.List;
 
-public class  HistoricoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class HistoricoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM   = 1;
@@ -30,9 +29,10 @@ public class  HistoricoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.callback = cb;
     }
 
-    public void setMixedData(List<Object> mixed) {
+    /** Cuando recibes solo GuardiaHistorico sin headers */
+    public void setData(List<GuardiaHistorico> list) {
         data.clear();
-        data.addAll(mixed);
+        data.addAll(list);
         notifyDataSetChanged();
     }
 
@@ -85,17 +85,27 @@ public class  HistoricoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     // ViewHolder para el item GuardiaHistorico
     static class ItemVH extends RecyclerView.ViewHolder {
         TextView tvGrupo, tvAula, tvFecha;
+        TextView tvSessionId, tvHora;  // ← referencias nuevas
+
         ItemVH(View v) {
             super(v);
-            tvGrupo = v.findViewById(R.id.tvGrupo);
-            tvAula  = v.findViewById(R.id.tvAula);
-            tvFecha = v.findViewById(R.id.tvFecha);
+            tvGrupo       = v.findViewById(R.id.tvGrupo);
+            tvAula        = v.findViewById(R.id.tvAula);
+            tvFecha       = v.findViewById(R.id.tvFecha);
+            tvSessionId   = v.findViewById(R.id.tvSessionId); // ← bind
+            tvHora        = v.findViewById(R.id.tvHora);      // ← bind
         }
+
         void bind(GuardiaHistorico g, OnItemClick cb) {
             tvGrupo.setText(g.getGrupo());
             tvAula.setText("Aula " + g.getAula());
             tvFecha.setText(g.getFechaGuardia());
+            // Nuevos:
+            tvSessionId.setText("Sesión #" + g.getSessionId());
+            tvHora.setText(g.getHora());
+
             itemView.setOnClickListener(v -> cb.onItemClick(g));
         }
     }
+
 }

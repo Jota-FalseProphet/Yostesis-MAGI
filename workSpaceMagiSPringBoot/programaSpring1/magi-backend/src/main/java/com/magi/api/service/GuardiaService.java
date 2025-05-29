@@ -83,6 +83,8 @@ public class GuardiaService {
         }
     }
 
+ // dentro de GuardiaService…
+
     @Transactional(readOnly=true)
     public List<GuardiaHistoricoDTO> historicoGuardiasPorDni(String dni) {
         return guardiaRepo.findByDocentAssignatDni(dni).stream()
@@ -92,13 +94,22 @@ public class GuardiaService {
                               ? ses.getGrupo().getNomGrupo() : "—";
                 String aula  = (ses!=null && ses.getAula()!=null)
                               ? ses.getAula().getNombre()   : "—";
+
+                // extraer ID y hora de la sesión
+                Integer sessionId = (ses != null) ? ses.getIdSessio() : null;
+                String hora = (ses != null)
+                              ? ses.getHoraDesde().toString() + "-" + ses.getHoraFins().toString()
+                              : "";
+
                 return new GuardiaHistoricoDTO(
                     g.getId(),
                     g.getDocentAssignat().getDni(),
                     g.getDocentAbsent().getDni(),
                     grupo,
                     aula,
-                    g.getFechaGuardia()
+                    g.getFechaGuardia(),
+                    sessionId,
+                    hora
                 );
             })
             .collect(Collectors.toList());
@@ -113,15 +124,24 @@ public class GuardiaService {
                               ? ses.getGrupo().getNomGrupo() : "—";
                 String aula  = (ses!=null && ses.getAula()!=null)
                               ? ses.getAula().getNombre()   : "—";
+
+                Integer sessionId = (ses != null) ? ses.getIdSessio() : null;
+                String hora = (ses != null)
+                              ? ses.getHoraDesde().toString() + "-" + ses.getHoraFins().toString()
+                              : "";
+
                 return new GuardiaHistoricoDTO(
                     g.getId(),
                     g.getDocentAssignat().getDni(),
                     g.getDocentAbsent().getDni(),
                     grupo,
                     aula,
-                    g.getFechaGuardia()
+                    g.getFechaGuardia(),
+                    sessionId,
+                    hora
                 );
             })
             .collect(Collectors.groupingBy(GuardiaHistoricoDTO::getDniAsignat));
     }
+
 }
