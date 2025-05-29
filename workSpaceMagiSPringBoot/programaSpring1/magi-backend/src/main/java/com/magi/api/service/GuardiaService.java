@@ -6,6 +6,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.postgresql.util.PSQLException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,14 +74,24 @@ public class GuardiaService {
                 new ResponseStatusException(HttpStatus.BAD_REQUEST, "No hay ausencia para esa sesión")
             );
 
-        // 3. Inserta o actualiza en un solo paso (INSERT … ON CONFLICT)
-        //   Convertimos los Integer a Long para que encajen con el método del repo:
-        guardiaRepo.cubrir(
-            asignat.getIdDocent().longValue(),   // <-- aquí
-            absent.getIdDocent().longValue(),    // <-- y aquí
-            idSessio,
-            hoy
-        );
+        // 3. Inserta o actualiza en un solo paso y captura errores de negocio
+        try {
+            guardiaRepo.cubrir(
+                asignat.getIdDocent().longValue(),
+                absent.getIdDocent().longValue(),
+                idSessio,
+                hoy
+            );
+        } catch (DataIntegrityViolationException ex) {
+            Throwable root = ex.getRootCause();
+            if (root instanceof PSQLException && "22023".equals(((PSQLException) root).getSQLState())) {
+                throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    root.getMessage()
+                );
+            }
+            throw ex;
+        }
     }
 
     @Transactional(readOnly = true)

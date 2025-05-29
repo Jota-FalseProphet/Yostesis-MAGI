@@ -39,7 +39,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -180,7 +183,6 @@ public class GuardiasActivity extends AppCompatActivity {
                         + "/asignar"
                         + "?dniAsignat=" + URLEncoder.encode(dni, "UTF-8")
                         + "&idSessio="  + idSes;
-                Log.d(TAG, "Llamando a URL: " + urlStr);
                 URL url = new URL(urlStr);
                 c = (HttpURLConnection) url.openConnection();
                 c.setRequestMethod("POST");
@@ -188,8 +190,27 @@ public class GuardiasActivity extends AppCompatActivity {
                 c.setReadTimeout(5000);
 
                 code = c.getResponseCode();
-                Log.d(TAG, "Código HTTP: " + code + " – " + c.getResponseMessage());
-                return code == HttpURLConnection.HTTP_NO_CONTENT || code == HttpURLConnection.HTTP_OK;
+                if (code == HttpURLConnection.HTTP_NO_CONTENT || code == HttpURLConnection.HTTP_OK) {
+                    return true;
+                } else {
+                    InputStream errStream = c.getErrorStream();
+                    if (errStream != null) {
+                        String body = readStream(errStream);
+                        try {
+                            JSONObject errJson = new JSONObject(body);
+                            errorMsg = errJson.optString("message", body);
+                        } catch (JSONException ex) {
+                            errorMsg = body;
+                        }
+                    } else {
+                        errorMsg = c.getResponseMessage();
+                    }
+                    // Asegura mensaje por defecto si sigue vacío
+                    if (errorMsg == null || errorMsg.isEmpty()) {
+                        errorMsg = "No se puede asignar guardia: sesión finalizada";
+                    }
+                    return false;
+                }
 
             } catch (Exception e) {
                 Log.e(TAG, "Error POST asignar", e);
@@ -205,7 +226,14 @@ public class GuardiasActivity extends AppCompatActivity {
             if (ok) {
                 new CargarAusenciasTask().execute();
             } else {
-                mostrarError(errorMsg != null ? errorMsg : "Error al asignar (" + code + ")");
+                if (code == HttpURLConnection.HTTP_BAD_REQUEST) {
+                    String toastMsg = (errorMsg != null && !errorMsg.isEmpty())
+                            ? errorMsg
+                            : "No se puede asignar guardia: sesión finalizada";
+                    Toast.makeText(GuardiasActivity.this, toastMsg, Toast.LENGTH_LONG).show();
+                } else {
+                    mostrarError(errorMsg != null ? errorMsg : "Error al asignar (" + code + ")");
+                }
             }
         }
     }
@@ -254,4 +282,16 @@ public class GuardiasActivity extends AppCompatActivity {
         }
         return lista;
     }
+
+    private String readStream(InputStream in) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line);
+        }
+        reader.close();
+        return sb.toString();
+    }
+
 }
