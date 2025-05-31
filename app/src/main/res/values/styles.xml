@@ -1,31 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Colores principales -->
         <item name="colorPrimary">@color/amarillo_magi</item>
         <item name="colorOnPrimary">@color/gris_oscuro</item>
         <item name="colorSecondary">@color/amarillo_magi</item>
         <item name="colorOnSecondary">@color/blanco</item>
-
-        <!-- Status / Navigation bar -->
+        <item name="colorSurface">@color/blanco</item>
+        <item name="colorOnSurface">@color/gris_oscuro</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="colorPrimaryDark">@color/blanco</item>
         <item name="android:navigationBarColor">@color/blanco</item>
-
-
-        <!-- Tipografía por defecto -->
         <item name="android:fontFamily">@font/montserrat_regular</item>
-
-        <!-- Estilos de componentes -->
         <item name="materialButtonStyle">@style/Widget.MAGI.Button</item>
         <item name="textAppearanceButton">@style/TextAppearance.MAGI.Button</item>
+        <item name="android:colorEdgeEffect">@android:color/transparent</item>
+
     </style>
-
-
-
-    <!-- Botón personalizado M.A.G.I. -->
     <style name="Widget.MAGI.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:fontFamily">@font/montserrat_semibold</item>
         <item name="android:textAllCaps">false</item>
@@ -33,16 +24,12 @@
         <item name="backgroundTint">@color/amarillo_magi</item>
         <item name="cornerRadius">8dp</item>
     </style>
-
     <style name="TextAppearance.MAGI.Button" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:fontFamily">@font/montserrat_semibold</item>
         <item name="android:textSize">14sp</item>
     </style>
-
-
-    <!-- Estilo del menú desplegable -->
     <style name="PopupMenuTextAppearance.RightAlign" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:gravity">end</item> <!-- or "right" -->
+        <item name="android:gravity">end</item>
         <item name="android:textAlignment">viewEnd</item>
     </style>
     <style name="PopupMenuStyle.Magi" parent="Widget.AppCompat.PopupMenu">
@@ -53,12 +40,48 @@
     <style name="ThemeOverlay.PopupMAGI" parent="ThemeOverlay.AppCompat.Light">
         <item name="popupMenuStyle">@style/PopupMenuStyle.Magi</item>
     </style>
+    <style name="TextTitleSmall" parent="TextAppearance.Material3.TitleSmall"/>
+    <style name="TextBodySmall" parent="TextAppearance.Material3.BodySmall"/>
+    <style name="ThemeOverlay_CustomDatePicker"
+        parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="colorPrimary">@color/amarillo_magi</item>
+        <item name="materialCalendarTheme">@style/CustomCalendarTheme</item>
+    </style>
+    <style name="ThemeOverlay_CustomDatePicker_Fullscreen" parent="ThemeOverlay.MaterialComponents.MaterialCalendar.Fullscreen">
+        <item name="materialCalendarFullscreenTheme">@style/CustomCalendarTheme</item>
+    </style>
+    <style name="CustomCalendarTheme"
+        parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="materialCalendarHeaderLayout">@style/CustomCalendarHeader</item>
+        <item name="materialCalendarDayOfWeekLabel">@style/CustomCalendarDayOfWeek</item>
+
+        <item name="dayTodayStyle">@style/CustomCalendarDayToday</item>
+
+    </style>
+    <style name="CustomCalendarHeader"
+        parent="Widget.MaterialComponents.MaterialCalendar.HeaderLayout">
+        <item name="android:background">@color/amarillo_magi_50</item>
+    </style>
+    <style name="CustomCalendarDayOfWeek"
+        parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">@color/amarillo_magi</item>
+    </style>
+    <style name="CustomCalendarDayToday"
+        parent="Widget.MaterialComponents.MaterialCalendar.Day.Today">
+        <item name="itemStrokeColor">@color/amarillo_magi</item>
+    </style>
 
 
-    <!-- Estilo del modulo Guardias -->
-    <style name="TextTitleSmall"
-        parent="TextAppearance.Material3.TitleSmall"/>
-    <style name="TextBodySmall"
-        parent="TextAppearance.Material3.BodySmall"/>
+
+    <style name="Widget.MAGI.Chip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/chip_background_selector</item>
+        <item name="android:textColor">@color/gris_oscuro</item>
+        <item name="android:textSize">14sp</item>
+        <item name="chipMinHeight">48dp</item>
+        <item name="chipIconSize">0dp</item>
+        <item name="chipStartPadding">12dp</item>
+        <item name="chipEndPadding">12dp</item>
+    </style>
+
 
 </resources>

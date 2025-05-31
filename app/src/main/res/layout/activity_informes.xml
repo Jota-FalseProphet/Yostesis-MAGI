@@ -9,9 +9,7 @@
     android:background="@color/blanco"
     android:fitsSystemWindows="true">
 
-    <!-- ╔══════════════════════════════════╗
-         ║  1 · APP BAR (idéntico al resto) ║
-         ╚══════════════════════════════════╝ -->
+    <!-- 1 · APP BAR -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,81 +48,88 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- ╔══════════════════════════════════════════╗
-         ║  2 · PANEL DE FILTROS + LISTADO         ║
-         ╚══════════════════════════════════════════╝ -->
-    <ScrollView
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:padding="16dp"
+        android:overScrollMode="never"
         android:clipToPadding="false"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp">
 
-            <!-- ══ Chips de periodo ══ -->
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroupPeriodo"
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="8dp"
-                app:singleSelection="true"
-                android:layout_marginBottom="16dp">
+                android:overScrollMode="never"
+                android:scrollbars="none">
 
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:id="@+id/chipSemana"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupPeriodo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/periodo_semana" />
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    app:singleLine="true"
+                    app:singleSelection="true"
+                    app:chipSpacingHorizontal="8dp"
+                    android:layout_marginBottom="16dp">
 
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:id="@+id/chipMes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/periodo_mes" />
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.MAGI.Chip"
+                        android:id="@+id/chipSemana"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/periodo_semana" />
 
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:id="@+id/chipTrimestre"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/periodo_trimestre" />
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.MAGI.Chip"
+                        android:id="@+id/chipMes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/periodo_mes" />
 
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:id="@+id/chipCurso"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/periodo_curso" />
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.MAGI.Chip"
+                        android:id="@+id/chipTrimestre"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/periodo_trimestre" />
 
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:id="@+id/chipPersonalizado"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/periodo_personalizado" />
-            </com.google.android.material.chip.ChipGroup>
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.MAGI.Chip"
+                        android:id="@+id/chipCurso"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/periodo_curso" />
 
-            <!-- ══ Filtros extra (DOCENTE/GRUPO + Rango fechas) SOLO visible si “Personalizado” ══ -->
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.MAGI.Chip"
+                        android:id="@+id/chipPersonalizado"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/periodo_personalizado" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
             <LinearLayout
                 android:id="@+id/customFilterRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:orientation="vertical"
                 android:padding="8dp"
-                android:visibility="gone"
-                android:layout_marginBottom="16dp">
+                android:visibility="gone">
 
-                <!-- 1) DROPDOWN “Filtrar por” -->
                 <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/filtro_tipo">
@@ -133,41 +138,41 @@
                         android:id="@+id/autoTipo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
                         android:inputType="none" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- 2) DROPDOWN “Elegir” (listas de docentes o de grupos) -->
                 <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/filtro_elegir"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    android:hint="@string/filtro_elegir">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/autoValor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
                         android:inputType="none" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- 3) Rango de fechas -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/filtro_rango"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    android:hint="@string/filtro_rango">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etRango"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:cursorVisible="false" />
+                        android:cursorVisible="false"
+                        android:focusable="false" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
 
-            <!-- ══ Texto dinámico con la fecha inicial y final del periodo ══ -->
             <TextView
                 android:id="@+id/tvPeriodoDesc"
                 style="@style/TextAppearance.MaterialComponents.Body1"
@@ -175,29 +180,29 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="8dp"
                 android:text="@string/informe_default"
-                android:textColor="@color/gris_oscuro"
-                android:textSize="16sp"
-                android:translationX="5dp" />
+                android:textColor="@color/amarillo_magi"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textSize="16sp" />
 
-            <!-- ══ RecyclerView para listar informes JSON ══ -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerInformes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                android:overScrollMode="never"
                 tools:listitem="@layout/item_informe" />
 
-            <!-- ══ Botón “Ver/Exportar PDF” ══ -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnVerPDF"
                 style="@style/Widget.MAGI.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ver_exportar_pdf"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:text="@string/ver_exportar_pdf" />
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
@@ -131,7 +132,7 @@ public class InformesActivity extends AppCompatActivity {
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP)));
         findViewById(R.id.ic_menu_toolbar).setOnClickListener(this::showModulesMenu);
 
-        /* -------- FindView -------- */
+        // -------- FindView --------
         chipGroup        = findViewById(R.id.chipGroupPeriodo);
         customRow        = findViewById(R.id.customFilterRow);
         autoTipo         = findViewById(R.id.autoTipo);
@@ -152,6 +153,9 @@ public class InformesActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, tipos);
         autoTipo.setAdapter(tipoAdapter);
         autoTipo.setInputType(0);
+        autoTipo.setThreshold(0);                          // NUEVO
+        autoTipo.setOnClickListener(v ->                   // NUEVO
+                autoTipo.showDropDown());                  // NUEVO
         autoTipo.setOnItemClickListener((p,v,pos,id)->{
             idDocenteSel = idGrupoSel = -1;
             autoValor.setText("");
@@ -159,19 +163,30 @@ public class InformesActivity extends AppCompatActivity {
             else                               cargarGruposEnDropdown();
         });
 
+
         /* -------- Date-Range Picker -------- */
-        etRango.setInputType(0);
+        etRango.setInputType(InputType.TYPE_NULL);        // evita teclado
+        etRango.setFocusable(false);                      // y foco de texto
+
+// 1) Construimos el picker con el overlay de estilo personalizado
         MaterialDatePicker<Pair<Long, Long>> rangePicker =
                 MaterialDatePicker.Builder.dateRangePicker()
+                        .setTheme(R.style.ThemeOverlay_CustomDatePicker)
+
                         .setTitleText("Selecciona rango")
                         .build();
+
+// 2) Mostrar picker al tocar el EditText (o su layout contenedor)
         etRango.setOnClickListener(v ->
-                rangePicker.show(getSupportFragmentManager(),"RANGO"));
-        rangePicker.addOnPositiveButtonClickListener(sel -> {
-            String d = Utils.format(sel.first);
-            String h = Utils.format(sel.second);
-            etRango.setText(d + " - " + h);
+                rangePicker.show(getSupportFragmentManager(), "RANGO"));
+
+// 3) Al confirmar el rango, formateamos y pintamos en el EditText
+        rangePicker.addOnPositiveButtonClickListener(selection -> {
+            String desde = Utils.format(selection.first);
+            String hasta = Utils.format(selection.second);
+            etRango.setText(desde + " - " + hasta);
         });
+
 
         /* -------- Chips -------- */
         chipGroup.setOnCheckedChangeListener((g,checkedId)->{
@@ -291,6 +306,9 @@ public class InformesActivity extends AppCompatActivity {
                         android.R.layout.simple_list_item_1,nombres);
                 autoValor.setAdapter(adapterValores);
                 autoValor.setInputType(0);
+                autoValor.setThreshold(0);                 // NUEVO
+                autoValor.setOnClickListener(vw ->         // NUEVO
+                        autoValor.showDropDown());         // NUEVO
                 autoValor.setOnItemClickListener((p,view,pos,id)->{
                     idDocenteSel=listaDocentes.get(pos).getId();
                     idGrupoSel=-1;
@@ -322,6 +340,9 @@ public class InformesActivity extends AppCompatActivity {
                         android.R.layout.simple_list_item_1,nombres);
                 autoValor.setAdapter(adapterValores);
                 autoValor.setInputType(0);
+                autoValor.setThreshold(0);                 // NUEVO
+                autoValor.setOnClickListener(vw ->         // NUEVO
+                        autoValor.showDropDown());         // NUEVO
                 autoValor.setOnItemClickListener((p,view,pos,id)->{
                     idGrupoSel=listaGrupos.get(pos).getId();
                     idDocenteSel=-1;
@@ -362,4 +383,5 @@ public class InformesActivity extends AppCompatActivity {
         int getId(){return id;}
         @Override public String toString(){return nombre;}
     }
+
 }

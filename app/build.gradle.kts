@@ -33,18 +33,16 @@ android {
 
 dependencies {
     implementation(libs.appcompat)
-    implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+
+    // ÚNICAMENTE esta línea para Material Components v1.12.0
+    implementation("com.google.android.material:material:1.12.0")
+
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation(libs.material.v190)
-    implementation("androidx.gridlayout:gridlayout:1.0.0")
-    implementation("com.google.android.material:material:1.9.0")
-
-
-
 }
