@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/informes")
@@ -41,7 +42,7 @@ public class InformeController {
 
         // JSON
         if (formato == Formato.JSON) {
-            // dinámico
+            // dinámico por periodo
             if (periodo != null && ref != null) {
                 var rango = com.magi.api.util.PeriodoUtils.calcular(periodo, ref);
                 return ResponseEntity.ok(
@@ -53,40 +54,42 @@ public class InformeController {
                     )
                 );
             }
-            // manual
+            // manual (desde / hasta)
             return ResponseEntity.ok(
                 informeService.obtenerDetalle(desde, hasta, idDocente, idGrupo)
             );
         }
 
-        // PDF / XLSX
-        ByteArrayResource file;
-        if (periodo != null && ref != null) {
-            file = informeService.generarPorPeriodo(periodo, ref, idDocente, idGrupo, formato);
-        } else {
-            // rango manual
-            com.magi.api.service.FiltroInforme filtro = new com.magi.api.service.FiltroInforme();
-            filtro.setDesde(desde);
-            filtro.setHasta(hasta);
-            filtro.setIdDocente(idDocente);
-            filtro.setIdGrupo(idGrupo);
-            filtro.setFormato(formato);
-            file = informeService.generarInforme(filtro);
+        // PDF
+        if (formato == Formato.PDF) {
+            ByteArrayResource file;
+            if (periodo != null && ref != null) {
+                file = informeService.generarPorPeriodo(periodo, ref, idDocente, idGrupo, formato);
+            } else {
+                // rango manual
+                com.magi.api.service.FiltroInforme filtro = new com.magi.api.service.FiltroInforme();
+                filtro.setDesde(desde);
+                filtro.setHasta(hasta);
+                filtro.setIdDocente(idDocente);
+                filtro.setIdGrupo(idGrupo);
+                filtro.setFormato(formato);
+                file = informeService.generarInforme(filtro);
+            }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDisposition(
+                ContentDisposition.attachment()
+                    .filename("faltas_" + LocalDate.now() + ".pdf")
+                    .build()
+            );
+
+            return new ResponseEntity<>(file, headers, HttpStatus.OK);
         }
 
-        String contentType = formato == Formato.PDF
-                ? MediaType.APPLICATION_PDF_VALUE
-                : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-        String ext = formato == Formato.PDF ? ".pdf" : ".xlsx";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(contentType));
-        headers.setContentDisposition(
-                ContentDisposition.attachment()
-                    .filename("faltas_" + LocalDate.now() + ext)
-                    .build()
-        );
-
-        return new ResponseEntity<>(file, headers, HttpStatus.OK);
+        // Cualquier otro formato (por ejemplo XLSX) no está soportado
+        return ResponseEntity
+                .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                .body("Formato no soportado: solo se admiten JSON y PDF.");
     }
 }

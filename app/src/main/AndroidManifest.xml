@@ -41,6 +41,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.DashboardActivity" />
         </activity>
+        <activity android:name=".activities.InformesActivity" />
+
 
 
 
