@@ -10,6 +10,7 @@ com\magi\api\model\FaltaDetalleId.class
 com\magi\api\ApiApplication.class
 com\magi\api\service\InformeService$1.class
 com\magi\api\model\Fichaje.class
+com\magi\api\service\DocenteService.class
 com\magi\api\util\PeriodoUtils$Tipo.class
 com\magi\api\model\FaltaResumen.class
 com\magi\api\controller\InformeController.class
@@ -41,7 +42,9 @@ com\magi\api\model\Guardia.class
 com\magi\api\repository\DocentRepository.class
 com\magi\api\controller\GuardiaController.class
 com\magi\api\model\SessionHorario.class
+com\magi\api\controller\DocenteController.class
 com\magi\api\service\FiltroInforme$Formato.class
 com\magi\api\repository\HorarioDocenteSesionRepository.class
+com\magi\api\dto\DocenteDTO.class
 com\magi\api\model\HorarioDocenteSesion.class
 com\magi\api\service\HorarioDocenteSesionService.class

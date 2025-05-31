@@ -10,8 +10,8 @@
     android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="396dp"
+        android:layout_height="78dp"
         android:orientation="vertical">
 
         <TextView
@@ -19,29 +19,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Docente Ejemplo"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:textSize="16sp" />
+            android:translationX="5dp"
+            android:translationY="7dp" />
 
         <TextView
             android:id="@+id/txtGrupo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Grupo 1ºA"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:translationX="5dp"
+            android:translationY="7dp" />
 
         <TextView
             android:id="@+id/txtFecha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2025-05-31"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/txtTotalFaltas"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total: 5"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:translationX="5dp"
+            android:translationY="7dp" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

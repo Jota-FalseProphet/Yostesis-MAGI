@@ -21,6 +21,5 @@ public class Informe {
     public String getFecha() { return fecha; }
     public void setFecha(String fecha) { this.fecha = fecha; }
 
-    public int getTotalFaltas() { return totalFaltas; }
-    public void setTotalFaltas(int totalFaltas) { this.totalFaltas = totalFaltas; }
+
 }

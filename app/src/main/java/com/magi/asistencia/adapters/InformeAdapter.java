@@ -64,7 +64,7 @@ public class InformeAdapter extends RecyclerView.Adapter<InformeAdapter.ViewHold
             txtDocente = itemView.findViewById(R.id.txtDocente);
             txtGrupo = itemView.findViewById(R.id.txtGrupo);
             txtFecha = itemView.findViewById(R.id.txtFecha);
-            txtTotalFaltas = itemView.findViewById(R.id.txtTotalFaltas);
+
 
             itemView.setOnClickListener(v -> {
                 int pos = getAdapterPosition();
@@ -79,7 +79,7 @@ public class InformeAdapter extends RecyclerView.Adapter<InformeAdapter.ViewHold
             txtDocente.setText(informe.getDocente());
             txtGrupo.setText(informe.getGrupo());
             txtFecha.setText(informe.getFecha());
-            txtTotalFaltas.setText(String.valueOf(informe.getTotalFaltas()));
+
         }
     }
 }

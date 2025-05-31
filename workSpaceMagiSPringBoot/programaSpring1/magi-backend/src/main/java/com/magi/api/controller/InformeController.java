@@ -1,6 +1,5 @@
 package com.magi.api.controller;
 
-import com.magi.api.model.FaltaDetalle;
 import com.magi.api.service.FiltroInforme.Formato;
 import com.magi.api.service.InformeService;
 import com.magi.api.util.PeriodoUtils.Tipo;
@@ -10,8 +9,8 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/informes")
@@ -23,9 +22,25 @@ public class InformeController {
         this.informeService = informeService;
     }
 
+    private Tipo mapPeriodo(String p) {
+        if (p == null) return null;
+        switch (p.toUpperCase(Locale.ROOT)) {
+            case "SEMANA":
+                return Tipo.SEMANA_ISO;       
+            case "MES":
+                return Tipo.MES;              
+            case "TRIMESTRE":
+                return Tipo.TRIMESTRE;        
+            case "CURSO":
+                return Tipo.CURSO_ESCOLAR;    
+            default:
+                return null;                 
+        }
+    }
+
     @GetMapping("/faltas")
     public ResponseEntity<?> obtenerInforme(
-            @RequestParam(required = false) Tipo periodo,
+            @RequestParam(required = false) String periodo,          
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ref,
 
@@ -40,56 +55,58 @@ public class InformeController {
             @RequestParam(defaultValue = "JSON") Formato formato
     ) throws Exception {
 
-        // JSON
-        if (formato == Formato.JSON) {
-            // dinámico por periodo
-            if (periodo != null && ref != null) {
-                var rango = com.magi.api.util.PeriodoUtils.calcular(periodo, ref);
-                return ResponseEntity.ok(
-                    informeService.obtenerDetalle(
-                        rango.get("desde"),
-                        rango.get("hasta"),
-                        idDocente,
-                        idGrupo
-                    )
-                );
-            }
-            // manual (desde / hasta)
-            return ResponseEntity.ok(
-                informeService.obtenerDetalle(desde, hasta, idDocente, idGrupo)
-            );
+       
+        Tipo tipoPeriodo = mapPeriodo(periodo);
+        if (periodo != null && tipoPeriodo == null) {
+            return ResponseEntity.badRequest()
+                    .body("Valor inválido para 'periodo'. " +
+                          "Valores admitidos: SEMANA, MES, TRIMESTRE, CURSO");
         }
 
-        // PDF
+       
+        if (formato == Formato.JSON) {
+            if (tipoPeriodo != null && ref != null) {
+                Map<String, LocalDate> rango =
+                        com.magi.api.util.PeriodoUtils.calcular(tipoPeriodo, ref);
+                return ResponseEntity.ok(
+                        informeService.obtenerDetalle(
+                                rango.get("desde"), rango.get("hasta"),
+                                idDocente, idGrupo));
+            }
+            
+            return ResponseEntity.ok(
+                    informeService.obtenerDetalle(desde, hasta, idDocente, idGrupo));
+        }
+
+       
         if (formato == Formato.PDF) {
             ByteArrayResource file;
-            if (periodo != null && ref != null) {
-                file = informeService.generarPorPeriodo(periodo, ref, idDocente, idGrupo, formato);
+            if (tipoPeriodo != null && ref != null) {
+                file = informeService.generarPorPeriodo(
+                        tipoPeriodo, ref, idDocente, idGrupo, formato);
             } else {
-                // rango manual
-                com.magi.api.service.FiltroInforme filtro = new com.magi.api.service.FiltroInforme();
-                filtro.setDesde(desde);
-                filtro.setHasta(hasta);
-                filtro.setIdDocente(idDocente);
-                filtro.setIdGrupo(idGrupo);
-                filtro.setFormato(formato);
-                file = informeService.generarInforme(filtro);
+               
+                com.magi.api.service.FiltroInforme f = new com.magi.api.service.FiltroInforme();
+                f.setDesde(desde);
+                f.setHasta(hasta);
+                f.setIdDocente(idDocente);
+                f.setIdGrupo(idGrupo);
+                f.setFormato(formato);
+                file = informeService.generarInforme(f);
             }
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDisposition(
-                ContentDisposition.attachment()
-                    .filename("faltas_" + LocalDate.now() + ".pdf")
-                    .build()
-            );
+            HttpHeaders h = new HttpHeaders();
+            h.setContentType(MediaType.APPLICATION_PDF);
+            h.setContentDisposition(
+                    ContentDisposition.attachment()
+                            .filename("faltas_" + LocalDate.now() + ".pdf")
+                            .build());
 
-            return new ResponseEntity<>(file, headers, HttpStatus.OK);
+            return new ResponseEntity<>(file, h, HttpStatus.OK);
         }
 
-        // Cualquier otro formato (por ejemplo XLSX) no está soportado
         return ResponseEntity
                 .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                .body("Formato no soportado: solo se admiten JSON y PDF.");
+                .body("Formato no soportado: solo JSON o PDF.");
     }
 }

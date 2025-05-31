@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_informes_coordinator_layout"
@@ -8,7 +9,9 @@
     android:background="@color/blanco"
     android:fitsSystemWindows="true">
 
-    <!-- APP BAR -->
+    <!-- ╔══════════════════════════════════╗
+         ║  1 · APP BAR (idéntico al resto) ║
+         ╚══════════════════════════════════╝ -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,11 +23,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:contentInsetStart="0dp"
-            app:title=""
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
 
-            <!-- Logo MAGI -->
             <ImageView
                 android:id="@+id/logoText_toolbar"
                 android:layout_width="100dp"
@@ -32,7 +33,6 @@
                 android:layout_gravity="start|center_vertical"
                 android:src="@drawable/logo_text" />
 
-            <!-- Menú desplegable -->
             <ImageView
                 android:id="@+id/ic_menu_toolbar"
                 android:layout_width="35dp"
@@ -43,7 +43,6 @@
 
         </com.google.android.material.appbar.MaterialToolbar>
 
-        <!-- Sombra personalizada -->
         <View
             android:layout_width="match_parent"
             android:layout_height="4dp"
@@ -51,32 +50,154 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- SwipeRefreshLayout (opcional) + RecyclerView -->
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe"
+    <!-- ╔══════════════════════════════════════════╗
+         ║  2 · PANEL DE FILTROS + LISTADO         ║
+         ╚══════════════════════════════════════════╝ -->
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        android:fitsSystemWindows="true">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerInformes"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingBottom="88dp"
-            tools:listitem="@layout/item_informe" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <!-- ══ Chips de periodo ══ -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupPeriodo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="8dp"
+                app:singleSelection="true"
+                android:layout_marginBottom="16dp">
 
-    <!-- FAB PARA EXPORTAR PDF -->
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fabInformes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:icon="@drawable/ic_pdf"
-        android:text="@string/exportar_pdf"
-        android:layout_margin="16dp"
-        app:layout_anchor="@id/swipe"
-        app:layout_anchorGravity="bottom|end" />
+                <com.google.android.material.chip.Chip
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:id="@+id/chipSemana"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/periodo_semana" />
+
+                <com.google.android.material.chip.Chip
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:id="@+id/chipMes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/periodo_mes" />
+
+                <com.google.android.material.chip.Chip
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:id="@+id/chipTrimestre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/periodo_trimestre" />
+
+                <com.google.android.material.chip.Chip
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:id="@+id/chipCurso"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/periodo_curso" />
+
+                <com.google.android.material.chip.Chip
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:id="@+id/chipPersonalizado"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/periodo_personalizado" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <!-- ══ Filtros extra (DOCENTE/GRUPO + Rango fechas) SOLO visible si “Personalizado” ══ -->
+            <LinearLayout
+                android:id="@+id/customFilterRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp">
+
+                <!-- 1) DROPDOWN “Filtrar por” -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/filtro_tipo">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/autoTipo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- 2) DROPDOWN “Elegir” (listas de docentes o de grupos) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/filtro_elegir"
+                    android:layout_marginTop="8dp">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/autoValor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- 3) Rango de fechas -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/filtro_rango"
+                    android:layout_marginTop="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etRango"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:cursorVisible="false" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <!-- ══ Texto dinámico con la fecha inicial y final del periodo ══ -->
+            <TextView
+                android:id="@+id/tvPeriodoDesc"
+                style="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:text="@string/informe_default"
+                android:textColor="@color/gris_oscuro"
+                android:textSize="16sp"
+                android:translationX="5dp" />
+
+            <!-- ══ RecyclerView para listar informes JSON ══ -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerInformes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp"
+                tools:listitem="@layout/item_informe" />
+
+            <!-- ══ Botón “Ver/Exportar PDF” ══ -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVerPDF"
+                style="@style/Widget.MAGI.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ver_exportar_pdf"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

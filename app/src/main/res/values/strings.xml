@@ -21,6 +21,20 @@
     <string name="historico">Histórico</string>
     <string name="exportar_pdf">Exportar a PDF</string>
     <string name="menu_magi">menu M.A.G.I</string>
+    <string name="periodo_semana">Semana</string>
+    <string name="periodo_mes">Mes</string>
+    <string name="periodo_trimestre">Trimestre</string>
+    <string name="periodo_curso">Curso\n</string>
+    <string name="periodo_personalizado">Personalizado</string>
+    <string name="filtro_docente">Docente</string>
+    <string name="filtro_desde">Desde</string>
+    <string name="filtro_hasta">Hasta</string>
+    <string name="ver_exportar_pdf">Exportar a PDF</string>
+    <string name="informe_default">Selecciona un periodo para ver el informe</string>
+    <string name="filtro_tipo">Filtrar por</string>
+    <string name="filtro_elegir">Elegir</string>
+    <string name="filtro_rango">Rango de fechas</string>
+
 
 
 </resources>
