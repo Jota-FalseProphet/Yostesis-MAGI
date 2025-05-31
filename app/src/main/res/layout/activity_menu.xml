@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_menu_coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blanco">
+
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blanco"
+        android:elevation="4dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            style="@style/Widget.MaterialComponents.Toolbar.PrimarySurface"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            app:contentInsetStart="0dp"
+            app:backgroundTint="@color/blanco">
+
+            <!-- Logo MAGI -->
+            <ImageView
+                android:id="@+id/logoText_toolbar"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:src="@drawable/logo_text"/>
+
+            <!-- Icono menú -->
+            <ImageView
+                android:id="@+id/ic_menu_toolbar"
+                android:layout_width="35dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:src="@drawable/ic_menu"
+                app:tint="@color/gris_oscuro_2"/>
+        </com.google.android.material.appbar.MaterialToolbar>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@drawable/toolbar_dropshadow"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <LinearLayout
+        android:id="@+id/menuContainer"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPerfil"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:icon="@drawable/ic_person"
+            app:iconPadding="8dp"
+            app:iconTint="@color/amarillo_magi"
+            app:iconGravity="textStart"
+            android:gravity="start|center_vertical"
+            android:text="Mi perfil"
+            android:textColor="@color/gris_oscuro_2"
+            app:strokeColor="@color/gris_claro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnUserAdmin"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:icon="@drawable/ic_people"
+            app:iconPadding="8dp"
+            app:iconTint="@color/amarillo_magi"
+            app:iconGravity="textStart"
+            android:gravity="start|center_vertical"
+            android:text="Gestión de usuarios"
+            android:textColor="@color/gris_oscuro_2"
+            app:strokeColor="@color/gris_claro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"/>
+        <!-- 4. Añadir falta (solo para admin) -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAddFalta"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:icon="@drawable/ic_add"
+            app:iconPadding="8dp"
+            app:iconTint="@color/amarillo_magi"
+            app:iconGravity="textStart"
+            android:gravity="start|center_vertical"
+            android:text="Añadir falta"
+            android:textColor="@color/gris_oscuro_2"
+            app:strokeColor="@color/gris_claro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAjustes"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:icon="@drawable/ic_settings"
+            app:iconPadding="8dp"
+            app:iconTint="@color/amarillo_magi"
+            app:iconGravity="textStart"
+            android:gravity="start|center_vertical"
+            android:text="Ajustes"
+            android:textColor="@color/gris_oscuro_2"
+            app:strokeColor="@color/gris_claro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

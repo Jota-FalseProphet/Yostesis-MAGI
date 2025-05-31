@@ -17,10 +17,14 @@
         android:elevation="4dp">
 
         <com.google.android.material.appbar.MaterialToolbar
+            style="@style/Widget.MaterialComponents.Toolbar.PrimarySurface"
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:contentInsetStart="0dp"
+            app:backgroundTint="@color/blanco"
+            app:liftOnScroll="true"
+            app:liftOnScrollColor="@color/blanco"
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
 
@@ -44,7 +48,9 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="4dp"
-            android:background="@drawable/toolbar_dropshadow" />
+            android:background="@drawable/toolbar_dropshadow"
+            app:backgroundTint="@color/blanco"
+            app:liftOnScrollColor="@color/blanco"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -137,6 +143,7 @@
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/autoTipo"
                         android:layout_width="match_parent"
+                        android:popupBackground="@color/blanco"
                         android:layout_height="wrap_content"
                         android:focusable="false"
                         android:inputType="none" />
@@ -152,6 +159,7 @@
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/autoValor"
                         android:layout_width="match_parent"
+                        android:popupBackground="@color/blanco"
                         android:layout_height="wrap_content"
                         android:focusable="false"
                         android:inputType="none" />

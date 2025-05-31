@@ -12,7 +12,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -24,30 +23,28 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.button.MaterialButton;
 import com.magi.asistencia.R;
 
-public class DashboardActivity extends AppCompatActivity {
+public class MenuActivity extends AppCompatActivity {
 
     private MaterialToolbar topAppBar;
-
-
+    private String dni;
+    private boolean isAdmin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.activity_menu);
 
-        Bundle extras = getIntent().getExtras();
-        String dni      = extras.getString("DNI");
-        boolean isAdmin = extras.getBoolean("IS_ADMIN", false);
+        /* -------- EXTRAÍMOS DNI + IS_ADMIN DESDE EL INTENT -------- */
+        dni      = getIntent().getStringExtra("DNI");
+        isAdmin  = getIntent().getBooleanExtra("IS_ADMIN", false);
+        Log.d("MENU", "DNI="+dni+"  isAdmin="+isAdmin);
 
-        Log.d("HISTORICO", "DNI="+dni+"  isAdmin="+isAdmin);
-
-        // Siempre en modo claro
+        /* -------- Apariencia general idéntica a Dashboard -------- */
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-        // Edge-to-edge + status bar blanca + iconos oscuros
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -56,70 +53,76 @@ public class DashboardActivity extends AppCompatActivity {
         new WindowInsetsControllerCompat(window, window.getDecorView())
                 .setAppearanceLightStatusBars(true);
 
-        // Ajuste de padding top al DrawerLayout
-        View root = findViewById(R.id.activity_login_drawer_layout);
+        View root = findViewById(R.id.activity_menu_coordinator_layout);
         ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
-            Insets statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
-            v.setPadding(0, statusBars.top, 0, 0);
+            Insets sb = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+            v.setPadding(0, sb.top, 0, 0);
             return insets;
         });
 
-        // Configuramos toolbar
+        /* ------------------ Toolbar ------------------ */
         topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) ab.setDisplayShowTitleEnabled(false);
 
-        // ——— LOGO: REDIRIGE AL DASHBOARD ———
         ImageView logo = findViewById(R.id.logoText_toolbar);
         logo.setOnClickListener(v -> {
             Intent i = new Intent(this, DashboardActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            i.putExtras(getIntent().getExtras());     // conserva DNI + IS_ADMIN
             startActivity(i);
         });
 
-        // ——— MENÚ ICON: ABRE DESPLEGABLE ———
         ImageView menuIcon = findViewById(R.id.ic_menu_toolbar);
         menuIcon.setOnClickListener(this::showModulesMenu);
 
-        // —————————————————————
-        // LÓGICA DE LAS CARDS
-        // —————————————————————
+        /* ------------------ Botones ------------------ */
+        MaterialButton btnUserAdmin = findViewById(R.id.btnUserAdmin);
+        MaterialButton btnPerfil    = findViewById(R.id.btnPerfil);
+        MaterialButton btnAjustes   = findViewById(R.id.btnAjustes);
+        MaterialButton btnAddFalta  = findViewById(R.id.btnAddFalta);
 
-        // Card Fichajes
-        MaterialCardView cardFichajes = findViewById(R.id.cardFichajes);
-        cardFichajes.setOnClickListener(v -> {
-            Intent intent = new Intent(this, FichajeActivity.class);
-            intent.putExtras(getIntent().getExtras());  // ← copiamos DNI e IS_ADMIN juntos
+        // 1. Gestión de usuarios  (solo admin)
+        if (isAdmin) {
+            btnUserAdmin.setOnClickListener(v -> {
+                // De momento muestra un toast; crea tu actividad cuando la tengas
+                Toast.makeText(this, "Gestión de usuarios (en desarrollo)", Toast.LENGTH_SHORT).show();
+            });
+        } else {
+            btnUserAdmin.setEnabled(false);
+            btnUserAdmin.setAlpha(0.5f);
+
+        }
+
+        // 2. Mi perfil
+        btnPerfil.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            intent.putExtras(getIntent().getExtras());
             startActivity(intent);
         });
 
-        // Card Guardias
-        MaterialCardView cardGuardias = findViewById(R.id.cardGuardias);
-        cardGuardias.setOnClickListener(v -> {
-            Intent intent = new Intent(this, GuardiasActivity.class);
-            intent.putExtras(getIntent().getExtras());  // ← copiamos DNI e IS_ADMIN juntos
-            startActivity(intent);
-        });
+        if (isAdmin) {
+            btnAddFalta.setOnClickListener(v -> {
+                // Reemplaza AddFaltaActivity.class por la actividad real que crearás
+                Intent intent = new Intent(this, AddFaltaActivity.class);
+                intent.putExtras(getIntent().getExtras());
+                startActivity(intent);
+            });
+        } else {
+            btnAddFalta.setEnabled(false);
+            btnAddFalta.setAlpha(0.5f);
+        }
 
-        // Card Informes
-        MaterialCardView cardInformes = findViewById(R.id.cardInformes);
-        cardInformes.setOnClickListener(v -> {
-            Intent intent = new Intent(this, InformesActivity.class);
-            intent.putExtras(getIntent().getExtras());  // ← copiamos DNI e IS_ADMIN juntos
-            startActivity(intent);
-        });
-
-        // Card Otros
-        MaterialCardView cardOtros = findViewById(R.id.cardOtros);
-        cardOtros.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MenuActivity.class);
-            intent.putExtras(getIntent().getExtras());  // ← copiamos DNI e IS_ADMIN juntos
+        // 3. Ajustes
+        btnAjustes.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            intent.putExtras(getIntent().getExtras());
             startActivity(intent);
         });
     }
 
-    // MENU DESPLEGABLE
+    /* -------- Menú desplegable (misma lógica que Dashboard) -------- */
     private void showModulesMenu(View anchor) {
         Context wrapper = new ContextThemeWrapper(this, R.style.ThemeOverlay_PopupMAGI);
         androidx.appcompat.widget.PopupMenu popup =
@@ -136,25 +139,22 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        Intent intent = null;
         if (id == R.id.nav_fichajes) {
-            Intent intent = new Intent(this, FichajeActivity.class);
-            intent.putExtras(getIntent().getExtras());
-            startActivity(intent);
-            return true;
+            intent = new Intent(this, FichajeActivity.class);
         } else if (id == R.id.nav_guardias) {
-            Intent intent = new Intent(this, GuardiasActivity.class);
-            intent.putExtras(getIntent().getExtras());
-            startActivity(intent);
-            return true;
+            intent = new Intent(this, GuardiasActivity.class);
         } else if (id == R.id.nav_informes) {
-            Intent intent = new Intent(this, InformesActivity.class);
-            intent.putExtras(getIntent().getExtras());
-            startActivity(intent);
-            return true;
+            intent = new Intent(this, InformesActivity.class);
         } else if (id == R.id.nav_logout) {
             // Lógica de logout aquí
+            return true;
+        }
+        if (intent != null) {
+            intent.putExtras(getIntent().getExtras());   // DNI + IS_ADMIN
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -4,6 +4,8 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/amarillo_magi</item>
         <item name="colorOnPrimary">@color/gris_oscuro</item>
+        <item name="colorPrimaryVariant">@color/blanco</item>
+
         <item name="colorSecondary">@color/amarillo_magi</item>
         <item name="colorOnSecondary">@color/blanco</item>
         <item name="colorSurface">@color/blanco</item>

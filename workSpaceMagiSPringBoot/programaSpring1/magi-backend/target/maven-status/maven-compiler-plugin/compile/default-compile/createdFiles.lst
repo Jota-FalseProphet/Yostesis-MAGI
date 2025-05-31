@@ -1,3 +1,4 @@
+com\magi\api\controller\GrupoController.class
 com\magi\api\model\Usuario.class
 com\magi\api\config\AusenciasProperties.class
 com\magi\api\model\Ausencia.class
@@ -27,6 +28,7 @@ com\magi\api\model\FaltaResumenId.class
 com\magi\api\tasks\AutogeneraAusenciasJob.class
 com\magi\api\model\DocentSessio.class
 com\magi\api\service\FiltroInforme.class
+com\magi\api\repository\GrupoRepository.class
 com\magi\api\util\PeriodoUtils.class
 com\magi\api\model\Docent.class
 com\magi\api\model\FaltaDetalle.class
@@ -45,6 +47,7 @@ com\magi\api\model\SessionHorario.class
 com\magi\api\controller\DocenteController.class
 com\magi\api\service\FiltroInforme$Formato.class
 com\magi\api\repository\HorarioDocenteSesionRepository.class
+com\magi\api\dto\GrupoDTO.class
 com\magi\api\dto\DocenteDTO.class
 com\magi\api\model\HorarioDocenteSesion.class
 com\magi\api\service\HorarioDocenteSesionService.class
