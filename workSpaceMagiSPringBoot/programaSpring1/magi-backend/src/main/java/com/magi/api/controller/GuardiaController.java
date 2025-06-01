@@ -52,32 +52,29 @@ public class GuardiaController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Histórico de guardias:
-     * - Si se pasa ?dni=XXX (y admin=false), devuelve sólo las guardias de ese DNI.
-     * - Si se pasa ?admin=true, devuelve todas las guardias de todos los docentes,
-     *   agrupadas en un Map<dni, List<DTO>>.
-     */
+   
+     //histórico de guardias si se pasa ?dni=XXX y admin false devuelve las guardias de ese dni
+      //pero si se pasa admin truedevuelve todas las guardias de todos los docentes
+     
     @GetMapping("/historico")
     public ResponseEntity<?> historico(
             @RequestParam(value = "dni",   required = false) String dni,
             @RequestParam(value = "admin", required = false, defaultValue = "false") boolean admin) {
 
         if (admin) {
-            // ADMIN: devolver todas agrupadas por DNI
+          
             Map<String, List<GuardiaHistoricoDTO>> todas =
                 service.historicoAgrupadoPorDocente();
             return ResponseEntity.ok(todas);
         }
 
-        // Usuario normal: necesita parámetro 'dni'
+      
         if (dni != null && !dni.isBlank()) {
             List<GuardiaHistoricoDTO> lista =
                 service.historicoGuardiasPorDni(dni.trim());
             return ResponseEntity.ok(lista);
         }
 
-        // Ni admin ni DNI ⇒ Bad Request
         return ResponseEntity
                 .badRequest()
                 .body("Parámetro 'dni' obligatorio para usuarios no administradores.");

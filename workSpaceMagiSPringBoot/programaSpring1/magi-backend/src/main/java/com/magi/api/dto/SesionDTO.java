@@ -6,11 +6,9 @@ public class SesionDTO {
     private String horaFins;
     private String grupo;
 
-    // Constructor vacío
     public SesionDTO() {
     }
 
-    // Constructor con todos los campos
     public SesionDTO(int id, String horaDesde, String horaFins, String grupo) {
         this.id = id;
         this.horaDesde = horaDesde;

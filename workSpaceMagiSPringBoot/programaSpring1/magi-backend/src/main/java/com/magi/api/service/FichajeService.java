@@ -27,7 +27,7 @@ public class FichajeService {
         this.usuarios = usuarios;
     }
 
-  
+    //control de erroes para la hora de fichar y tales
     @Transactional
     public Fichaje iniciar(String dni) {
         Usuario u = usuarios.findById(dni)
@@ -54,7 +54,7 @@ public class FichajeService {
         return fichajes.save(nuevo);
     }
 
-    
+    //lo mismo pero para la salida
     @Transactional
     public Fichaje finalizar(String dni) {
         Usuario u = usuarios.findById(dni)
@@ -64,17 +64,17 @@ public class FichajeService {
 
         LocalDate hoy = LocalDate.now();
 
-        // Buscamos el tramo abierto más reciente
+        // busco el tramo abierto mas reciente
         Fichaje abierto = fichajes
             .findTopByUsuarioAndFechaAndHoraFinIsNullOrderByHoraInicioDesc(u, hoy)
             .orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.BAD_REQUEST, "No tienes ningún fichaje abierto")
             );
 
-        // Cerramos este tramo, truncando a segundos
+        // cierro ese tramo el truncate para comerme los milisegundos ydejarlo soloen segundos
         abierto.setHoraFin(LocalTime.now().truncatedTo(ChronoUnit.SECONDS));
 
-        // Recalculamos el total de TODOS los tramos de hoy en Duration
+        // recalculo TODOS los tramos
         List<Fichaje> tramosHoy = fichajes.findByUsuarioAndFecha(u, hoy);
         Duration total = tramosHoy.stream()
             .filter(f -> f.getHoraInicio() != null && f.getHoraFin() != null)

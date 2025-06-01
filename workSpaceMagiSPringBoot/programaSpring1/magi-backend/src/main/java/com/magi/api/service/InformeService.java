@@ -44,7 +44,9 @@ public class InformeService {
         this.detalleRepo = detalleRepo;
         this.resumenRepo = resumenRepo;
     }
-
+    
+    
+    //Jasper para hacer el pdf
     @PostConstruct
     private void init() {
         try (InputStream is = getClass().getResourceAsStream("/reportes/faltas.jrxml")) {
@@ -60,6 +62,8 @@ public class InformeService {
         }
     }
 
+    
+    //PDF y excel, pero creo que descartaré el escel, no me da tiempo
     public ByteArrayResource generarInforme(FiltroInforme f) throws Exception {
         List<FaltaDetalle> detalle = detalleRepo.buscarDetalle(
                 f.getDesde(), f.getHasta(), f.getIdDocente(), f.getIdGrupo());
@@ -76,22 +80,26 @@ public class InformeService {
             case XLSX:
                 return exportarExcel(detalle, f);
             default:
-                return null; // JSON será manejado por el controller
+                return null; 
         }
     }
-
+    
+    
+    //aqui se hacen los rangos para crear el informe por fechas
     private ByteArrayResource exportarPdf(List<FaltaDetalle> data, FiltroInforme f) throws JRException {
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(data);
         Map<String,Object> params = new HashMap<>();
         params.put("FECHA_EMISION", LocalDate.now());
         params.put("RANGO",
-                (f.getDesde()!=null?f.getDesde():"∞") + " ➜ " + (f.getHasta()!=null?f.getHasta():"∞"));
+                (f.getDesde()!=null?f.getDesde():"∞") + " --> " + (f.getHasta()!=null?f.getHasta():"∞"));//si no pongo nada infinito
 
         JasperPrint print = JasperFillManager.fillReport(jasperPlantilla, params, ds);
         byte[] pdfBytes = JasperExportManager.exportReportToPdf(print);
         return new ByteArrayResource(pdfBytes);
     }
-
+    
+    
+    //excel a medias, pero no me va
     private ByteArrayResource exportarExcel(List<FaltaDetalle> data, FiltroInforme f) throws Exception {
         try (Workbook wb = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Sheet sheet = wb.createSheet("Faltas");
@@ -115,6 +123,8 @@ public class InformeService {
         }
     }
 
+    
+    //otros servicios
     public ByteArrayResource generarPorPeriodo(Tipo tipo, LocalDate ref, Integer idDocente, Integer idGrupo, Formato formato) throws Exception {
         Map<String,LocalDate> p = PeriodoUtils.calcular(tipo, ref);
         FiltroInforme f = new FiltroInforme();

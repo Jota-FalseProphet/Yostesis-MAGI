@@ -35,7 +35,7 @@ public class HorarioDocenteSesion {
 
     private String ocupacion;
 
-    /* getters — sin setters (vista de solo lectura supongo que lo usaré para el modulo de informes) */
+    // getters sin setters (vista de solo lectura supongo que lo usaré para el modulo de informes)
     public Integer getIdSesion()       { return idSesion; }
     public String  getPlantilla()      { return plantilla; }
     public String  getDiaSemana()      { return diaSemana; }

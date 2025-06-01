@@ -12,7 +12,6 @@ public class Grupo {
     @Column(name = "id_grupo")
     private Integer idGrupo;
 
-    // Mapeamos a la columna 'nombre' de la tabla
     @Column(name = "nombre", nullable = false, unique = true, length = 50)
     private String nomGrupo;
 

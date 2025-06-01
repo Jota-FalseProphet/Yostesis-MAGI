@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import com.magi.api.model.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, String> {
-
+	//reop para  hacer la consulta de la tabla usuarios
     boolean existsByDni(String dni);
 
     @Query("select u.password from Usuario u where u.dni = :dni")

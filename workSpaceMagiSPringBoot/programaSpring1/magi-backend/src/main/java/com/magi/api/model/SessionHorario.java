@@ -1,7 +1,7 @@
 package com.magi.api.model;
 
 import java.time.LocalTime;
-
+//hola
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -18,7 +18,7 @@ public class SessionHorario {
     private Integer idSessio;
 
     @Column(name = "plantilla", insertable = false, updatable = false)
-    private String plantilla;  // READ‑ONLY
+    private String plantilla; 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_grupo", nullable = false)

@@ -21,26 +21,21 @@ public class SesionService {
         this.repo = repo;
     }
 
-    /**
-     * Devuelve las sesiones que imparte un docente en la fecha indicada.
-     * 1. Convierte la fecha a clave de día que está guardada en la BD
-     *    (primero abreviatura «L», «M», «X», …; si no hay resultados,
-     *    prueba con el nombre completo «Lunes», «Martes», …).
-     * 2. Mapea cada SessionHorario → SesionDTO.
-     */
+    //devuelve las sesiones que imparte un docente en la fecha indicada
+     //kluego convierto la fecha a clave de dia que está guardada en la BD
     public List<SesionDTO> obtenerSesiones(Integer docenteId, LocalDate fecha) {
 
-        /* --- 1) Intento con la abreviatura (L-V, S, D) ------------------- */
+        //aqi intento con la abreviatura
         String claveDia = abreviaturaDia(fecha);
         List<SessionHorario> sesiones = repo.findByDocenteAndDia(docenteId, claveDia);
 
-        /* --- 2) Si no hay resultados, pruebo con el nombre completo ------- */
+        //pero si no hay resultados pruebo con el nombre completo
         if (sesiones.isEmpty()) {
-            claveDia = nombreCompletoDia(fecha);          // «Lunes», «Martes», …
+            claveDia = nombreCompletoDia(fecha);         
             sesiones = repo.findByDocenteAndDia(docenteId, claveDia);
         }
 
-        /* --- 3) Mapeo a DTO ------------------------------------------------ */
+        //mapeo del dto
         return sesiones.stream()
                 .map(sh -> new SesionDTO(
                         sh.getIdSessio(),
@@ -50,16 +45,12 @@ public class SesionService {
                 .collect(Collectors.toList());
     }
 
-    /* ==================================================================== */
-    /* Utilidades                                                           */
-    /* ==================================================================== */
-
-    /** Devuelve «L», «M», «X», «J», «V», «S» o «D» según el día de la fecha */
+    
     private String abreviaturaDia(LocalDate f) {
         return switch (f.getDayOfWeek()) {
             case MONDAY    -> "L";
             case TUESDAY   -> "M";
-            case WEDNESDAY -> "X";   // o «Mi» según tu BD
+            case WEDNESDAY -> "X"; //en la base de datos uso X
             case THURSDAY  -> "J";
             case FRIDAY    -> "V";
             case SATURDAY  -> "S";
@@ -67,10 +58,10 @@ public class SesionService {
         };
     }
 
-    /** Devuelve «Lunes», «Martes», … con mayúscula inicial */
+ //devuelve dias de la semana con mayuscula inicial
     private String nombreCompletoDia(LocalDate f) {
         DayOfWeek dow = f.getDayOfWeek();
-        String n = dow.getDisplayName(TextStyle.FULL, new Locale("es", "ES")); // «lunes»
-        return Character.toUpperCase(n.charAt(0)) + n.substring(1);            // «Lunes»
+        String n = dow.getDisplayName(TextStyle.FULL, new Locale("es", "ES")); // lunes
+        return Character.toUpperCase(n.charAt(0)) + n.substring(1);            // Lunes
     }
 }

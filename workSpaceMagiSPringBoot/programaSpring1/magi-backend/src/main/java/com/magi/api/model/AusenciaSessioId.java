@@ -1,4 +1,3 @@
-// src/main/java/com/magi/api/model/AusenciaSessioId.java
 package com.magi.api.model;
 
 import jakarta.persistence.Column;

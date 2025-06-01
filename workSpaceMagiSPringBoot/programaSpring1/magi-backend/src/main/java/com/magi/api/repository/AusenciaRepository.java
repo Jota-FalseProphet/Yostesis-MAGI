@@ -1,4 +1,3 @@
-// src/main/java/com/magi/api/repository/AusenciaRepository.java
 package com.magi.api.repository;
 
 import java.time.LocalDate;

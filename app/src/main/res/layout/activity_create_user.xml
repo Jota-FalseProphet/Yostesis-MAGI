@@ -1,134 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_create_user_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blanco">
+    android:background="@color/blanco"
+    tools:context=".activities.CreateUserActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
+    <!-- Logo grande, centrado en la parte superior -->
+    <ImageView
+        android:id="@+id/logoIconCreate"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="48dp"
+        android:contentDescription="@string/icono_magi"
+        android:src="@drawable/logo_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <!-- Texto MAGI (logoText), justo debajo del icono -->
+    <ImageView
+        android:id="@+id/logoTextCreate"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:background="@color/blanco"
-        android:elevation="4dp">
+        android:layout_marginTop="8dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/logo_magi"
+        android:scaleType="centerInside"
+        android:src="@drawable/logo_text"
+        app:layout_constraintTop_toBottomOf="@id/logoIconCreate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="ContentDescription" />
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/topAppBar"
-            style="@style/Widget.MaterialComponents.Toolbar.PrimarySurface"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
+    <!-- Campo DNI -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutDniCreate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/usuario"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="24dp"
+        app:boxStrokeColor="@color/gris_magi"
+        app:hintTextColor="@color/amarillo_magi"
+        app:passwordToggleEnabled="false"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:layout_constraintTop_toBottomOf="@id/logoTextCreate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-            app:navigationIconTint="@color/gris_oscuro"
-            app:backgroundTint="@color/blanco">
-
-            <ImageView
-                android:id="@+id/logoText_toolbar"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/logo_text"
-                android:contentDescription="@string/logo_magi" />
-        </com.google.android.material.appbar.MaterialToolbar>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:background="@drawable/toolbar_dropshadow"/>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="24dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <!-- Logo grande de MAGI -->
-        <ImageView
-            android:id="@+id/logoIcon"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="32dp"
-            android:contentDescription="@string/icono_magi"
-            android:src="@drawable/logo_icon" />
-
-        <!-- Campo DNI -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layoutDni"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editDniCreate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/usuario"
-            android:layout_marginTop="24dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxStrokeColor="@color/gris_magi"
-            app:boxCornerRadiusTopStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusBottomEnd="8dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editDni"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:textColorHint="@color/amarillo_magi"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            android:inputType="textPersonName"
+            android:textColorHint="@color/amarillo_magi"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Campo contraseña -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layoutPassword"
+    <!-- Campo Nombre Completo -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutNombreCreate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/nombre_completo"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="16dp"
+        app:boxStrokeColor="@color/gris_magi"
+        app:hintTextColor="@color/amarillo_magi"
+        app:passwordToggleEnabled="false"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:layout_constraintTop_toBottomOf="@id/layoutDniCreate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editNombreCreate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/contrase_a"
-            android:layout_marginTop="16dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxStrokeColor="@color/gris_magi"
-            app:passwordToggleEnabled="true"
-            app:boxCornerRadiusTopStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusBottomEnd="8dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:textColorHint="@color/amarillo_magi"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            android:inputType="textCapWords"
+            android:textColorHint="@color/amarillo_magi"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Campo repetir contraseña -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layoutRepeatPassword"
+    <!-- Campo Contraseña -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutPasswordCreate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/contrase_a"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="16dp"
+        app:boxStrokeColor="@color/gris_magi"
+        app:hintTextColor="@color/amarillo_magi"
+        app:passwordToggleEnabled="true"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:layout_constraintTop_toBottomOf="@id/layoutNombreCreate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editPasswordCreate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Repetir contraseña"
-            android:layout_marginTop="16dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxStrokeColor="@color/gris_magi"
-            app:passwordToggleEnabled="true"
-            app:boxCornerRadiusTopStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusBottomEnd="8dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editRepeatPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:textColorHint="@color/amarillo_magi"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            android:inputType="textPassword"
+            android:textColorHint="@color/amarillo_magi"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Botón registrar -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonRegister"
+    <!-- Campo Repetir Contraseña -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutRepeatPasswordCreate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/repetir_contrase_a"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="16dp"
+        app:boxStrokeColor="@color/gris_magi"
+        app:hintTextColor="@color/amarillo_magi"
+        app:passwordToggleEnabled="true"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:layout_constraintTop_toBottomOf="@id/layoutPasswordCreate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editRepeatPasswordCreate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:backgroundTint="@color/amarillo_magi"
-            android:text="Registrarse"
-            android:textColor="@color/gris_oscuro"/>
-    </LinearLayout>
+            android:inputType="textPassword"
+            android:textColorHint="@color/amarillo_magi"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <!-- Botón Registrarse -->
+    <Button
+        android:id="@+id/buttonRegisterCreate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/amarillo_magi"
+        android:text="@string/registrarse"
+        android:textAllCaps="false"
+        android:textColor="@color/gris_oscuro"
+        app:layout_constraintTop_toBottomOf="@id/layoutRepeatPasswordCreate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Enlace para volver al Login si ya tiene cuenta -->
+    <TextView
+        android:id="@+id/tvLoginLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/ya_tienes_cuenta_iniciar_sesion"
+        android:textColor="@color/amarillo_magi"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/buttonRegisterCreate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

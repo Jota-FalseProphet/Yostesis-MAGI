@@ -62,7 +62,7 @@ import java.util.List;
  */
 public class InformesActivity extends AppCompatActivity {
 
-    /* ----------------- Constantes ----------------- */
+    //Constantes y tal
     private static final String TAG          = "InformesActivity";
     private static final String BASE_URL     = "https://magi.it.com/api/informes/faltas";
     private static final String DOC_URL      = "https://magi.it.com/api/docentes";
@@ -70,7 +70,7 @@ public class InformesActivity extends AppCompatActivity {
     private static final String PREFS        = "MAGI_PREFS";
     private static final String PREF_DNI     = "PREF_DNI";
 
-    /* ----------------- UI ----------------- */
+   //cosas de la UI
     private ChipGroup                  chipGroup;
     private View                       customRow;
     private MaterialAutoCompleteTextView autoTipo;
@@ -79,32 +79,30 @@ public class InformesActivity extends AppCompatActivity {
     private RecyclerView               recyclerInformes;
     private MaterialButton             btnVerPDF;
 
-    /* ----------------- Adaptadores / listas ----------------- */
+   //adaptadores
     private InformeAdapter             informeAdapter;
     private ArrayAdapter<String>       tipoAdapter;
     private ArrayAdapter<String>       adapterValores;
     private final List<Docente>        listaDocentes = new ArrayList<>();
     private final List<Grupo>          listaGrupos   = new ArrayList<>();
 
-    /* ----------------- Estado ----------------- */
+    //estado
     private String  periodoSeleccionado = "SEMANA";
     private int     idDocenteSel        = -1;
     private int     idGrupoSel          = -1;
     private String  dni;
     private boolean isAdmin;
 
-    /* ----------------- Persistencia ----------------- */
+    //para la persistencia
     private SharedPreferences prefs;
 
-    /* ****************************************************************************************** */
-    /* onCreate                                                                                  */
-    /* ****************************************************************************************** */
+   //el oncreate papá
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_informes);
 
-        /* -------- Tema claro + StatusBar -------- */
+       //tema siempre claro y el status bar tambien
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         Window w = getWindow();
@@ -118,20 +116,20 @@ public class InformesActivity extends AppCompatActivity {
             return insets;
         });
 
-        /* -------- Preferencias sesión -------- */
+        //preferencias para la sesion
         prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         dni     = getIntent().getStringExtra("DNI");
         isAdmin = getIntent().getBooleanExtra("IS_ADMIN", false);
         if (dni == null) dni = prefs.getString(PREF_DNI, null);
         else prefs.edit().putString(PREF_DNI, dni).apply();
 
-        /* -------- Toolbar -------- */
+       //toolbar bonitom
         findViewById(R.id.logoText_toolbar).setOnClickListener(v ->
                 startActivity(new Intent(this, DashboardActivity.class)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP)));
         findViewById(R.id.ic_menu_toolbar).setOnClickListener(this::showModulesMenu);
 
-        // -------- FindView --------
+       //encontrar vistas y tal
         chipGroup        = findViewById(R.id.chipGroupPeriodo);
         customRow        = findViewById(R.id.customFilterRow);
         autoTipo         = findViewById(R.id.autoTipo);

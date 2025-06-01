@@ -41,7 +41,7 @@ public class AusenciaService {
 
     @Transactional
     public int crearAusencia(CrearAusenciaDTO dto) {
-        
+        //meter ausencias para el admin
         if (repoAus.existsByDocent_IdDocentAndFechaAusencia(dto.getIdDocente(), dto.getFecha())) {
             throw new IllegalStateException("YA_EXISTE_FALTA");
         }

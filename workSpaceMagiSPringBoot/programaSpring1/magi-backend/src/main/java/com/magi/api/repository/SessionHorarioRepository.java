@@ -10,10 +10,8 @@ import com.magi.api.model.SessionHorario;
 
 public interface SessionHorarioRepository extends JpaRepository<SessionHorario, Integer> {
 
-    /**
-     * Devuelve las sesiones (tramos) que imparte el docente con ID dado en el día de la semana indicado.
-     * Hacemos JOIN sobre DocentSessio y devolvemos ds.session.
-     */
+    //Devuelve las sesiones por tramos que imparte el docente 
+          
     @Query("""
         SELECT ds.session
           FROM DocentSessio ds

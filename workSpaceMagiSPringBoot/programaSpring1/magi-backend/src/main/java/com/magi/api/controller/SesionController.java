@@ -24,30 +24,21 @@ public class SesionController {
         this.repo = repo;
     }
 
-    /**
-     * GET /api/sesiones?docenteId=3&fecha=2025-06-10
-     * Devuelve los tramos que imparte el docente ese día.
-     * Lógica:
-     *   1) Convertir LocalDate → abreviatura de día (L, M, X, J, V, S, D).
-     *   2) Si no hay filas, reintentar con nombre completo (“Lunes”, “Martes”, …).
-     *   3) Mapear cada SessionHorario a SesionDTO, manejando posible grupo nulo.
-     */
     @GetMapping
     public List<SesionDTO> sesionesDeDia(
             @RequestParam Integer docenteId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
 
-        // 1) Intento con la abreviatura de día (L, M, X, J, V, S, D)
+     
         String claveDia = abreviaturaDia(fecha);
         List<SessionHorario> sesiones = repo.findByDocenteAndDia(docenteId, claveDia);
 
-        // 2) Si no hay resultados, pruebo con nombre completo (“Lunes”, “Martes”…)
+    
         if (sesiones.isEmpty()) {
-            claveDia = nombreCompletoDia(fecha);  // “Lunes”, “Martes”, …
+            claveDia = nombreCompletoDia(fecha); 
             sesiones = repo.findByDocenteAndDia(docenteId, claveDia);
         }
 
-        // 3) Mapear a DTO (con null-safe para el nombre de grupo)
         return sesiones.stream()
                 .map(sh -> {
                     String nombreGrupo = null;
@@ -64,9 +55,7 @@ public class SesionController {
                 .collect(Collectors.toList());
     }
 
-    /* ====================== MÉTODOS AUXILIARES ====================== */
-
-    /** Devuelve “L”, “M”, “X”, “J”, “V”, “S” o “D” según el DayOfWeek */
+    //devuelve la letra segund DayOfWeek
     private String abreviaturaDia(LocalDate fecha) {
         return switch (fecha.getDayOfWeek()) {
             case MONDAY    -> "L";
@@ -79,10 +68,9 @@ public class SesionController {
         };
     }
 
-    /** Devuelve “Lunes”, “Martes”, … (primera letra en mayúscula) */
     private String nombreCompletoDia(LocalDate fecha) {
         DayOfWeek dow = fecha.getDayOfWeek();
-        String nombre = dow.getDisplayName(TextStyle.FULL, new Locale("es", "ES")); // “lunes”
-        return Character.toUpperCase(nombre.charAt(0)) + nombre.substring(1);       // “Lunes”
+        String nombre = dow.getDisplayName(TextStyle.FULL, new Locale("es", "ES")); 
+        return Character.toUpperCase(nombre.charAt(0)) + nombre.substring(1);   
     }
 }

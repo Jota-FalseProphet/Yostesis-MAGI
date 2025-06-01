@@ -34,7 +34,11 @@
     <string name="filtro_tipo">Filtrar por</string>
     <string name="filtro_elegir">Elegir</string>
     <string name="filtro_rango">Rango de fechas</string>
-
+    <string name="nombre_completo">Nombre completo\n</string>
+    <string name="repetir_contrase_a">Repetir contraseña</string>
+    <string name="registrarse">Registrarse</string>
+    <string name="ya_tienes_cuenta_iniciar_sesion">¿Ya tienes cuenta? Iniciar sesión</string>
+    <string name="cd_profile_photo">PlaceHolder Foto\n</string>
 
 
 </resources>

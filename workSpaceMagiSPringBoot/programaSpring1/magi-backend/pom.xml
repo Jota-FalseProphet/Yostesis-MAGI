@@ -16,24 +16,21 @@
 
   <groupId>com.magi</groupId>
   <artifactId>magi-backend</artifactId>
-  <version>1.0.0.3</version>
+  <version>1.3</version>
   <name>magi-backend</name>
   <description>API Spring Boot para M.A.G.I</description>
   <packaging>jar</packaging>
 
-  <!-- ➕  Versiones centralizadas para que sea fácil actualizarlas -->
   <properties>
     <java.version>17</java.version>
     <postgresql.version>42.7.3</postgresql.version>
     <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
 
-    <!-- informes -->
     <jasperreports.version>6.21.0</jasperreports.version>
     <poi.version>5.2.5</poi.version>
   </properties>
 
   <dependencies>
-    <!-- Spring Web y JPA -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
@@ -43,41 +40,35 @@
       <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
 
-    <!-- Conector PostgreSQL -->
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>${postgresql.version}</version>
     </dependency>
 
-    <!-- ➕ JasperReports para generar PDF -->
     <dependency>
       <groupId>net.sf.jasperreports</groupId>
       <artifactId>jasperreports</artifactId>
       <version>${jasperreports.version}</version>
     </dependency>
 
-    <!-- ➕ Apache POI para generar Excel (XLSX) -->
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>
       <version>${poi.version}</version>
     </dependency>
 
-    <!-- ➕ JAXB runtime (Java 17 ya no lo trae en el JDK y Jasper lo necesita) -->
     <dependency>
       <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-runtime</artifactId>
     </dependency>
 
-    <!-- Tests -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
 
-    <!-- Spring Security Crypto -->
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-crypto</artifactId>
@@ -98,7 +89,6 @@
 
   <build>
     <plugins>
-      <!-- Compilador -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -108,7 +98,6 @@
         </configuration>
       </plugin>
 
-      <!-- Empaquetado Spring Boot -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>

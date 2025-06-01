@@ -4,17 +4,11 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-/**
- * Clave primaria compuesta para la vista vw_faltas_resumen:
- *   - mes  (primer día del mes)
- *   - idDocente
- */
 public class FaltaResumenId implements Serializable {
 
     private LocalDate mes;
     private Integer   idDocente;
 
-    /* ---------- Constructores ---------- */
     public FaltaResumenId() {
     }
 
@@ -23,7 +17,6 @@ public class FaltaResumenId implements Serializable {
         this.idDocente = idDocente;
     }
 
-    /* ---------- Getters & Setters ---------- */
     public LocalDate getMes() {
         return mes;
     }
@@ -40,7 +33,6 @@ public class FaltaResumenId implements Serializable {
         this.idDocente = idDocente;
     }
 
-    /* ---------- equals & hashCode ---------- */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -55,7 +47,6 @@ public class FaltaResumenId implements Serializable {
         return Objects.hash(mes, idDocente);
     }
 
-    /* ---------- toString ---------- */
     @Override
     public String toString() {
         return "FaltaResumenId{" +

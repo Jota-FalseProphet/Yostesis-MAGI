@@ -6,17 +6,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
-/**
- * Proyección detallada de cada sesión afectada por una ausencia,
- * más la guardia que la cubre (si existe).
- */
+
 @Entity
 @Table(name = "vw_faltas")
 @org.hibernate.annotations.Immutable
 @IdClass(FaltaDetalleId.class)
 public class FaltaDetalle implements Serializable {
 
-    // ---------- PK compuesta ----------
     @Id
     @Column(name = "id_ausencia")
     private Long idAusencia;
@@ -25,7 +21,6 @@ public class FaltaDetalle implements Serializable {
     @Column(name = "id_sessio")
     private Integer idSessio;
 
-    // ---------- Campos de la vista ----------
     private LocalDate fecha;
 
     @Column(name = "id_docente")
@@ -53,7 +48,6 @@ public class FaltaDetalle implements Serializable {
     @Column(name = "hora_fins")
     private LocalTime horaFins;
 
-    // ---------- Constructors ----------
     public FaltaDetalle() {
     }
 
@@ -74,7 +68,6 @@ public class FaltaDetalle implements Serializable {
         this.horaFins = horaFins;
     }
 
-    // ---------- Getters & Setters ----------
     public Long getIdAusencia() {
         return idAusencia;
     }

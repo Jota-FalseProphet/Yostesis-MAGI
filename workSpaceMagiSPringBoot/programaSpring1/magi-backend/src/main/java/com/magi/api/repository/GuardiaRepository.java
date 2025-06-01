@@ -15,9 +15,7 @@ import com.magi.api.dto.GuardiaHistoricoDTO;
 
 public interface GuardiaRepository extends JpaRepository<Guardia, Long> {
 
-    /**
-     * Inserta o actualiza en un solo paso (INSERT ... ON CONFLICT).
-     */
+    //se inserta o actualiza
     @Modifying
     @Transactional
     @Query(value =
@@ -36,15 +34,14 @@ public interface GuardiaRepository extends JpaRepository<Guardia, Long> {
         @Param("fechaGuardia")     LocalDate fechaGuardia
     );
 
-    /**
-     * Devuelve todas las guardias como entidades Guardia.
-     */
+     //devuelve todas las guardias como entidades guardia
+     
     List<Guardia> findByDocentAssignatDni(String dni);
 
-    /**
-     * Histórico completo de guardias de un docente (por DNI), mapeado al DTO
-     * con sesión y franja horaria (desde–fins) correctas.
-     */
+    
+    //Histórico completo de guardias de un docente lo valido por dni y está mapeado al DTO
+    
+    
     @Query(value = """
       SELECT 
         g.id_guardia::bigint                     AS id,
@@ -68,9 +65,7 @@ public interface GuardiaRepository extends JpaRepository<Guardia, Long> {
     """, nativeQuery = true)
     List<GuardiaHistoricoDTO> findHistoricoNativePorDni(@Param("dni") String dni);
 
-    /**
-     * Histórico completo de todas las guardias (para administrador).
-     */
+    //historico completo de todas las guardias pero solo para el admin
     @Query(value = """
       SELECT 
         g.id_guardia::bigint                     AS id,

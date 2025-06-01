@@ -1,5 +1,3 @@
-// src/main/java/com/magi/api/controller/GrupoController.java
-
 package com.magi.api.controller;
 
 import com.magi.api.dto.GrupoDTO;
@@ -22,7 +20,6 @@ public class GrupoController {
 
     @GetMapping
     public List<GrupoDTO> listarGrupos() {
-        // Recuperamos todas las entidades, y para cada una construimos el DTO
         return grupoRepository.findAll().stream()
             .map(g -> new GrupoDTO(g.getIdGrupo(), g.getNomGrupo()))
             .collect(Collectors.toList());

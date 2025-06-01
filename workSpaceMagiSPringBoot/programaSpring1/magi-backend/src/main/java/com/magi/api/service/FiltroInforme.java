@@ -3,11 +3,13 @@ package com.magi.api.service;
 import java.time.LocalDate;
 
 public class FiltroInforme {
-
-    private LocalDate desde;          // null ⇒ sin límite inferior
-    private LocalDate hasta;          // null ⇒ sin límite superior
-    private Integer   idDocente;      // null ⇒ todos
-    private Integer   idGrupo;        // null ⇒ todos
+	
+	
+	//llamo entidades para armarme mis filtros
+    private LocalDate desde;          
+    private LocalDate hasta;          
+    private Integer   idDocente;      
+    private Integer   idGrupo;        
     private Formato   formato = Formato.JSON;
 
     public enum Formato { JSON, PDF, XLSX }

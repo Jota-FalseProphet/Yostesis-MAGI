@@ -1,9 +1,5 @@
 package com.magi.api.dto;
 
-/**
- * DTO simplificado de un docente: solo id y nombre completo.
- * La app Android espera dos propiedades: "id" (Integer) y "nombre" (String).
- */
 public class DocenteDTO {
 
     private Integer id;

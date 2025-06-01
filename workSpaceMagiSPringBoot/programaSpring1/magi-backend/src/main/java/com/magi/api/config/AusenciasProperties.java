@@ -7,14 +7,11 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "magi.ausencias")
 public class AusenciasProperties {
 
-    /**
-     * Minutos de gracia antes de generar ausencia.
-     */
+    ///minutos de gracia antes de generar ausencia.
     private int graciaMin;
 
-    /**
-     * Código de plantilla para filtrar sesiones.
-     */
+    //codigo de plantilla para filtrar sesiones.
+  
     private String plantilla;
 
     public int getGraciaMin() {

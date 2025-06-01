@@ -1,4 +1,3 @@
-// src/main/java/com/magi/api/model/Aula.java
 package com.magi.api.model;
 
 import jakarta.persistence.*;

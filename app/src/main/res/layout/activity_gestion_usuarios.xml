@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_gestion_usuarios_drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blanco"
+    android:fitsSystemWindows="true">
+
+    <!-- Contenido principal con Toolbar + formulario de creación -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/activity_gestion_usuarios_constraint_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:background="@color/blanco">
+
+        <!-- ======== Toolbar idéntico al resto de pantallas ======== -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/blanco"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- LOGO a la izquierda -->
+            <ImageView
+                android:id="@+id/logoText_toolbar"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="25dp"
+                android:src="@drawable/logo_text" />
+
+            <!-- ICONO DE MENÚ a la derecha -->
+            <ImageView
+                android:id="@+id/ic_menu_toolbar"
+                android:layout_width="35dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="25dp"
+                android:src="@drawable/ic_menu"
+                app:tint="@color/gris_oscuro_2" />
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+        <!-- Sombra justo debajo del Toolbar -->
+        <View
+            android:id="@+id/toolbar_shadow"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:background="@drawable/toolbar_dropshadow"
+            app:layout_constraintTop_toBottomOf="@id/topAppBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <!-- ===== Contenedor del formulario de creación ===== -->
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            android:backgroundTint="@color/blanco"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_shadow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="32dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:backgroundTint="@color/blanco">
+
+                <!-- Logo grande, centrado en la parte superior -->
+                <ImageView
+                    android:id="@+id/logoIconCreate"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="32dp"
+                    android:contentDescription="@string/icono_magi"
+                    android:src="@drawable/logo_icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:ignore="ContentDescription" />
+
+                <!-- Texto MAGI (logoText), justo debajo del icono -->
+                <ImageView
+                    android:id="@+id/logoTextCreate"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/logo_magi"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/logo_text"
+                    app:layout_constraintTop_toBottomOf="@id/logoIconCreate"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:ignore="ContentDescription" />
+
+                <!-- Campo DNI -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutDniCreate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/usuario"
+                    android:layout_marginTop="24dp"
+                    app:boxStrokeColor="@color/gris_magi"
+                    app:hintTextColor="@color/amarillo_magi"
+                    app:passwordToggleEnabled="false"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:layout_constraintTop_toBottomOf="@id/logoTextCreate"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editDniCreate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:textColorHint="@color/amarillo_magi"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Campo Nombre Completo -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutNombreCreate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/nombre_completo"
+                    android:layout_marginTop="16dp"
+                    app:boxStrokeColor="@color/gris_magi"
+                    app:hintTextColor="@color/amarillo_magi"
+                    app:passwordToggleEnabled="false"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:layout_constraintTop_toBottomOf="@id/layoutDniCreate"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editNombreCreate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapWords"
+                        android:textColorHint="@color/amarillo_magi"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Campo Contraseña -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutPasswordCreate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/contrase_a"
+                    android:layout_marginTop="16dp"
+                    app:boxStrokeColor="@color/gris_magi"
+                    app:hintTextColor="@color/amarillo_magi"
+                    app:passwordToggleEnabled="true"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:layout_constraintTop_toBottomOf="@id/layoutNombreCreate"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editPasswordCreate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:textColorHint="@color/amarillo_magi"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Campo Repetir Contraseña -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutRepeatPasswordCreate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/repetir_contrase_a"
+                    android:layout_marginTop="16dp"
+                    app:boxStrokeColor="@color/gris_magi"
+                    app:hintTextColor="@color/amarillo_magi"
+                    app:passwordToggleEnabled="true"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:layout_constraintTop_toBottomOf="@id/layoutPasswordCreate"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editRepeatPasswordCreate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:textColorHint="@color/amarillo_magi"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Botón Crear Usuario -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonRegisterCreate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:backgroundTint="@color/amarillo_magi"
+                    android:text="@string/registrarse"
+                    android:textAllCaps="false"
+                    android:textColor="@color/gris_oscuro"
+                    app:layout_constraintTop_toBottomOf="@id/layoutRepeatPasswordCreate"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Drawer de navegación lateral (mismo menú que en las demás pantallas) -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/menu_dashboard"
+        app:itemIconTint="@color/amarillo_magi"
+        app:itemTextColor="@color/gris_oscuro"/>
+
+</androidx.drawerlayout.widget.DrawerLayout>

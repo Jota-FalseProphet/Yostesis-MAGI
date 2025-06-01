@@ -77,17 +77,18 @@ public class MenuActivity extends AppCompatActivity {
         ImageView menuIcon = findViewById(R.id.ic_menu_toolbar);
         menuIcon.setOnClickListener(this::showModulesMenu);
 
-        /* ------------------ Botones ------------------ */
+      //botones
         MaterialButton btnUserAdmin = findViewById(R.id.btnUserAdmin);
         MaterialButton btnPerfil    = findViewById(R.id.btnPerfil);
         MaterialButton btnAjustes   = findViewById(R.id.btnAjustes);
         MaterialButton btnAddFalta  = findViewById(R.id.btnAddFalta);
 
-        // 1. Gestión de usuarios  (solo admin)
+       //gestion de usuarios
         if (isAdmin) {
             btnUserAdmin.setOnClickListener(v -> {
-                // De momento muestra un toast; crea tu actividad cuando la tengas
-                Toast.makeText(this, "Gestión de usuarios (en desarrollo)", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, GestionUsuariosActivity.class);
+                intent.putExtras(getIntent().getExtras());
+                startActivity(intent);
             });
         } else {
             btnUserAdmin.setEnabled(false);
@@ -95,7 +96,7 @@ public class MenuActivity extends AppCompatActivity {
 
         }
 
-        // 2. Mi perfil
+        //mi perfil
         btnPerfil.setOnClickListener(v -> {
             Intent intent = new Intent(this, ProfileActivity.class);
             intent.putExtras(getIntent().getExtras());
@@ -104,7 +105,6 @@ public class MenuActivity extends AppCompatActivity {
 
         if (isAdmin) {
             btnAddFalta.setOnClickListener(v -> {
-                // Reemplaza AddFaltaActivity.class por la actividad real que crearás
                 Intent intent = new Intent(this, AddFaltaActivity.class);
                 intent.putExtras(getIntent().getExtras());
                 startActivity(intent);
@@ -114,7 +114,7 @@ public class MenuActivity extends AppCompatActivity {
             btnAddFalta.setAlpha(0.5f);
         }
 
-        // 3. Ajustes
+        //ajustes
         btnAjustes.setOnClickListener(v -> {
             Intent intent = new Intent(this, SettingsActivity.class);
             intent.putExtras(getIntent().getExtras());
@@ -122,7 +122,8 @@ public class MenuActivity extends AppCompatActivity {
         });
     }
 
-    /* -------- Menú desplegable (misma lógica que Dashboard) -------- */
+    //menudesplegablemismalogicadeldashboard jejeje
+    //menudesplegablemismalogicadeldashboard jejeje
     private void showModulesMenu(View anchor) {
         Context wrapper = new ContextThemeWrapper(this, R.style.ThemeOverlay_PopupMAGI);
         androidx.appcompat.widget.PopupMenu popup =

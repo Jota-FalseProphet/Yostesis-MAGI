@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.magi.api.model.HorarioDocenteSesion;
 import com.magi.api.repository.HorarioDocenteSesionRepository;
-
+//servicio para marcar los hrarios del profe, creo que lo usaré para meter las franjas que no vaya a asistir
 @Service
 public class HorarioDocenteSesionService {
 

@@ -1,4 +1,3 @@
-// src/main/java/com/magi/api/model/Ausencia.java
 package com.magi.api.model;
 
 import java.time.LocalDate;
@@ -25,11 +24,9 @@ public class Ausencia {
     @Column(name = "is_full_day", nullable = false)
     private Boolean fullDay;
 
-    // ------------------ Nuevo campo motivo ------------------
     @Column(name = "motivo", nullable = false, length = 30)
     private String motivo;
 
-    // ------------------ Relación con ausencies_sessio ------------------
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_ausencia", referencedColumnName = "id_ausencia")
     private Set<AusenciaSessio> sesionesAsociadas;

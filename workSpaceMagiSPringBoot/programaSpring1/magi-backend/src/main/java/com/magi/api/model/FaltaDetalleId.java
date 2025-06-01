@@ -3,9 +3,7 @@ package com.magi.api.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * Clave primaria compuesta para FaltaDetalle.
- */
+
 public class FaltaDetalleId implements Serializable {
 
     private Long idAusencia;

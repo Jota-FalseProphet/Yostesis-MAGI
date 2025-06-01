@@ -83,18 +83,13 @@ public class GuardiaService {
         }
     }
 
-    /**
-     * Historico para un usuario: usa el nativeQuery que mapea directamente al DTO.
-     */
+    //para mostrar el histórico solo de ese usuario
     @Transactional(readOnly=true)
     public List<GuardiaHistoricoDTO> historicoGuardiasPorDni(String dni) {
         return guardiaRepo.findHistoricoNativePorDni(dni);
     }
 
-    /**
-     * Historico para el admin: recupera todas las guardias (nativeQuery)
-     * y las agrupa por DNI del asignado.
-     */
+    //histórico de todas las guardias visible para el admin
     @Transactional(readOnly=true)
     public Map<String,List<GuardiaHistoricoDTO>> historicoAgrupadoPorDocente() {
         return guardiaRepo.findHistoricoNativeAll().stream()

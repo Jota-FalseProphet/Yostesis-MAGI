@@ -1,5 +1,3 @@
-// src/main/java/com/magi/api/dto/GrupoDTO.java
-
 package com.magi.api.dto;
 
 public class GrupoDTO {

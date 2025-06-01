@@ -15,10 +15,7 @@ import com.magi.api.model.*;
 public interface AusenciaSessioRepository
         extends JpaRepository<AusenciaSessio, AusenciaSessioId> {
 
-    /**
-     * Todas las sesiones de ausencias ya empezadas (inicio + gracia),
-     * devolviendo el nombre del grupo (g.nombre) o el código de plantilla.
-     */
+    //Todas las sesiones de ausencias ya empezadas inicio y 5m de gracia devolviendo el nombre del grupo
     @Query(value = """
       SELECT sh.id_sessio         AS idSessio,
              sh.dia_setmana       AS diaSetmana,
@@ -51,10 +48,7 @@ public interface AusenciaSessioRepository
         @Param("graciaMin") int       graciaMin
     );
 
-    /**
-     * Todas las ausencias del día (06–23h) sin filtro de gracia,
-     * mostrando igualmente el nombre de grupo o plantilla.
-     */
+    //todas las ausencias del dia ()mi dia va de 6h a 23h por si acaso dar margen
     @Query(value = """
       SELECT sh.id_sessio         AS idSessio,
              sh.dia_setmana       AS diaSetmana,
@@ -81,10 +75,7 @@ public interface AusenciaSessioRepository
     """, nativeQuery = true)
     List<SessionGuardiaDTO> findGuardiasDelDia(@Param("fecha") LocalDate fecha);
 
-    /**
-     * Recupera **un** ausente vinculado a esa sesión (limit 1)
-     * para evitar errores de “no unique result”.
-     */
+    //recuopera un ausente vinculado a la sesion pero solo 1 para evitar errores que no se ni como mapear  
     @Query(value = """
       SELECT d.*
         FROM ausencies_sessio s
@@ -99,7 +90,6 @@ public interface AusenciaSessioRepository
         @Param("fecha")    LocalDate fecha
     );
 
-    /*---------------------------------------------------*/
 
     @Query("""
        SELECT s.session
@@ -118,4 +108,6 @@ public interface AusenciaSessioRepository
         @Param("idSessio") Integer idSessio,
         @Param("fecha")    LocalDate fecha
     );
+    
+    //me quiero suicidar te odio pero te amo sql
 }

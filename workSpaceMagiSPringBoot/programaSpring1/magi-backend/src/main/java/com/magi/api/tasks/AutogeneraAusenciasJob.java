@@ -18,10 +18,7 @@ public class AutogeneraAusenciasJob {
         this.jdbc = jdbc;
     }
 
-    /**
-     * Cada minuto en el segundo 0, en horario de Europa/Madrid,
-     * enlaza ausencias a sesiones (creadas previamente).
-     */
+    //cada minuto en el segundo 0 del horario de madrid se enlazan las ausencias con las sesiones ya creada
     @Scheduled(cron = "0 * * * * *", zone = "Europe/Madrid")
     @Transactional
     public void ejecutarVinculacion() {
@@ -31,11 +28,8 @@ public class AutogeneraAusenciasJob {
         LOG.info("autogenera_ausencias(): filas vinculadas={}", vinculadas);
     }
 
-    /**
-     * Cada minuto en el segundo 10 (para espaciarlo un poco),
-     * en horario de Europa/Madrid, registra primero las ausencias
-     * que pasen el periodo de gracia.
-     */
+
+    //Aqui, cada minuto en el segundo 10 usando el horario de madrid registra todas las ausencias que sobrepasen el periodo de gracia de 5m
     @Scheduled(cron = "10 * * * * *", zone = "Europe/Madrid")
     @Transactional
     public void ejecutarRegistroYVinculacion() {

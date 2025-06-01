@@ -9,23 +9,21 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Acceso de solo lectura a la vista vw_faltas_resumen (agregados).
- */
-public interface FaltaResumenRepository
-        extends JpaRepository<FaltaResumen, FaltaResumenId> {  // ← aquí ya NO es Void
 
-    /* Resumen de un mes concreto (primer día del mes) */
+public interface FaltaResumenRepository
+        extends JpaRepository<FaltaResumen, FaltaResumenId> {  
+
+    //resumen del mes solo primer dia del mes
     List<FaltaResumen> findByMes(LocalDate mesPrimerDia);
 
-    /* Rango de meses (ambos inclusive) */
+   //rango de meses incluyendo amgos
     List<FaltaResumen> findByMesBetween(LocalDate desdeMes, LocalDate hastaMes);
 
-    /* Resumen de un docente en un rango dado */
+    //resumen de un docente dado un mes
     List<FaltaResumen> findByIdDocenteAndMesBetween(
             Integer idDocente, LocalDate desdeMes, LocalDate hastaMes);
 
-    /* Consulta flexible (mes, trimestre o curso) */
+    //consulta flexible para mes curso o semana
     @Query("""
            SELECT r
              FROM FaltaResumen r

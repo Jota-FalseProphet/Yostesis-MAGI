@@ -1,4 +1,3 @@
-// FichajeRepository.java
 package com.magi.api.repository;
 
 import java.time.LocalDate;
@@ -13,10 +12,10 @@ import com.magi.api.model.Usuario;
 public interface FichajeRepository extends JpaRepository<Fichaje, Long> {
 	boolean existsByUsuarioAndFecha(Usuario usuario, LocalDate fecha);
 
-    // Todos los fichajes del usuario en esa fecha
+    // todos los fichajes del usuario en esa fecha
     List<Fichaje> findByUsuarioAndFecha(Usuario usuario, LocalDate fecha);
 
-    // El tramo abierto más reciente (sin horaFin) para hoy
+    // el tramo abierto más reciente para hoy
     Optional<Fichaje> findTopByUsuarioAndFechaAndHoraFinIsNullOrderByHoraInicioDesc(
         Usuario usuario,
         LocalDate fecha

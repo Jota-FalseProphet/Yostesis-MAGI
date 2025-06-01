@@ -5,12 +5,10 @@
               name="faltas" pageWidth="595" pageHeight="842" columnWidth="515"
               leftMargin="40" rightMargin="40" topMargin="50" bottomMargin="50" uuid="12345678-1234-1234-1234-123456789012">
 
-    <!-- PARAMETERS -->
     <parameter name="FECHA_EMISION" class="java.time.LocalDate"/>
     <parameter name="RANGO"        class="java.lang.String"/>
     <parameter name="REPORT_DIR"   class="java.lang.String"/>
 
-    <!-- FIELDS -->
     <field name="fecha"      class="java.time.LocalDate"/>
     <field name="docente"    class="java.lang.String"/>
     <field name="grupo"      class="java.lang.String"/>
@@ -18,18 +16,14 @@
     <field name="horaFins"   class="java.time.LocalTime"/>
     <field name="cubierta"   class="java.lang.Boolean"/>
 
-     <!-- 4. TÍTULO -->
     <title>
         <band height="60">
-            <!-- Logo desde classpath -->
             <image>
                 <reportElement x="0" y="0" width="80" height="40"/>
                 <imageExpression class="java.io.InputStream"><![CDATA[
                     $P{REPORT_CLASS_LOADER}.getResourceAsStream("images/magi_logo.png")
                 ]]></imageExpression>
             </image>
-
-            <!-- Texto principal -->
             <textField>
                 <reportElement x="50" y="0" width="415" height="30"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle">
@@ -37,8 +31,6 @@
                 </textElement>
                 <textFieldExpression><![CDATA["Informe de Faltas"]]></textFieldExpression>
             </textField>
-
-            <!-- Subtítulo (período) -->
             <textField>
                 <reportElement x="50" y="30" width="415" height="20"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
@@ -46,8 +38,6 @@
             </textField>
         </band>
     </title>
-
-    <!-- COLUMN HEADER -->
     <columnHeader>
         <band height="25">
             <staticText><reportElement x="30"   y="0" width="70"  height="25" backcolor="#FFC913" forecolor="#000000" mode="Opaque"/><text><![CDATA[Fecha]]></text></staticText>
@@ -58,8 +48,6 @@
             <staticText><reportElement x="400" y="0" width="85"  height="25" backcolor="#FFC913" forecolor="#000000" mode="Opaque"/><text><![CDATA[Cubierta]]></text></staticText>
         </band>
     </columnHeader>
-
-    <!-- DETAIL -->
     <detail>
         <band height="20">
             <textField>
@@ -73,8 +61,6 @@
             <textField><reportElement x="400" y="0" width="85"  height="20"/><textFieldExpression><![CDATA[$F{cubierta} ? "Sí" : "No" ]]></textFieldExpression></textField>
         </band>
     </detail>
-
-    <!-- PAGE FOOTER -->
     <pageFooter>
         <band height="20">
             <textField>

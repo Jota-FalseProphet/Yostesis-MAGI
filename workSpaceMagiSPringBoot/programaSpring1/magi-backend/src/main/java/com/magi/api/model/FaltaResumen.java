@@ -5,10 +5,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-/**
- * Resumen de faltas por periodo y docente.
- * Mapea la vista vw_faltas_resumen (solo lectura).
- */
+
 @Entity
 @Table(name = "vw_faltas_resumen")
 @org.hibernate.annotations.Immutable
@@ -17,23 +14,20 @@ public class FaltaResumen implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    // ---------- PK lógica: mes (primer día) + docente ----------
+  
     @Id
     @Column(name = "mes")
-    private LocalDate mes;                // primer día del mes
+    private LocalDate mes;   
 
     @Id
     @Column(name = "id_docente")
     private Integer idDocente;
 
-    // ---------- Agregados ----------
     @Column(name = "sesiones_faltadas")
     private Long sesionesFaltadas;
 
     @Column(name = "sesiones_cubiertas")
     private Long sesionesCubiertas;
-
-    // ---------- Constructores ----------
     public FaltaResumen() {
     }
 
@@ -47,7 +41,6 @@ public class FaltaResumen implements Serializable {
         this.sesionesCubiertas = sesionesCubiertas;
     }
 
-    // ---------- Getters & Setters ----------
     public LocalDate getMes() {
         return mes;
     }
@@ -80,7 +73,6 @@ public class FaltaResumen implements Serializable {
         this.sesionesCubiertas = sesionesCubiertas;
     }
 
-    // ---------- equals & hashCode (clave compuesta) ----------
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -95,7 +87,6 @@ public class FaltaResumen implements Serializable {
         return Objects.hash(mes, idDocente);
     }
 
-    // ---------- toString ----------
     @Override
     public String toString() {
         return "FaltaResumen{" +
