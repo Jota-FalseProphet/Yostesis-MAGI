@@ -2,12 +2,13 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_add_falta_coordinator"
+    android:id="@+id/add_falta_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blanco">
+    android:background="@color/blanco"
+    android:fitsSystemWindows="true">
 
-    <!-- APP BAR -->
+    <!-- 1 · APP BAR -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,109 +16,98 @@
         android:elevation="4dp">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/topAppBarAdd"
             style="@style/Widget.MaterialComponents.Toolbar.PrimarySurface"
+            android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
             app:contentInsetStart="0dp"
-            app:backgroundTint="@color/blanco">
+            app:backgroundTint="@color/blanco"
+            app:liftOnScroll="true"
+            app:liftOnScrollColor="@color/blanco"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
             <ImageView
-                android:id="@+id/ic_back_add"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="start|center_vertical"
-                app:tint="@color/negro" />
-
-            <TextView
-                android:id="@+id/title_add_falta"
-                android:layout_width="wrap_content"
+                android:id="@+id/logoText_toolbar"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Añadir falta"
-                android:textColor="@color/negro"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:layout_gravity="start|center_vertical"
+                android:src="@drawable/logo_text" />
+
+            <ImageView
+                android:id="@+id/ic_menu_toolbar"
+                android:layout_width="35dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:src="@drawable/ic_menu"
+                app:tint="@color/gris_oscuro_2" />
 
         </com.google.android.material.appbar.MaterialToolbar>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@drawable/toolbar_dropshadow"
+            app:backgroundTint="@color/blanco"
+            app:liftOnScrollColor="@color/blanco" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- CONTENIDO -->
-    <ScrollView
-        android:id="@+id/scrollAddFalta"
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="24dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:overScrollMode="never"
+        android:clipToPadding="false"
+        android:fitsSystemWindows="false">
 
         <LinearLayout
-            android:id="@+id/containerAddFalta"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
 
-            <!-- 1. DatePicker (solo el texto, abrimos DatePickerDialog al tocar) -->
+            <!-- ====== Aquí va el contenido original de activity_add_falta ====== -->
+
+
             <TextView
                 android:id="@+id/tvFecha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
+                android:background="@color/amarillo_magi"
+                android:gravity="start"
+                android:padding="8dp"
                 android:text="Fecha: 2025-06-01"
-                android:textColor="@color/negro"
-                android:drawablePadding="8dp"
-                android:gravity="start|center_vertical"
-                android:onClick="onClickFecha" />
-
-            <!-- 2. Spinner Docente -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Docente:"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/negro"
-                android:textStyle="bold"/>
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textColor="@color/gris_oscuro"
+                android:textStyle="bold"
+                android:elevation="6dp"
+                android:translationX="220dp" />
 
             <Spinner
                 android:id="@+id/spinnerDocente"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:spinnerMode="dropdown"
                 android:layout_marginTop="8dp"/>
 
-            <!-- 3. Switch “Todo el día” -->
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
+            <Switch
+                android:id="@+id/switchFullDay"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical">
+                android:text="Todo el día"
+                android:layout_marginTop="8dp"
+                android:checked="false"/>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Todo el día"
-                    android:textColor="@color/negro"
-                    android:textSize="16sp"/>
-
-                <Switch
-                    android:id="@+id/switchFullDay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-
-            <!-- 4. ChipGroup de sesiones (solo visible si fullDay = false) -->
             <TextView
                 android:id="@+id/tvSesionesLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sesiones:"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/negro"
-                android:textStyle="bold"
-                android:visibility="gone"/>
+                android:layout_marginTop="16dp"/>
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroupSesiones"
@@ -125,33 +115,25 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 app:singleSelection="false"
-                android:visibility="gone" />
-
-            <!-- 5. Spinner Motivo -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Motivo:"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/negro"
-                android:textStyle="bold"/>
+                app:chipSpacing="8dp"/>
 
             <Spinner
                 android:id="@+id/spinnerMotivo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="16dp"/>
 
-            <!-- 6. Botón “Guardar” -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnGuardarFalta"
-                style="@style/Widget.MaterialComponents.Button"
+                style="@style/Widget.MAGI.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Guardar"
-                android:enabled="false"/>
+                android:text="Guardar"/>
+
+            <!-- ================================================================ -->
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

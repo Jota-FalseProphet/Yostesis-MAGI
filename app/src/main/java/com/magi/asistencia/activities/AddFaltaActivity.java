@@ -1,8 +1,11 @@
-// src/main/java/com/magi/asistencia/activities/AddFaltaActivity.java
 package com.magi.asistencia.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,7 +16,14 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -65,7 +75,30 @@ public class AddFaltaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Carga el layout que incluye el AppBar
         setContentView(R.layout.activity_add_falta);
+
+        // ------- StatusBar claro --------
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView())
+                .setAppearanceLightStatusBars(true);
+
+        View root = findViewById(R.id.add_falta_coordinator_layout);
+        ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
+            Insets sys = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+            v.setPadding(0, sys.top, 0, 0);
+            return insets;
+        });
+
+        // ------- Toolbar --------
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(toolbar);
+        // Clic en logo vuelve a Dashboard
+        findViewById(R.id.logoText_toolbar).setOnClickListener(v ->
+                startActivity(new Intent(this, DashboardActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)));
+        // Clic en menú despliega opciones
+        findViewById(R.id.ic_menu_toolbar).setOnClickListener(this::mostrarMenu);
 
         tvFecha         = findViewById(R.id.tvFecha);
         spinnerDocente  = findViewById(R.id.spinnerDocente);
@@ -76,6 +109,11 @@ public class AddFaltaActivity extends AppCompatActivity {
         btnGuardar      = findViewById(R.id.btnGuardarFalta);
 
         httpClient = new OkHttpClient();
+
+        // 0. Asegurar switch apagado y vistas visibles
+        switchFullDay.setChecked(false);
+        tvSesionesLabel.setVisibility(View.VISIBLE);
+        chipGroupSesiones.setVisibility(View.VISIBLE);
 
         // 1. Fecha por defecto = hoy
         fechaSeleccionada = LocalDate.now();
@@ -252,6 +290,8 @@ public class AddFaltaActivity extends AppCompatActivity {
                         chip.setText(sesion.toString());
                         chip.setCheckable(true);
                         chip.setCheckedIconVisible(true);
+                        // Listener para actualizar validación cuando cambie el estado del chip
+                        chip.setOnCheckedChangeListener((buttonView, isChecked) -> validarCampos());
                         chipGroupSesiones.addView(chip);
                     }
                     validarCampos();
@@ -366,5 +406,19 @@ public class AddFaltaActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    // Mostrar menú (igual que en InformesActivity)
+    private void mostrarMenu(View anchor) {
+        ContextThemeWrapper wrap = new ContextThemeWrapper(this, R.style.ThemeOverlay_PopupMAGI);
+        androidx.appcompat.widget.PopupMenu pop = new androidx.appcompat.widget.PopupMenu(wrap, anchor);
+        pop.inflate(R.menu.menu_dashboard);
+        for (int i = 0; i < pop.getMenu().size(); i++) {
+            MenuItem m = pop.getMenu().getItem(i);
+            if (m.getIcon() != null) m.getIcon().setTint(
+                    ContextCompat.getColor(this, R.color.amarillo_magi));
+        }
+        pop.setOnMenuItemClickListener(item -> onOptionsItemSelected(item));
+        pop.show();
     }
 }
