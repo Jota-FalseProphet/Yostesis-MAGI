@@ -2,6 +2,8 @@
 package com.magi.api.model;
 
 import java.time.LocalDate;
+import java.util.Set;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -20,8 +22,17 @@ public class Ausencia {
     @Column(name = "fecha_ausencia", nullable = false)
     private LocalDate fechaAusencia;
 
-    @Column(name = "is_full_day")
+    @Column(name = "is_full_day", nullable = false)
     private Boolean fullDay;
+
+    // ------------------ Nuevo campo motivo ------------------
+    @Column(name = "motivo", nullable = false, length = 30)
+    private String motivo;
+
+    // ------------------ Relación con ausencies_sessio ------------------
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_ausencia", referencedColumnName = "id_ausencia")
+    private Set<AusenciaSessio> sesionesAsociadas;
 
     public Ausencia() {}
 
@@ -51,5 +62,19 @@ public class Ausencia {
     }
     public void setFullDay(Boolean fullDay) {
         this.fullDay = fullDay;
+    }
+
+    public String getMotivo() {
+        return motivo;
+    }
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
+
+    public Set<AusenciaSessio> getSesionesAsociadas() {
+        return sesionesAsociadas;
+    }
+    public void setSesionesAsociadas(Set<AusenciaSessio> sesionesAsociadas) {
+        this.sesionesAsociadas = sesionesAsociadas;
     }
 }

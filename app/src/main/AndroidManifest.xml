@@ -42,6 +42,8 @@
         </activity>
         <activity android:name=".activities.InformesActivity" />
         <activity android:name=".activities.MenuActivity" />
+        <activity android:name=".activities.AddFaltaActivity" />
+
 
 
 

@@ -1,6 +1,7 @@
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\ApiApplication.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\config\AusenciasProperties.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\controller\AsignacionRequest.java
+C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\controller\AusenciaController.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\controller\AuthController.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\controller\DocenteController.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\controller\FichajeController.java
@@ -8,9 +9,13 @@ C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\mag
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\controller\GuardiaController.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\controller\HorarioDocenteSesionController.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\controller\InformeController.java
+C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\controller\SesionController.java
+C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\dto\AusenciaIdDTO.java
+C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\dto\CrearAusenciaDTO.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\dto\DocenteDTO.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\dto\GrupoDTO.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\dto\GuardiaHistoricoDTO.java
+C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\dto\SesionDTO.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\dto\SessionGuardiaDTO.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\model\Aula.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\model\Ausencia.java
@@ -39,11 +44,13 @@ C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\mag
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\repository\HorarioDocenteSesionRepository.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\repository\SessionHorarioRepository.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\repository\UsuarioRepository.java
+C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\service\AusenciaService.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\service\DocenteService.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\service\FichajeService.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\service\FiltroInforme.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\service\GuardiaService.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\service\HorarioDocenteSesionService.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\service\InformeService.java
+C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\service\SesionService.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\tasks\AutogeneraAusenciasJob.java
 C:\Users\wolfs\Desktop\Yostesis\MAGI\workSpaceMagiSPringBoot\programaSpring1\magi-backend\src\main\java\com\magi\api\util\PeriodoUtils.java

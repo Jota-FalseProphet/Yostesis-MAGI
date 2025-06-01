@@ -14,9 +14,6 @@ public class HorarioDocenteSesionController {
     public HorarioDocenteSesionController(HorarioDocenteSesionService service) {
         this.service = service;
     }
-
-    // GET /api/horario-sesiones        -> todo
-    // GET /api/horario-sesiones?dia=L  -> filtra por día
     @GetMapping
     public List<HorarioDocenteSesion> listar(@RequestParam(required = false) String dia) {
         return service.listar(dia);
