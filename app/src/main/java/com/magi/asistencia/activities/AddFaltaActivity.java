@@ -1,5 +1,6 @@
 package com.magi.asistencia.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,11 +10,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -75,10 +78,10 @@ public class AddFaltaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Carga el layout que incluye el AppBar
+
         setContentView(R.layout.activity_add_falta);
 
-        // ------- StatusBar claro --------
+
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView())
                 .setAppearanceLightStatusBars(true);
@@ -90,14 +93,14 @@ public class AddFaltaActivity extends AppCompatActivity {
             return insets;
         });
 
-        // ------- Toolbar --------
+
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         setSupportActionBar(toolbar);
-        // Clic en logo vuelve a Dashboard
+
         findViewById(R.id.logoText_toolbar).setOnClickListener(v ->
                 startActivity(new Intent(this, DashboardActivity.class)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)));
-        // Clic en menú despliega opciones
+
         findViewById(R.id.ic_menu_toolbar).setOnClickListener(this::mostrarMenu);
 
         tvFecha         = findViewById(R.id.tvFecha);
@@ -110,23 +113,23 @@ public class AddFaltaActivity extends AppCompatActivity {
 
         httpClient = new OkHttpClient();
 
-        // 0. Asegurar switch apagado y vistas visibles
+
         switchFullDay.setChecked(false);
         tvSesionesLabel.setVisibility(View.VISIBLE);
         chipGroupSesiones.setVisibility(View.VISIBLE);
 
-        // 1. Fecha por defecto = hoy
+
         fechaSeleccionada = LocalDate.now();
         actualizarTextoFecha();
 
-        // 2. Spinner motivos (array fijo)
+
         String[] motivosArray = new String[]{"BAJA_MEDICA", "PERMISO", "OTROS"};
         ArrayAdapter<String> adapterMotivo = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, motivosArray);
         adapterMotivo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMotivo.setAdapter(adapterMotivo);
 
-        // 3. Switch “Todo el día”
+
         switchFullDay.setOnCheckedChangeListener((buttonView, isChecked) -> {
             tvSesionesLabel.setVisibility(isChecked ? View.GONE : View.VISIBLE);
             chipGroupSesiones.setVisibility(isChecked ? View.GONE : View.VISIBLE);
@@ -134,13 +137,13 @@ public class AddFaltaActivity extends AppCompatActivity {
             validarCampos();
         });
 
-        // 4. Botón Guardar
+
         btnGuardar.setOnClickListener(v -> guardarAusencia());
 
-        // 5. Cargar lista de docentes
+
         cargarDocentes();
 
-        // 6. DatePicker para fecha
+
         tvFecha.setOnClickListener(v -> {
             MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
                     .setTitleText("Selecciona una fecha")
@@ -209,7 +212,7 @@ public class AddFaltaActivity extends AppCompatActivity {
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinnerDocente.setAdapter(adapter);
 
-                    // 5.1 Listener para refrescar sesiones al cambiar docente
+
                     spinnerDocente.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -225,7 +228,7 @@ public class AddFaltaActivity extends AppCompatActivity {
                         }
                     });
 
-                    // Al cargar docentes por primera vez, recargamos si no es fullDay
+
                     if (!switchFullDay.isChecked()) recargarSesiones();
                     validarCampos();
                 });
@@ -290,7 +293,6 @@ public class AddFaltaActivity extends AppCompatActivity {
                         chip.setText(sesion.toString());
                         chip.setCheckable(true);
                         chip.setCheckedIconVisible(true);
-                        // Listener para actualizar validación cuando cambie el estado del chip
                         chip.setOnCheckedChangeListener((buttonView, isChecked) -> validarCampos());
                         chipGroupSesiones.addView(chip);
                     }
@@ -408,7 +410,7 @@ public class AddFaltaActivity extends AppCompatActivity {
         });
     }
 
-    // Mostrar menú (igual que en InformesActivity)
+
     private void mostrarMenu(View anchor) {
         ContextThemeWrapper wrap = new ContextThemeWrapper(this, R.style.ThemeOverlay_PopupMAGI);
         androidx.appcompat.widget.PopupMenu pop = new androidx.appcompat.widget.PopupMenu(wrap, anchor);
@@ -420,5 +422,50 @@ public class AddFaltaActivity extends AppCompatActivity {
         }
         pop.setOnMenuItemClickListener(item -> onOptionsItemSelected(item));
         pop.show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_fichajes) {
+            Intent intent = new Intent(this, FichajeActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_guardias) {
+            Intent intent = new Intent(this, GuardiasActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_informes) {
+            Intent intent = new Intent(this, InformesActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_logout) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Cerrar sesión");
+            builder.setMessage("¿Estás seguro de que quieres cerrar sesión?");
+            builder.setPositiveButton("Sí, cerrar", (dialog, which) -> {
+                Intent intent = new Intent(AddFaltaActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            });
+            builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
+            Button btnSi = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            btnSi.setTextColor(ContextCompat.getColor(this, R.color.amarillo_magi));
+
+            Button btnNo = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            btnNo.setTextColor(ContextCompat.getColor(this, R.color.gris_claro));
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -1,5 +1,6 @@
 package com.magi.asistencia.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -46,7 +48,7 @@ import okhttp3.Response;
 public class GestionUsuariosActivity extends AppCompatActivity {
 
     private static final String TAG      = "GestionUsuarios";
-    private static final String BASE_URL = "https://magi.it.com/"; // Ajusta al endpoint real
+    private static final String BASE_URL = "https://magi.it.com/";
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -64,13 +66,13 @@ public class GestionUsuariosActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gestion_usuarios); // Apunta al nuevo layout
+        setContentView(R.layout.activity_gestion_usuarios);
 
-        // 1. Recuperar extras (DNI + IS_ADMIN) desde el Intent
+
         dni      = getIntent().getStringExtra("DNI");
         isAdmin  = getIntent().getBooleanExtra("IS_ADMIN", false);
 
-        // 2. Forzar modo claro + status bar blanca + edge-to-edge
+
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         Window window = getWindow();
@@ -87,7 +89,7 @@ public class GestionUsuariosActivity extends AppCompatActivity {
             return insets;
         });
 
-        // 3. Configurar Toolbar + Drawer (idéntica a MenuActivity)
+
         drawerLayout   = findViewById(R.id.activity_gestion_usuarios_drawer_layout);
         navigationView = findViewById(R.id.nav_view);
 
@@ -107,7 +109,7 @@ public class GestionUsuariosActivity extends AppCompatActivity {
         ImageView menuIcon = findViewById(R.id.ic_menu_toolbar);
         menuIcon.setOnClickListener(this::showModulesMenu);
 
-        // Listener del NavigationView (misma lógica que en MenuActivity)
+
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             Intent intent = null;
@@ -131,7 +133,7 @@ public class GestionUsuariosActivity extends AppCompatActivity {
             return false;
         });
 
-        // 4. Inicializar vistas de formulario
+
         editDni            = findViewById(R.id.editDniCreate);
         editNombreCompleto = findViewById(R.id.editNombreCreate);
         editPassword       = findViewById(R.id.editPasswordCreate);
@@ -139,14 +141,14 @@ public class GestionUsuariosActivity extends AppCompatActivity {
         buttonCreate       = findViewById(R.id.buttonRegisterCreate);
         httpClient         = new OkHttpClient();
 
-        // 5. Lógica para crear usuario sin salir de la pantalla
+
         buttonCreate.setOnClickListener(v -> {
             String nuevoDni       = editDni.getText().toString().trim();
             String nuevoNombre    = editNombreCompleto.getText().toString().trim();
             String nuevaPass      = editPassword.getText().toString().trim();
             String nuevaPassRep   = editRepeatPassword.getText().toString().trim();
 
-            // Validaciones locales
+
             if (nuevoDni.isEmpty() || nuevoNombre.isEmpty() || nuevaPass.isEmpty() || nuevaPassRep.isEmpty()) {
                 Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
                 return;
@@ -168,9 +170,7 @@ public class GestionUsuariosActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Muestra el menú emergente (igual que en MenuActivity) para navegar
-     */
+
     private void showModulesMenu(View anchor) {
         Context wrapper = new ContextThemeWrapper(this, R.style.ThemeOverlay_PopupMAGI);
         PopupMenu popup = new PopupMenu(wrapper, anchor);
@@ -186,33 +186,50 @@ public class GestionUsuariosActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        Intent intent = null;
         if (id == R.id.nav_fichajes) {
-            intent = new Intent(this, FichajeActivity.class);
-        } else if (id == R.id.nav_guardias) {
-            intent = new Intent(this, GuardiasActivity.class);
-        } else if (id == R.id.nav_informes) {
-            intent = new Intent(this, InformesActivity.class);
-        } else if (id == R.id.nav_logout) {
-            Intent logoutIntent = new Intent(this, LoginActivity.class)
-                    .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(logoutIntent);
-            return true;
-        }
-        if (intent != null) {
+            Intent intent = new Intent(this, FichajeActivity.class);
             intent.putExtras(getIntent().getExtras());
             startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_guardias) {
+            Intent intent = new Intent(this, GuardiasActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_informes) {
+            Intent intent = new Intent(this, InformesActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_logout) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Cerrar sesión");
+            builder.setMessage("¿Estás seguro de que quieres cerrar sesión?");
+            builder.setPositiveButton("Sí, cerrar", (dialog, which) -> {
+                Intent intent = new Intent(GestionUsuariosActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            });
+            builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
+            Button btnSi = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            btnSi.setTextColor(ContextCompat.getColor(this, R.color.amarillo_magi));
+
+            Button btnNo = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            btnNo.setTextColor(ContextCompat.getColor(this, R.color.gris_claro));
+
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Llamada al backend para crear un nuevo usuario docente.
-     * En caso de éxito, solo muestra un Toast y limpia campos.
-     */
     private void crearUsuarioEnBackend(String dni, String nombre, String pass) {
         String url = BASE_URL + "api/docentes";
 

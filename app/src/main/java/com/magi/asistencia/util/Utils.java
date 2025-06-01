@@ -1,4 +1,3 @@
-// Utils.java
 package com.magi.asistencia.util;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -9,6 +8,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Utils {
+    //para el calendario y tales
     public static String format(long ms){
         return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date(ms));
     }

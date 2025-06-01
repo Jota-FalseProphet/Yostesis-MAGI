@@ -8,7 +8,6 @@
     android:background="@color/blanco"
     android:fitsSystemWindows="true">
 
-    <!-- 1 · APP BAR -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,9 +70,6 @@
             android:paddingTop="16dp"
             android:paddingBottom="16dp">
 
-            <!-- ====== Aquí va el contenido original de activity_add_falta ====== -->
-
-
             <TextView
                 android:id="@+id/tvFecha"
                 android:layout_width="match_parent"
@@ -130,9 +126,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="Guardar"/>
-
-            <!-- ================================================================ -->
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

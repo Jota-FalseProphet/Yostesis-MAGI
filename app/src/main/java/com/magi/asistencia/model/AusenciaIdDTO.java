@@ -1,4 +1,3 @@
-// src/main/java/com/magi/asistencia/model/AusenciaIdDTO.java
 package com.magi.asistencia.model;
 
 public class AusenciaIdDTO {

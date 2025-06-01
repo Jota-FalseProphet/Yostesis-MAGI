@@ -7,8 +7,6 @@
     android:background="#FFFF">
 
 
-
-    <!-- Logo principal, más grande -->
     <ImageView
         android:id="@+id/logoIcon"
         android:layout_width="240dp"
@@ -23,7 +21,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"/>
     <!-- Comentario para ver si se hace bien el comit o yo que se-->
-    <!-- Texto MAGI, un poco más pequeño y centrado -->
     <ImageView
         android:id="@+id/logoText"
         android:layout_width="300dp"
@@ -38,8 +35,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logoIcon"
         tools:visibility="visible" />
-
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutDni"
         android:hint="@string/usuario"
@@ -93,7 +88,6 @@
             android:inputType="textPassword"
             android:textColorHint="@color/amarillo_magi"/>
     </com.google.android.material.textfield.TextInputLayout>
-
     <Button
         android:id="@+id/buttonLogin"
         android:layout_width="0dp"
@@ -118,9 +112,6 @@
         app:layout_constraintEnd_toEndOf="@id/buttonLogin"
         app:layout_constraintTop_toBottomOf="@id/buttonLogin" />
 
-
-
-
     <TextView
         android:id="@+id/tvSignUpLink"
         android:layout_width="wrap_content"
@@ -133,9 +124,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
-
-
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

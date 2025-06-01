@@ -1,4 +1,3 @@
-// DocenteArrayAdapter.java
 package com.magi.asistencia.adapters;
 import android.content.Context;
 import android.widget.ArrayAdapter;

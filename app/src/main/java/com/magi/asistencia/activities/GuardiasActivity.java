@@ -1,5 +1,6 @@
 package com.magi.asistencia.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,9 +12,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -28,8 +31,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.navigation.NavigationView;
 import com.magi.asistencia.R;
 import com.magi.asistencia.adapters.GuardiaHistoricoAdapter;
 import com.magi.asistencia.model.SessionHorario;
@@ -70,7 +74,6 @@ public class GuardiasActivity extends AppCompatActivity {
 
         prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
 
-        // Obtener DNI / ROL desde Login
         dni = getIntent().getStringExtra("DNI");
         isAdmin = getIntent().getBooleanExtra("IS_ADMIN", false);
         Log.d("HISTORICO", "DNI="+dni+"  isAdmin="+isAdmin);
@@ -119,7 +122,7 @@ public class GuardiasActivity extends AppCompatActivity {
         rv.setAdapter(adapter);
 
 
-        ExtendedFloatingActionButton fab = findViewById(R.id.fabHistorico);
+        FloatingActionButton fab = findViewById(R.id.fabHistorico);
 
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(GuardiasActivity.this,
@@ -145,8 +148,51 @@ public class GuardiasActivity extends AppCompatActivity {
         popup.setOnMenuItemClickListener(this::onOptionsItemSelected);
         popup.show();
     }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_fichajes) {
+            Intent intent = new Intent(this, FichajeActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_guardias) {
+            Intent intent = new Intent(this, GuardiasActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_informes) {
+            Intent intent = new Intent(this, InformesActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_logout) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Cerrar sesión");
+            builder.setMessage("¿Estás seguro de que quieres cerrar sesión?");
+            builder.setPositiveButton("Sí, cerrar", (dialog, which) -> {
+                Intent intent = new Intent(GuardiasActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            });
+            builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
 
-    // ─────────────────── NETWORK TASKS ───────────────────
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
+            Button btnSi = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            btnSi.setTextColor(ContextCompat.getColor(this, R.color.amarillo_magi));
+
+            Button btnNo = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            btnNo.setTextColor(ContextCompat.getColor(this, R.color.gris_claro));
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     private class CargarAusenciasTask extends AsyncTask<Void, Void, List<SessionHorario>> {
         private String errorMsg;
@@ -216,7 +262,6 @@ public class GuardiasActivity extends AppCompatActivity {
                     } else {
                         errorMsg = c.getResponseMessage();
                     }
-                    // Asegura mensaje por defecto si sigue vacío
                     if (errorMsg == null || errorMsg.isEmpty()) {
                         errorMsg = "No se puede asignar guardia: sesión finalizada";
                     }
@@ -249,8 +294,6 @@ public class GuardiasActivity extends AppCompatActivity {
         }
     }
 
-    // ─────────────────── UI EVENTS ───────────────────
-
     private void onGuardiaClick(SessionHorario s) {
         if (Boolean.TRUE.equals(s.getCubierta())) {
             Toast.makeText(this, "Guardia ya cubierta", Toast.LENGTH_SHORT).show();
@@ -272,8 +315,6 @@ public class GuardiasActivity extends AppCompatActivity {
     private void mostrarError(String msg) {
         Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG).show();
     }
-
-    // ─────────────────── JSON ───────────────────
 
     private List<SessionHorario> parseLista(String json) throws JSONException {
         JSONArray arr = new JSONArray(json);

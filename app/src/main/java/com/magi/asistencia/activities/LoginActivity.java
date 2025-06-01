@@ -49,11 +49,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
 
-        //la StatusBar se Hace desde Aquí
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false); // FULL edge-to-edge
-
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -61,11 +58,11 @@ public class LoginActivity extends AppCompatActivity {
 
         WindowInsetsControllerCompat insetsController =
                 new WindowInsetsControllerCompat(window, window.getDecorView());
-        insetsController.setAppearanceLightStatusBars(true); // dark icons
+        insetsController.setAppearanceLightStatusBars(true);
         View root = findViewById(R.id.activity_login_constraint_layout);
         ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
             Insets statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
-            v.setPadding(0, statusBars.top, 0, 0); // Push content down
+            v.setPadding(0, statusBars.top, 0, 0);
             return insets;
         });
 
@@ -126,11 +123,10 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 URL url = new URL(BASE_URL + "/login");
                 HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-
-                // <<< Ignoramos SSL y hostname >>>
+                //pra el https y tal
                 trustAllCertificates(con);
 
-                // Enviamos JSON, tal como espera Spring Boot (@RequestBody)
+                // se envia el jsno tales y tales al spring
                 con.setRequestMethod("POST");
                 con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
                 con.setRequestProperty("Accept", "application/json");
@@ -138,12 +134,10 @@ public class LoginActivity extends AppCompatActivity {
                 con.setReadTimeout(5000);
                 con.setDoOutput(true);
 
-                // Construimos el JSON con dni y password
                 JSONObject body = new JSONObject();
                 body.put("dni", dni);
                 body.put("password", pass);
 
-                // Escribimos el JSON en el cuerpo
                 try (OutputStream os = con.getOutputStream()) {
                     byte[] out = body.toString().getBytes(StandardCharsets.UTF_8);
                     os.write(out);
@@ -152,7 +146,6 @@ public class LoginActivity extends AppCompatActivity {
 
                 code = con.getResponseCode();
 
-                // Leemos tanto input como error stream para ver la respuesta completa
                 InputStreamReader isr = (code >= 400)
                         ? new InputStreamReader(con.getErrorStream(), StandardCharsets.UTF_8)
                         : new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8);

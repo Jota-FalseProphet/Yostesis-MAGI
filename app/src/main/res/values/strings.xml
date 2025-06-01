@@ -39,6 +39,10 @@
     <string name="registrarse">Registrarse</string>
     <string name="ya_tienes_cuenta_iniciar_sesion">¿Ya tienes cuenta? Iniciar sesión</string>
     <string name="cd_profile_photo">PlaceHolder Foto\n</string>
+    <string name="ajustes">Ajustes\n</string>
+    <string name="activar_notificaciones">Activar Notificaciones</string>
+    <string name="cambiar_contraseña">Cambiar Contraseña</string>
+    <string name="version_app_prefix">M.A.G.I Versión 1.0</string>
 
 
 </resources>

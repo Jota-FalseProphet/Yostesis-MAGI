@@ -1,5 +1,6 @@
 package com.magi.asistencia.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,9 +10,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -37,12 +39,10 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        /* -------- EXTRAÍMOS DNI + IS_ADMIN DESDE EL INTENT -------- */
         dni      = getIntent().getStringExtra("DNI");
         isAdmin  = getIntent().getBooleanExtra("IS_ADMIN", false);
         Log.d("MENU", "DNI="+dni+"  isAdmin="+isAdmin);
 
-        /* -------- Apariencia general idéntica a Dashboard -------- */
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
@@ -60,7 +60,6 @@ public class MenuActivity extends AppCompatActivity {
             return insets;
         });
 
-        /* ------------------ Toolbar ------------------ */
         topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
         ActionBar ab = getSupportActionBar();
@@ -77,7 +76,6 @@ public class MenuActivity extends AppCompatActivity {
         ImageView menuIcon = findViewById(R.id.ic_menu_toolbar);
         menuIcon.setOnClickListener(this::showModulesMenu);
 
-      //botones
         MaterialButton btnUserAdmin = findViewById(R.id.btnUserAdmin);
         MaterialButton btnPerfil    = findViewById(R.id.btnPerfil);
         MaterialButton btnAjustes   = findViewById(R.id.btnAjustes);
@@ -122,8 +120,7 @@ public class MenuActivity extends AppCompatActivity {
         });
     }
 
-    //menudesplegablemismalogicadeldashboard jejeje
-    //menudesplegablemismalogicadeldashboard jejeje
+    // MENU DESPLEGABLE
     private void showModulesMenu(View anchor) {
         Context wrapper = new ContextThemeWrapper(this, R.style.ThemeOverlay_PopupMAGI);
         androidx.appcompat.widget.PopupMenu popup =
@@ -140,22 +137,45 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        Intent intent = null;
         if (id == R.id.nav_fichajes) {
-            intent = new Intent(this, FichajeActivity.class);
-        } else if (id == R.id.nav_guardias) {
-            intent = new Intent(this, GuardiasActivity.class);
-        } else if (id == R.id.nav_informes) {
-            intent = new Intent(this, InformesActivity.class);
-        } else if (id == R.id.nav_logout) {
-            // Lógica de logout aquí
-            return true;
-        }
-        if (intent != null) {
-            intent.putExtras(getIntent().getExtras());   // DNI + IS_ADMIN
+            Intent intent = new Intent(this, FichajeActivity.class);
+            intent.putExtras(getIntent().getExtras());
             startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_guardias) {
+            Intent intent = new Intent(this, GuardiasActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_informes) {
+            Intent intent = new Intent(this, InformesActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_logout) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Cerrar sesión");
+            builder.setMessage("¿Estás seguro de que quieres cerrar sesión?");
+            builder.setPositiveButton("Sí, cerrar", (dialog, which) -> {
+                Intent intent = new Intent(MenuActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            });
+            builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
+            Button btnSi = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            btnSi.setTextColor(ContextCompat.getColor(this, R.color.amarillo_magi));
+
+            Button btnNo = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            btnNo.setTextColor(ContextCompat.getColor(this, R.color.gris_claro));
+
             return true;
         }
         return super.onOptionsItemSelected(item);

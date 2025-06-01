@@ -1,5 +1,6 @@
 package com.magi.asistencia.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -154,9 +156,30 @@ public class DashboardActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (id == R.id.nav_logout) {
-            // Lógica de logout aquí
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Cerrar sesión");
+            builder.setMessage("¿Estás seguro de que quieres cerrar sesión?");
+            builder.setPositiveButton("Sí, cerrar", (dialog, which) -> {
+                Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            });
+            builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
+            Button btnSi = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            btnSi.setTextColor(ContextCompat.getColor(this, R.color.amarillo_magi));
+
+            Button btnNo = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            btnNo.setTextColor(ContextCompat.getColor(this, R.color.gris_claro));
+
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 }
+

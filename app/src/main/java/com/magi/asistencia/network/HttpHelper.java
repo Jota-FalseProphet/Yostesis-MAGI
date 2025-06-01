@@ -13,6 +13,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class HttpHelper {
+    //httphelper porque no entiedno retrofit
     private static final OkHttpClient client = new OkHttpClient.Builder()
             .callTimeout(5, TimeUnit.SECONDS)
             .build();

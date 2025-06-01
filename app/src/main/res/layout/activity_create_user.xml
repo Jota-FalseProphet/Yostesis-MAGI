@@ -9,7 +9,6 @@
     android:background="@color/blanco"
     tools:context=".activities.CreateUserActivity">
 
-    <!-- Logo grande, centrado en la parte superior -->
     <ImageView
         android:id="@+id/logoIconCreate"
         android:layout_width="200dp"
@@ -22,7 +21,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="ContentDescription" />
 
-    <!-- Texto MAGI (logoText), justo debajo del icono -->
     <ImageView
         android:id="@+id/logoTextCreate"
         android:layout_width="250dp"
@@ -37,7 +35,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="ContentDescription" />
 
-    <!-- Campo DNI -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutDniCreate"
         android:layout_width="0dp"
@@ -66,7 +63,6 @@
             android:textColorHint="@color/amarillo_magi"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Campo Nombre Completo -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutNombreCreate"
         android:layout_width="0dp"
@@ -95,7 +91,6 @@
             android:textColorHint="@color/amarillo_magi"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Campo Contraseña -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutPasswordCreate"
         android:layout_width="0dp"
@@ -124,7 +119,6 @@
             android:textColorHint="@color/amarillo_magi"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Campo Repetir Contraseña -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutRepeatPasswordCreate"
         android:layout_width="0dp"
@@ -153,7 +147,6 @@
             android:textColorHint="@color/amarillo_magi"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Botón Registrarse -->
     <Button
         android:id="@+id/buttonRegisterCreate"
         android:layout_width="0dp"
@@ -169,7 +162,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Enlace para volver al Login si ya tiene cuenta -->
     <TextView
         android:id="@+id/tvLoginLink"
         android:layout_width="wrap_content"
@@ -181,5 +173,4 @@
         app:layout_constraintTop_toBottomOf="@id/buttonRegisterCreate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

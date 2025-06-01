@@ -13,7 +13,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Fecha de la guardia -->
         <TextView
             android:id="@+id/tvFecha"
             android:layout_width="wrap_content"
@@ -23,7 +22,6 @@
             android:textColor="@color/negro"
             android:textStyle="bold" />
 
-        <!-- Grupo y aula -->
         <TextView
             android:id="@+id/tvGrupo"
             android:layout_width="wrap_content"
@@ -42,7 +40,6 @@
             android:layout_marginTop="2dp"
             android:textColor="@color/gris_oscuro_2" />
 
-        <!-- Sesión e hora -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

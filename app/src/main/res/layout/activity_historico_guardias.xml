@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/blanco">
 
-    <!-- APP BAR  -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,7 +39,6 @@
                 android:layout_gravity="end|center_vertical"
                 android:src="@drawable/ic_menu"
                 app:tint="@color/gris_oscuro_2"/>
-
         </com.google.android.material.appbar.MaterialToolbar>
 
         <View
@@ -64,5 +62,4 @@
             android:paddingBottom="88dp"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -3,16 +3,14 @@ package com.magi.asistencia.model;
 public class DocenteDTO {
 
     private int id;
-    private String document;   // DNI
-    private String nom;        // nombre
-    private String cognom1;    // primer apellido
-    private String cognom2;    // segundo apellido
-    private String data_naix;  // fecha de nacimiento, formato "YYYY-MM-DD"
+    private String document;
+    private String nom;
+    private String cognom1;
+    private String cognom2;
+    private String data_naix;
 
-    // Constructor por defecto (necesario para que Gson/Retrofit pueda instanciarlo)
     public DocenteDTO() { }
 
-    // Getters
     public int getId() {
         return id;
     }
@@ -62,17 +60,13 @@ public class DocenteDTO {
         this.data_naix = data_naix;
     }
 
-    /**
-     * Método auxiliar para devolver "nombre + apellidos" concatenados.
-     */
+
     public String getNombreCompleto() {
         return nom + " " + cognom1 + " " + cognom2;
     }
 
     @Override
     public String toString() {
-        // Si en algún Spinner o ArrayAdapter usas directamente toString(),
-        // mostrará solo 'nom'.
         return nom;
     }
 }

@@ -1,4 +1,3 @@
-// src/main/java/com/magi/asistencia/model/SesionDTO.java
 package com.magi.asistencia.model;
 
 public class SesionDTO {

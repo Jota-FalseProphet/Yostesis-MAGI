@@ -19,7 +19,6 @@ public class HistoricoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM   = 1;
 
-    /** Puede ser String (DNI) o GuardiaHistorico **/
     private final List<Object> data = new ArrayList<>();
     private final OnItemClick callback;
 
@@ -29,7 +28,6 @@ public class HistoricoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.callback = cb;
     }
 
-    /** Cuando recibes solo GuardiaHistorico sin headers */
     public void setData(List<GuardiaHistorico> list) {
         data.clear();
         data.addAll(list);
@@ -70,7 +68,6 @@ public class HistoricoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    // ViewHolder para el header (DNI)
     static class HeaderVH extends RecyclerView.ViewHolder {
         TextView tvHeader;
         HeaderVH(View v) {
@@ -82,25 +79,23 @@ public class HistoricoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    // ViewHolder para el item GuardiaHistorico
     static class ItemVH extends RecyclerView.ViewHolder {
         TextView tvGrupo, tvAula, tvFecha;
-        TextView tvSessionId, tvHora;  // ← referencias nuevas
+        TextView tvSessionId, tvHora;
 
         ItemVH(View v) {
             super(v);
             tvGrupo       = v.findViewById(R.id.tvGrupo);
             tvAula        = v.findViewById(R.id.tvAula);
             tvFecha       = v.findViewById(R.id.tvFecha);
-            tvSessionId   = v.findViewById(R.id.tvSessionId); // ← bind
-            tvHora        = v.findViewById(R.id.tvHora);      // ← bind
+            tvSessionId   = v.findViewById(R.id.tvSessionId);
+            tvHora        = v.findViewById(R.id.tvHora);
         }
 
         void bind(GuardiaHistorico g, OnItemClick cb) {
             tvGrupo.setText(g.getGrupo());
             tvAula.setText("Aula " + g.getAula());
             tvFecha.setText(g.getFechaGuardia());
-            // Nuevos:
             tvSessionId.setText("Sesión #" + g.getSessionId());
             tvHora.setText(g.getHora());
 

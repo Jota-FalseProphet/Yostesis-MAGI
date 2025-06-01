@@ -1,11 +1,17 @@
 package com.magi.asistencia.activities;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -44,21 +50,17 @@ public class HistoricoGuardiasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historico_guardias);
 
-        // ——— Leer extras de sesión ———
         Bundle extras = getIntent().getExtras();
         String dni;
         boolean isAdmin;
         if (extras != null) {
-            // Si en tus Intents estás usando la clave "DNI"
             dni     = extras.getString("DNI", "");
             isAdmin = extras.getBoolean("IS_ADMIN", false);
         } else {
-            // Fallback por si acaso
             dni     = "";
             isAdmin = false;
         }
-
-        // ——— UI setup ———
+        //ui
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -84,14 +86,12 @@ public class HistoricoGuardiasActivity extends AppCompatActivity {
         toolbar.findViewById(R.id.logoText_toolbar).setOnClickListener(v -> {
             Intent intent = new Intent(this, DashboardActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            // opcional: reenviar extras si el Dashboard los necesita
             intent.putExtras(extras);
             startActivity(intent);
             finish();
         });
         toolbar.findViewById(R.id.ic_menu_toolbar).setOnClickListener(this::showModulesMenu);
 
-        // ——— RecyclerView + Adapter ———
         RecyclerView rv = findViewById(R.id.recyclerHistorico);
         rv.setLayoutManager(new LinearLayoutManager(this));
         adapter = new HistoricoAdapter(g -> {
@@ -108,7 +108,6 @@ public class HistoricoGuardiasActivity extends AppCompatActivity {
         });
         rv.setAdapter(adapter);
 
-        // ——— Carga de datos ———
         String endpoint;
         if (isAdmin) {
             endpoint = "https://magi.it.com/api/guardias/historico?admin=true";
@@ -139,7 +138,6 @@ public class HistoricoGuardiasActivity extends AppCompatActivity {
                 List<GuardiaHistorico> lista = new ArrayList<>();
 
                 if (json.startsWith("{")) {
-                    // Admin: {"dni1":[...], "dni2":[...], ...}
                     JSONObject root = new JSONObject(json);
                     Iterator<String> keys = root.keys();
                     while (keys.hasNext()) {
@@ -152,7 +150,6 @@ public class HistoricoGuardiasActivity extends AppCompatActivity {
                         }
                     }
                 } else {
-                    // Docente: [...]
                     JSONArray arr = new JSONArray(json);
                     for (int i = 0; i < arr.length(); i++) {
                         JSONObject o = arr.getJSONObject(i);
@@ -167,7 +164,6 @@ public class HistoricoGuardiasActivity extends AppCompatActivity {
                 return null;
             }
         }
-
         @Override
         protected void onPostExecute(List<GuardiaHistorico> data) {
             if (data != null) {
@@ -179,11 +175,64 @@ public class HistoricoGuardiasActivity extends AppCompatActivity {
             }
         }
     }
+    // MENU DESPLEGABLE
+    private void showModulesMenu(View anchor) {
+        Context wrapper = new ContextThemeWrapper(this, R.style.ThemeOverlay_PopupMAGI);
+        androidx.appcompat.widget.PopupMenu popup =
+                new androidx.appcompat.widget.PopupMenu(wrapper, anchor);
+        popup.inflate(R.menu.menu_dashboard);
+        for (int i = 0; i < popup.getMenu().size(); i++) {
+            MenuItem item = popup.getMenu().getItem(i);
+            if (item.getIcon() != null) {
+                item.getIcon().setTint(ContextCompat.getColor(this, R.color.amarillo_magi));
+            }
+        }
+        popup.setOnMenuItemClickListener(this::onOptionsItemSelected);
+        popup.show();
+    }
 
-    private void showModulesMenu(View v) {
-        new MaterialAlertDialogBuilder(this)
-                .setMessage("Aquí el menú de módulos…")
-                .setPositiveButton("OK", null)
-                .show();
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_fichajes) {
+            Intent intent = new Intent(this, FichajeActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_guardias) {
+            Intent intent = new Intent(this, GuardiasActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_informes) {
+            Intent intent = new Intent(this, InformesActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_logout) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Cerrar sesión");
+            builder.setMessage("¿Estás seguro de que quieres cerrar sesión?");
+            builder.setPositiveButton("Sí, cerrar", (dialog, which) -> {
+                Intent intent = new Intent(HistoricoGuardiasActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            });
+            builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
+            Button btnSi = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            btnSi.setTextColor(ContextCompat.getColor(this, R.color.amarillo_magi));
+
+            Button btnNo = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            btnNo.setTextColor(ContextCompat.getColor(this, R.color.gris_claro));
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

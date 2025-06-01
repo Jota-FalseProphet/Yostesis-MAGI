@@ -37,10 +37,7 @@ public class GuardiaHistorico {
     public long   getSessionId()    { return sessionId; }
     public String getHora()         { return hora; }
 
-    /**
-     * Construye un GuardiaHistorico a partir de un JSONObject y,
-     * opcionalmente, forzando un dniAbsent si viene pasado en el segundo parámetro.
-     */
+
     public static GuardiaHistorico fromJson(JSONObject o, String absentDni) throws JSONException {
         long   id         = o.getLong("id");
         String dniAsign   = o.optString("dniAsignat", "—");

@@ -1,5 +1,6 @@
 package com.magi.asistencia.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.google.android.material.appbar.MaterialToolbar;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -52,12 +54,12 @@ public class FichajeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fichaje);
 
-        // Obtener DNI desde Login
+        // dni desde login
         dni = getIntent().getStringExtra("DNI");
-        // Siempre en modo claro
+        // siempre modo claro
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-        // Edge-to-edge + status bar blanca + iconos oscuros
+        //para que el status bar tenga iconos oscuros
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -65,26 +67,25 @@ public class FichajeActivity extends AppCompatActivity {
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.blanco));
         new WindowInsetsControllerCompat(window, window.getDecorView())
                 .setAppearanceLightStatusBars(true);
-        // Ajuste de padding top al DrawerLayout
         View root = findViewById(R.id.activity_fichaje_coordinator_layout);
         ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
             Insets statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
             v.setPadding(0, statusBars.top, 0, 0);
             return insets;
         });
-        // Configuramos toolbar
+        // toolbar
         topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) ab.setDisplayShowTitleEnabled(false);
-        // ——— LOGO: REDIRIGE AL DASHBOARD ———
+        // logo siempre manda al dashboard
         ImageView logo = findViewById(R.id.logoText_toolbar);
         logo.setOnClickListener(v -> {
             Intent i = new Intent(this, DashboardActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(i);
         });
-        // ——— MENÚ ICON: ABRE DESPLEGABLE ———
+        //menuicon abre desplegable
         ImageView menuIcon = findViewById(R.id.ic_menu_toolbar);
         menuIcon.setOnClickListener(this::showModulesMenu);
 
@@ -94,7 +95,7 @@ public class FichajeActivity extends AppCompatActivity {
         btnIn.setOnClickListener(v -> new FichajeTask("start").execute());
         btnOut.setOnClickListener(v -> new FichajeTask("end").execute());
     }
-    // MENU DESPLEGABLE
+    //menu desplegable
     private void showModulesMenu(View anchor) {
         Context wrapper = new ContextThemeWrapper(this, R.style.ThemeOverlay_PopupMAGI);
         androidx.appcompat.widget.PopupMenu popup =
@@ -108,6 +109,50 @@ public class FichajeActivity extends AppCompatActivity {
         }
         popup.setOnMenuItemClickListener(this::onOptionsItemSelected);
         popup.show();
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_fichajes) {
+            Intent intent = new Intent(this, FichajeActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_guardias) {
+            Intent intent = new Intent(this, GuardiasActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_informes) {
+            Intent intent = new Intent(this, InformesActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_logout) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Cerrar sesión");
+            builder.setMessage("¿Estás seguro de que quieres cerrar sesión?");
+            builder.setPositiveButton("Sí, cerrar", (dialog, which) -> {
+                Intent intent = new Intent(FichajeActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            });
+            builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
+            Button btnSi = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            btnSi.setTextColor(ContextCompat.getColor(this, R.color.amarillo_magi));
+
+            Button btnNo = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            btnNo.setTextColor(ContextCompat.getColor(this, R.color.gris_claro));
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class FichajeTask extends AsyncTask<Void, Void, Boolean> {

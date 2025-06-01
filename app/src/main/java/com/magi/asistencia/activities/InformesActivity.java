@@ -1,5 +1,6 @@
 package com.magi.asistencia.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,8 +15,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -138,21 +141,19 @@ public class InformesActivity extends AppCompatActivity {
         recyclerInformes = findViewById(R.id.recyclerInformes);
         btnVerPDF        = findViewById(R.id.btnVerPDF);
 
-        /* -------- RecyclerView -------- */
         informeAdapter = new InformeAdapter(this::onInformeClick);
         recyclerInformes.setLayoutManager(new LinearLayoutManager(this));
         recyclerInformes.setAdapter(informeAdapter);
         recyclerInformes.setVisibility(View.GONE);
 
-        /* -------- Dropdown “Docente | Grupo” -------- */
         String[] tipos = {"DOCENTE", "GRUPO"};
         tipoAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, tipos);
         autoTipo.setAdapter(tipoAdapter);
         autoTipo.setInputType(0);
-        autoTipo.setThreshold(0);                          // NUEVO
-        autoTipo.setOnClickListener(v ->                   // NUEVO
-                autoTipo.showDropDown());                  // NUEVO
+        autoTipo.setThreshold(0);
+        autoTipo.setOnClickListener(v ->
+                autoTipo.showDropDown());
         autoTipo.setOnItemClickListener((p,v,pos,id)->{
             idDocenteSel = idGrupoSel = -1;
             autoValor.setText("");
@@ -160,24 +161,19 @@ public class InformesActivity extends AppCompatActivity {
             else                               cargarGruposEnDropdown();
         });
 
+        etRango.setInputType(InputType.TYPE_NULL);
+        etRango.setFocusable(false);
 
-        /* -------- Date-Range Picker -------- */
-        etRango.setInputType(InputType.TYPE_NULL);        // evita teclado
-        etRango.setFocusable(false);                      // y foco de texto
-
-// 1) Construimos el picker con el overlay de estilo personalizado
+//picker de fecha
         MaterialDatePicker<Pair<Long, Long>> rangePicker =
                 MaterialDatePicker.Builder.dateRangePicker()
                         .setTheme(R.style.ThemeOverlay_CustomDatePicker)
 
                         .setTitleText("Selecciona rango")
                         .build();
-
-// 2) Mostrar picker al tocar el EditText (o su layout contenedor)
+//mostrar picker y tal al tocar eso
         etRango.setOnClickListener(v ->
                 rangePicker.show(getSupportFragmentManager(), "RANGO"));
-
-// 3) Al confirmar el rango, formateamos y pintamos en el EditText
         rangePicker.addOnPositiveButtonClickListener(selection -> {
             String desde = Utils.format(selection.first);
             String hasta = Utils.format(selection.second);
@@ -185,7 +181,6 @@ public class InformesActivity extends AppCompatActivity {
         });
 
 
-        /* -------- Chips -------- */
         chipGroup.setOnCheckedChangeListener((g,checkedId)->{
             if      (checkedId==R.id.chipSemana)     periodoSeleccionado="SEMANA";
             else if (checkedId==R.id.chipMes)        periodoSeleccionado="MES";
@@ -205,9 +200,9 @@ public class InformesActivity extends AppCompatActivity {
                 recargarListaJson();
             }
         });
-        chipGroup.check(R.id.chipSemana);   // lanza carga inicial
+        chipGroup.check(R.id.chipSemana);
 
-        /* -------- Botón PDF -------- */
+
         btnVerPDF.setOnClickListener(v -> {
             if ("PERSONALIZADO".equals(periodoSeleccionado)) {
                 if (autoTipo.getText().toString().trim().isEmpty() ||
@@ -222,9 +217,7 @@ public class InformesActivity extends AppCompatActivity {
         });
     }
 
-    /* ****************************************************************************************** */
-    /* Utilidades                                                                                */
-    /* ****************************************************************************************** */
+ /////////////////////// UTILIDADES Y TAL ///////////////////////////
 
     private String buildPdfUrl() {
         StringBuilder u = new StringBuilder(BASE_URL).append("?formato=PDF");
@@ -252,7 +245,6 @@ public class InformesActivity extends AppCompatActivity {
         new FetchInformesTask().execute(u.toString());
     }
 
-    /* -------- AsyncTask para informes JSON -------- */
     private class FetchInformesTask extends AsyncTask<String,Void,List<Informe>> {
         private String error;
         @Override protected List<Informe> doInBackground(String...p) {
@@ -281,7 +273,6 @@ public class InformesActivity extends AppCompatActivity {
         }
     }
 
-    /* -------- Carga de docentes -------- */
     private void cargarDocentesEnDropdown() {
         new AsyncTask<Void,Void,Void>(){
             List<String> nombres=new ArrayList<>();
@@ -303,9 +294,9 @@ public class InformesActivity extends AppCompatActivity {
                         android.R.layout.simple_list_item_1,nombres);
                 autoValor.setAdapter(adapterValores);
                 autoValor.setInputType(0);
-                autoValor.setThreshold(0);                 // NUEVO
-                autoValor.setOnClickListener(vw ->         // NUEVO
-                        autoValor.showDropDown());         // NUEVO
+                autoValor.setThreshold(0);
+                autoValor.setOnClickListener(vw ->
+                        autoValor.showDropDown());
                 autoValor.setOnItemClickListener((p,view,pos,id)->{
                     idDocenteSel=listaDocentes.get(pos).getId();
                     idGrupoSel=-1;
@@ -315,7 +306,6 @@ public class InformesActivity extends AppCompatActivity {
         }.execute();
     }
 
-    /* -------- Carga de grupos -------- */
     private void cargarGruposEnDropdown() {
         new AsyncTask<Void,Void,Void>(){
             List<String> nombres=new ArrayList<>();
@@ -337,9 +327,9 @@ public class InformesActivity extends AppCompatActivity {
                         android.R.layout.simple_list_item_1,nombres);
                 autoValor.setAdapter(adapterValores);
                 autoValor.setInputType(0);
-                autoValor.setThreshold(0);                 // NUEVO
-                autoValor.setOnClickListener(vw ->         // NUEVO
-                        autoValor.showDropDown());         // NUEVO
+                autoValor.setThreshold(0);
+                autoValor.setOnClickListener(vw ->
+                        autoValor.showDropDown());
                 autoValor.setOnItemClickListener((p,view,pos,id)->{
                     idGrupoSel=listaGrupos.get(pos).getId();
                     idDocenteSel=-1;
@@ -349,31 +339,76 @@ public class InformesActivity extends AppCompatActivity {
         }.execute();
     }
 
-    /* -------- Toolbar menu -------- */
-    private void showModulesMenu(View anchor){
-        ContextThemeWrapper wrap=new ContextThemeWrapper(this,R.style.ThemeOverlay_PopupMAGI);
-        androidx.appcompat.widget.PopupMenu pop=new androidx.appcompat.widget.PopupMenu(wrap,anchor);
-        pop.inflate(R.menu.menu_dashboard);
-        for(int i=0;i<pop.getMenu().size();i++){
-            MenuItem m=pop.getMenu().getItem(i);
-            if(m.getIcon()!=null) m.getIcon().setTint(
-                    ContextCompat.getColor(this,R.color.amarillo_magi));
+    // MENU DESPLEGABLE
+    private void showModulesMenu(View anchor) {
+        Context wrapper = new ContextThemeWrapper(this, R.style.ThemeOverlay_PopupMAGI);
+        androidx.appcompat.widget.PopupMenu popup =
+                new androidx.appcompat.widget.PopupMenu(wrapper, anchor);
+        popup.inflate(R.menu.menu_dashboard);
+        for (int i = 0; i < popup.getMenu().size(); i++) {
+            MenuItem item = popup.getMenu().getItem(i);
+            if (item.getIcon() != null) {
+                item.getIcon().setTint(ContextCompat.getColor(this, R.color.amarillo_magi));
+            }
         }
-        pop.setOnMenuItemClickListener(this::onOptionsItemSelected);
-        pop.show();
+        popup.setOnMenuItemClickListener(this::onOptionsItemSelected);
+        popup.show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_fichajes) {
+            Intent intent = new Intent(this, FichajeActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_guardias) {
+            Intent intent = new Intent(this, GuardiasActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_informes) {
+            Intent intent = new Intent(this, InformesActivity.class);
+            intent.putExtras(getIntent().getExtras());
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.nav_logout) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Cerrar sesión");
+            builder.setMessage("¿Estás seguro de que quieres cerrar sesión?");
+            builder.setPositiveButton("Sí, cerrar", (dialog, which) -> {
+                Intent intent = new Intent(InformesActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            });
+            builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+            Button btnSi = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            btnSi.setTextColor(ContextCompat.getColor(this, R.color.amarillo_magi));
+
+            Button btnNo = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            btnNo.setTextColor(ContextCompat.getColor(this, R.color.gris_claro));
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void onInformeClick(Informe inf){
         Toast.makeText(this,"Informe "+inf.getFecha(),Toast.LENGTH_SHORT).show();
     }
 
-    /* -------- Mes en español -------- */
     private String nombreMes(int mes){
         return new String[]{"","enero","febrero","marzo","abril","mayo","junio",
                 "julio","agosto","septiembre","octubre","noviembre","diciembre"}[mes];
     }
 
-    /* -------- POJO interno Grupo -------- */
+   //una clase chiquita pra el grupo y tal
     private static class Grupo{
         private final int id; private final String nombre;
         Grupo(int id,String n){this.id=id;this.nombre=n;}

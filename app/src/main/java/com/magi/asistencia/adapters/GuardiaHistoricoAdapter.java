@@ -13,7 +13,6 @@ import com.magi.asistencia.model.SessionHorario;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Adapter mixto para histórico: headers (String DNI) y guardias (SessionHorario). */
 public class GuardiaHistoricoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public interface OnItemClick { void onItemClick(SessionHorario s); }
@@ -28,14 +27,12 @@ public class GuardiaHistoricoAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.callback = cb;
     }
 
-    /** Para datos planos (solo guardias sin headers). */
     public void setData(List<SessionHorario> nuevos) {
         items.clear();
         if (nuevos != null) items.addAll(nuevos);
         notifyDataSetChanged();
     }
 
-    /** Para datos mixtos (headers y guardias). */
     public void setMixedData(List<Object> mixed) {
         items.clear();
         if (mixed != null) items.addAll(mixed);
@@ -78,7 +75,6 @@ public class GuardiaHistoricoAdapter extends RecyclerView.Adapter<RecyclerView.V
         return items.size();
     }
 
-    /** ViewHolder para encabezado (DNI). */
     static class HeaderVH extends RecyclerView.ViewHolder {
         private final TextView tvHeader;
         HeaderVH(View v) {
@@ -90,7 +86,6 @@ public class GuardiaHistoricoAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    /** ViewHolder para guardia, igual que antes. */
     static class GuardiaVH extends RecyclerView.ViewHolder {
         TextView tvGrupo, tvAula, tvHora;
         MaterialButton btnCubrir;

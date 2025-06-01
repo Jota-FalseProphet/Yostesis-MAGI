@@ -14,9 +14,6 @@ import com.magi.asistencia.model.Informe;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Adapter para mostrar la lista de Informes en el RecyclerView de InformesActivity.
- */
 public class InformeAdapter extends RecyclerView.Adapter<InformeAdapter.ViewHolder> {
 
     private final List<Informe> lista = new ArrayList<>();
@@ -57,7 +54,7 @@ public class InformeAdapter extends RecyclerView.Adapter<InformeAdapter.ViewHold
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtDocente, txtGrupo, txtFecha, txtTotalFaltas;
+        TextView txtDocente, txtGrupo, txtFecha;
 
         public ViewHolder(@NonNull View itemView, OnInformeClickListener listener) {
             super(itemView);
@@ -79,7 +76,6 @@ public class InformeAdapter extends RecyclerView.Adapter<InformeAdapter.ViewHold
             txtDocente.setText(informe.getDocente());
             txtGrupo.setText(informe.getGrupo());
             txtFecha.setText(informe.getFecha());
-
         }
     }
 }

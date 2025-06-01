@@ -4,7 +4,7 @@ import java.util.List;
 
 public class CrearAusenciaDTO {
     private int idDocente;
-    private String fecha;      // "YYYY-MM-DD"
+    private String fecha;
     private boolean fullDay;
     private List<Integer> sesiones;
     private String motivo;

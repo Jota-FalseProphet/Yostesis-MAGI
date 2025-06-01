@@ -9,7 +9,6 @@
     android:background="@color/blanco"
     android:fitsSystemWindows="true">
 
-    <!-- 1 · APP BAR -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,7 +41,6 @@
                 android:layout_gravity="end|center_vertical"
                 android:src="@drawable/ic_menu"
                 app:tint="@color/gris_oscuro_2" />
-
         </com.google.android.material.appbar.MaterialToolbar>
 
         <View

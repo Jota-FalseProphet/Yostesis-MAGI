@@ -7,14 +7,12 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <!-- Contenido principal -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/gris_claro"
         android:fitsSystemWindows="true">
 
-        <!-- Toolbar como AppBar con elevación -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="0dp"
@@ -43,7 +41,6 @@
 
         </com.google.android.material.appbar.MaterialToolbar>
 
-        <!-- Sombra manual bajo el Toolbar -->
         <View
             android:id="@+id/toolbar_shadow"
             android:layout_width="0dp"
@@ -53,7 +50,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- Grid de módulos debajo del toolbar + sombra -->
         <androidx.gridlayout.widget.GridLayout
             android:id="@+id/gridModules"
             android:layout_width="0dp"
@@ -66,7 +62,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <!-- Card Fichajes -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardFichajes"
                 android:layout_width="0dp"
@@ -104,7 +99,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Card Guardias -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardGuardias"
                 android:layout_width="0dp"
@@ -142,7 +136,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Card Informes -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardInformes"
                 android:layout_width="0dp"
@@ -180,7 +173,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Card Otros -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardOtros"
                 android:layout_width="0dp"
@@ -217,12 +209,9 @@
                         android:textSize="16sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
         </androidx.gridlayout.widget.GridLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Drawer de navegación lateral -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
@@ -231,5 +220,4 @@
         app:menu="@menu/menu_dashboard"
         app:itemIconTint="@color/amarillo_magi"
         app:itemTextColor="@color/gris_oscuro"/>
-
 </androidx.drawerlayout.widget.DrawerLayout>
