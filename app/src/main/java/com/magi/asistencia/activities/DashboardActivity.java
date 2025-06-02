@@ -46,10 +46,8 @@ public class DashboardActivity extends AppCompatActivity {
 
         Log.d("HISTORICO", "DNI="+dni+"  isAdmin="+isAdmin);
 
-        // Siempre en modo claro
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-        // Edge-to-edge + status bar blanca + iconos oscuros
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -58,7 +56,6 @@ public class DashboardActivity extends AppCompatActivity {
         new WindowInsetsControllerCompat(window, window.getDecorView())
                 .setAppearanceLightStatusBars(true);
 
-        // Ajuste de padding top al DrawerLayout
         View root = findViewById(R.id.activity_login_drawer_layout);
         ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
             Insets statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
@@ -66,33 +63,26 @@ public class DashboardActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Configuramos toolbar
         topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) ab.setDisplayShowTitleEnabled(false);
 
-        // ——— LOGO: REDIRIGE AL DASHBOARD ———
         ImageView logo = findViewById(R.id.logoText_toolbar);
         logo.setOnClickListener(v -> {
             Intent i = new Intent(this, DashboardActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(i);
         });
-
-        // ——— MENÚ ICON: ABRE DESPLEGABLE ———
         ImageView menuIcon = findViewById(R.id.ic_menu_toolbar);
         menuIcon.setOnClickListener(this::showModulesMenu);
 
-        // —————————————————————
-        // LÓGICA DE LAS CARDS
-        // —————————————————————
 
         // Card Fichajes
         MaterialCardView cardFichajes = findViewById(R.id.cardFichajes);
         cardFichajes.setOnClickListener(v -> {
             Intent intent = new Intent(this, FichajeActivity.class);
-            intent.putExtras(getIntent().getExtras());  // ← copiamos DNI e IS_ADMIN juntos
+            intent.putExtras(getIntent().getExtras());
             startActivity(intent);
         });
 
@@ -100,23 +90,30 @@ public class DashboardActivity extends AppCompatActivity {
         MaterialCardView cardGuardias = findViewById(R.id.cardGuardias);
         cardGuardias.setOnClickListener(v -> {
             Intent intent = new Intent(this, GuardiasActivity.class);
-            intent.putExtras(getIntent().getExtras());  // ← copiamos DNI e IS_ADMIN juntos
+            intent.putExtras(getIntent().getExtras());
             startActivity(intent);
         });
 
         // Card Informes
         MaterialCardView cardInformes = findViewById(R.id.cardInformes);
         cardInformes.setOnClickListener(v -> {
-            Intent intent = new Intent(this, InformesActivity.class);
-            intent.putExtras(getIntent().getExtras());  // ← copiamos DNI e IS_ADMIN juntos
-            startActivity(intent);
+            if (isAdmin) {
+                Intent intent = new Intent(this, InformesActivity.class);
+                intent.putExtras(getIntent().getExtras());
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Solo accesible por el administrador", Toast.LENGTH_SHORT).show();
+            }
         });
+        if (!isAdmin) {
+            cardInformes.setAlpha(0.5f);
+        }
 
         // Card Otros
         MaterialCardView cardOtros = findViewById(R.id.cardOtros);
         cardOtros.setOnClickListener(v -> {
             Intent intent = new Intent(this, MenuActivity.class);
-            intent.putExtras(getIntent().getExtras());  // ← copiamos DNI e IS_ADMIN juntos
+            intent.putExtras(getIntent().getExtras());
             startActivity(intent);
         });
     }

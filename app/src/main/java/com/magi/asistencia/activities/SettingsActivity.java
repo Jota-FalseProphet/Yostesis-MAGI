@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +30,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.magi.asistencia.R;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -43,7 +43,7 @@ public class SettingsActivity extends AppCompatActivity {
     private String dni;
     private boolean isAdmin;
 
-    private Switch switchNotificaciones;
+    private SwitchMaterial switchNotificaciones;
     private MaterialButton btnChangePassword;
     private TextView tvAppVersion;
 

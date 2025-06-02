@@ -2,8 +2,8 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
     android:id="@+id/activity_fichaje_coordinator_layout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/blanco">
 
@@ -46,43 +46,76 @@
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:background="@drawable/toolbar_dropshadow"/>
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:padding="24dp">
+        android:padding="24dp"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnIn"
-                style="@style/Widget.MaterialComponents.Button"
+            <!-- FILA DE BOTONES ARRIBA -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Iniciar jornada"
-                android:layout_marginBottom="16dp"
-                app:cornerRadius="12dp"
-                app:icon="@drawable/ic_clock"
-                app:iconGravity="textStart"
-                app:iconPadding="8dp"/>
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="24dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnOut"
-                style="@style/Widget.MaterialComponents.Button"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnIn"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:text="Iniciar jornada"
+                    android:layout_marginEnd="8dp"
+                    app:cornerRadius="4dp"
+                    app:icon="@drawable/ic_clock"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    app:backgroundTint="@color/amarillo_magi"
+                    app:strokeColor="@color/amarillo_magi"
+                    app:strokeWidth="1dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnOut"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:text="Finalizar jornada"
+                    android:layout_marginStart="8dp"
+                    app:cornerRadius="4dp"
+                    app:icon="@drawable/ic_clock"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    app:backgroundTint="@color/amarillo_magi"
+                    app:strokeColor="@color/amarillo_magi"
+                    app:strokeWidth="1dp"/>
+            </LinearLayout>
+
+            <!-- ESPACIO PARA CENTRAR EL LOGO EN LA MITAD DE LA PANTALLA -->
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Finalizar jornada"
-                app:cornerRadius="12dp"
-                app:icon="@drawable/ic_clock"
-                app:iconGravity="textStart"
-                app:iconPadding="8dp"/>
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
+                <ImageView
+                    android:id="@+id/logo_magi_center"
+                    android:layout_width="353dp"
+                    android:layout_height="516dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Logo MAGI"
+                    android:src="@drawable/logo_icon"
+                    android:alpha="0.4"/>
+            </FrameLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
