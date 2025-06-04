@@ -16,6 +16,7 @@
         <item name="materialButtonStyle">@style/Widget.MAGI.Button</item>
         <item name="textAppearanceButton">@style/TextAppearance.MAGI.Button</item>
         <item name="android:colorEdgeEffect">@android:color/transparent</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.Magi.AlertDialog</item>
     </style>
 
     <style name="MenuItemTextBoldGray" parent="TextAppearance.AppCompat.Body1">
@@ -90,6 +91,16 @@
         <item name="chipIconSize">0dp</item>
         <item name="chipStartPadding">12dp</item>
         <item name="chipEndPadding">12dp</item>
+    </style>
+
+    <style name="ThemeOverlay.Magi.AlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="android:background">@color/blanco</item>
+        <item name="android:textColor">@color/gris_oscuro</item>
+        <item name="materialButtonStyle">@style/Widget.Magi.AlertDialog.Button</item>
+    </style>
+
+    <style name="Widget.Magi.AlertDialog.Button" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/amarillo_magi</item>
     </style>
 
 </resources>

@@ -4,8 +4,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
@@ -290,34 +295,50 @@ private class CargarAusenciasTask extends AsyncTask<Void, Void, List<SessionHora
                 new CargarAusenciasTask().execute();
             } else {
                 if (code == HttpURLConnection.HTTP_BAD_REQUEST) {
-                    String toastMsg = (errorMsg != null && !errorMsg.isEmpty())
-                            ? errorMsg
-                            : "No se puede asignar guardia: sesión finalizada";
+                    String toastMsg = "No se puede asignar guardia: sesión finalizada";
                     Toast.makeText(GuardiasActivity.this, toastMsg, Toast.LENGTH_LONG).show();
                 } else {
                     mostrarError(errorMsg != null ? errorMsg : "Error al asignar (" + code + ")");
                 }
             }
         }
+
     }
 
+
+    //dialog custom asi guapete
     private void onGuardiaClick(SessionHorario s) {
         if (Boolean.TRUE.equals(s.getCubierta())) {
             Toast.makeText(this, "Guardia ya cubierta", Toast.LENGTH_SHORT).show();
             return;
         }
-        new MaterialAlertDialogBuilder(this)
-                .setTitle("¿Te asignas esta guardia?")
-                .setMessage(
-                        s.getGrupo() + " · Aula " + s.getAula() +
-                                " (" + s.getHoraInicio() + "–" + s.getHoraFin() + ")"
-                )
-                .setPositiveButton("Sí", (d, w) ->
-                        new AsignarGuardiaTask(s.getIdSessio()).execute()
-                )
+        int grisOscuro = Color.parseColor("#333333");
+        String textoTitulo = "¿Te asignas esta guardia?";
+        SpannableString tituloColoreado = new SpannableString(textoTitulo);
+        tituloColoreado.setSpan(new ForegroundColorSpan(grisOscuro), 0, textoTitulo.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        String textoMensaje = s.getGrupo() + " · Aula " + s.getAula() + " (" + s.getHoraInicio() + "–" + s.getHoraFin() + ")";
+        SpannableString mensajeColoreado = new SpannableString(textoMensaje);
+        mensajeColoreado.setSpan(new ForegroundColorSpan(grisOscuro), 0, textoMensaje.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        androidx.appcompat.app.AlertDialog dialog = new MaterialAlertDialogBuilder(this)
+                .setTitle(tituloColoreado)
+                .setMessage(mensajeColoreado)
+                .setPositiveButton("Sí", (d, w) -> new AsignarGuardiaTask(s.getIdSessio()).execute())
                 .setNegativeButton("No", null)
                 .show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        }
+        Button btnPositivo = dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
+        if (btnPositivo != null) {
+            btnPositivo.setTextColor(Color.parseColor("#ffc913"));
+        }
+        Button btnNegativo = dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE);
+        if (btnNegativo != null) {
+            btnNegativo.setTextColor(grisOscuro);
+        }
     }
+
+
 
     private void mostrarError(String msg) {
         Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG).show();
