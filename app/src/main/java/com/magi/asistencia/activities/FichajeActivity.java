@@ -3,7 +3,6 @@ package com.magi.asistencia.activities;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,8 +14,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.google.android.material.appbar.MaterialToolbar;
+
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,28 +45,21 @@ public class FichajeActivity extends AppCompatActivity {
     private static final String TAG = "FichajeTask";
     private static final String BASE_URL = "https://magi.it.com/api/fichaje";
 
-    private MaterialToolbar topAppBar;
+    private com.google.android.material.appbar.MaterialToolbar topAppBar;
+    private boolean isAdmin;
     private String dni;
-
-    // Nombre del SharedPreferences y clave interna
-    private static final String PREFS_NAME = "magi_prefs";
-    private static final String KEY_JORNADA_INICIADA = "jornada_iniciada";
-
-    private Button btnIn;
-    private Button btnOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fichaje);
 
-        // Recuperamos el DNI desde el Intent
+        // dni desde login
         dni = getIntent().getStringExtra("DNI");
-
-        // Forzamos modo claro
+        // siempre modo claro
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-        // Ajustes para status bar con iconos oscuros
+        //para que el status bar tenga iconos oscuros
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -80,54 +73,28 @@ public class FichajeActivity extends AppCompatActivity {
             v.setPadding(0, statusBars.top, 0, 0);
             return insets;
         });
-
-        // Toolbar
+        // toolbar
         topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) ab.setDisplayShowTitleEnabled(false);
-
-        // Logo que vuelve al Dashboard
+        // logo siempre manda al dashboard
         ImageView logo = findViewById(R.id.logoText_toolbar);
         logo.setOnClickListener(v -> {
             Intent i = new Intent(this, DashboardActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(i);
         });
-
-        // Menu icon para desplegable
         ImageView menuIcon = findViewById(R.id.ic_menu_toolbar);
         menuIcon.setOnClickListener(this::showModulesMenu);
 
-        // Botones In y Out
-        btnIn  = findViewById(R.id.btnIn);
-        btnOut = findViewById(R.id.btnOut);
+        Button btnIn  = findViewById(R.id.btnIn);
+        Button btnOut = findViewById(R.id.btnOut);
 
-        // 1) Leemos de SharedPreferences si la jornada está iniciada
-        boolean jornadaIniciada = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                .getBoolean(KEY_JORNADA_INICIADA, false);
-
-        // 2) Si la jornada ya estaba iniciada, deshabilitamos btnIn y bajamos la opacidad
-        if (jornadaIniciada) {
-            btnIn.setEnabled(false);
-            btnIn.setAlpha(0.5f);
-            // Opción: dejamos btnOut habilitado para poder cerrar la jornada
-            btnOut.setEnabled(true);
-            btnOut.setAlpha(1f);
-        } else {
-            // Si NO está iniciada, habilitamos btnIn y deshabilitamos btnOut
-            btnIn.setEnabled(true);
-            btnIn.setAlpha(1f);
-            btnOut.setEnabled(false);
-            btnOut.setAlpha(0.5f);
-        }
-
-        // 3) Asignamos listeners que disparan el AsyncTask
         btnIn.setOnClickListener(v -> new FichajeTask("start").execute());
         btnOut.setOnClickListener(v -> new FichajeTask("end").execute());
     }
-
-    // Menú desplegable (igual que antes)
+    // MENU DESPLEGABLE
     private void showModulesMenu(View anchor) {
         Context wrapper = new ContextThemeWrapper(this, R.style.ThemeOverlay_PopupMAGI);
         androidx.appcompat.widget.PopupMenu popup =
@@ -157,9 +124,13 @@ public class FichajeActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (id == R.id.nav_informes) {
-            Intent intent = new Intent(this, InformesActivity.class);
-            intent.putExtras(getIntent().getExtras());
-            startActivity(intent);
+            if (isAdmin) {
+                Intent intent = new Intent(this, InformesActivity.class);
+                intent.putExtras(getIntent().getExtras());
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Solo accesible por el administrador", Toast.LENGTH_SHORT).show();
+            }
             return true;
         } else if (id == R.id.nav_logout) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -176,6 +147,7 @@ public class FichajeActivity extends AppCompatActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
 
+
             Button btnSi = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             btnSi.setTextColor(ContextCompat.getColor(this, R.color.amarillo_magi));
 
@@ -187,11 +159,11 @@ public class FichajeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class FichajeTask extends AsyncTask<Void, Void, Boolean> {
+private class FichajeTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String tipo;
         private int code = -1;
-        private String errorMsg = null;
+        private String errorMsg = null;  // mensaje de error desde el backend (me ahorro codigo)
 
         FichajeTask(String tipo) {
             this.tipo = tipo.toLowerCase(Locale.ROOT);
@@ -215,7 +187,6 @@ public class FichajeActivity extends AppCompatActivity {
                 if (code == HttpURLConnection.HTTP_OK) {
                     return true;
                 } else {
-                    // Leer el cuerpo de error
                     InputStream err = c.getErrorStream();
                     if (err != null) {
                         BufferedReader br = new BufferedReader(new InputStreamReader(err));
@@ -248,43 +219,11 @@ public class FichajeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean ok) {
             if (ok) {
-                // Si el POST ha sido OK, mostramos el Toast y actualizamos SharedPreferences
-                if (tipo.equals("start")) {
-                    Toast.makeText(FichajeActivity.this,
-                            "Entrada registrada", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "start registrado con éxito");
-
-                    // 1) Guardamos en SharedPreferences que la jornada está iniciada
-                    getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                            .edit()
-                            .putBoolean(KEY_JORNADA_INICIADA, true)
-                            .apply();
-
-                    // 2) Deshabilitamos btnIn y bajamos opacidad; habilitamos btnOut
-                    btnIn.setEnabled(false);
-                    btnIn.setAlpha(0.5f);
-                    btnOut.setEnabled(true);
-                    btnOut.setAlpha(1f);
-
-                } else { // tipo == "end"
-                    Toast.makeText(FichajeActivity.this,
-                            "Salida registrada", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "end registrado con éxito");
-
-                    // 1) Guardamos en SharedPreferences que la jornada ya NO está iniciada
-                    getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                            .edit()
-                            .putBoolean(KEY_JORNADA_INICIADA, false)
-                            .apply();
-
-                    // 2) Deshabilitamos btnOut y bajamos opacidad; habilitamos btnIn
-                    btnOut.setEnabled(false);
-                    btnOut.setAlpha(0.5f);
-                    btnIn.setEnabled(true);
-                    btnIn.setAlpha(1f);
-                }
+                Toast.makeText(FichajeActivity.this,
+                        tipo.equals("start") ? "Entrada registrada" : "Salida registrada",
+                        Toast.LENGTH_SHORT).show();
+                Log.d(TAG, tipo + " registrado con éxito");
             } else {
-                // Si falla, mostramos el mensaje de error que venga del backend o de red
                 if (errorMsg != null && !errorMsg.isEmpty()) {
                     Toast.makeText(FichajeActivity.this,
                             errorMsg,

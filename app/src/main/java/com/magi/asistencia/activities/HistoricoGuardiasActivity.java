@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -43,6 +44,7 @@ import java.util.List;
 
 public class HistoricoGuardiasActivity extends AppCompatActivity {
     private HistoricoAdapter adapter;
+    private boolean isAdmin;
 
 
     @Override
@@ -205,9 +207,14 @@ public class HistoricoGuardiasActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (id == R.id.nav_informes) {
-            Intent intent = new Intent(this, InformesActivity.class);
-            intent.putExtras(getIntent().getExtras());
-            startActivity(intent);
+
+            if (isAdmin) {
+                Intent intent = new Intent(this, InformesActivity.class);
+                intent.putExtras(getIntent().getExtras());
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Solo accesible por el administrador", Toast.LENGTH_SHORT).show();
+            }
             return true;
         } else if (id == R.id.nav_logout) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

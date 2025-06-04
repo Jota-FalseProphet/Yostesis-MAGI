@@ -55,14 +55,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * Pantalla de informes:
- * - Selección de periodo (Semana / Mes / Trimestre / Curso / Personalizado)
- * - Filtro avanzado Personalizado:  tipo (Docente | Grupo) + valor + rango de fechas
- * - Listado JSON para periodos predefinidos; PDF para cualquier filtro
- * - Compatible con idDocente / idGrupo en la API
- */
 public class InformesActivity extends AppCompatActivity {
 
     //Constantes y tal

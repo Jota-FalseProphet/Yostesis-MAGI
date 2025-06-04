@@ -12,6 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -34,14 +35,15 @@ public class MenuActivity extends AppCompatActivity {
     private String dni;
     private boolean isAdmin;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        dni      = getIntent().getStringExtra("DNI");
-        isAdmin  = getIntent().getBooleanExtra("IS_ADMIN", false);
-        Log.d("MENU", "DNI="+dni+"  isAdmin="+isAdmin);
+        dni = getIntent().getStringExtra("DNI");
+        isAdmin = getIntent().getBooleanExtra("IS_ADMIN", false);
+        Log.d("MENU", "DNI=" + dni + "  isAdmin=" + isAdmin);
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
@@ -77,11 +79,11 @@ public class MenuActivity extends AppCompatActivity {
         menuIcon.setOnClickListener(this::showModulesMenu);
 
         MaterialButton btnUserAdmin = findViewById(R.id.btnUserAdmin);
-        MaterialButton btnPerfil    = findViewById(R.id.btnPerfil);
-        MaterialButton btnAjustes   = findViewById(R.id.btnAjustes);
-        MaterialButton btnAddFalta  = findViewById(R.id.btnAddFalta);
+        MaterialButton btnPerfil = findViewById(R.id.btnPerfil);
+        MaterialButton btnAjustes = findViewById(R.id.btnAjustes);
+        MaterialButton btnAddFalta = findViewById(R.id.btnAddFalta);
 
-       //gestion de usuarios
+        //gestion de usuarios
         if (isAdmin) {
             btnUserAdmin.setOnClickListener(v -> {
                 Intent intent = new Intent(this, GestionUsuariosActivity.class);
@@ -150,9 +152,13 @@ public class MenuActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (id == R.id.nav_informes) {
-            Intent intent = new Intent(this, InformesActivity.class);
-            intent.putExtras(getIntent().getExtras());
-            startActivity(intent);
+            if (isAdmin) {
+                Intent intent = new Intent(this, InformesActivity.class);
+                intent.putExtras(getIntent().getExtras());
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Solo accesible por el administrador", Toast.LENGTH_SHORT).show();
+            }
             return true;
         } else if (id == R.id.nav_logout) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

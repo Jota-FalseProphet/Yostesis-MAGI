@@ -72,6 +72,8 @@ public class AddFaltaActivity extends AppCompatActivity {
     private List<Docente>   listaDocentes  = new ArrayList<>();
     private List<SesionDTO> listaSesiones  = new ArrayList<>();
     private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+    private boolean isAdmin;
+
 
     private OkHttpClient httpClient;
 
@@ -424,6 +426,22 @@ public class AddFaltaActivity extends AppCompatActivity {
         pop.show();
     }
 
+    // MENU DESPLEGABLE
+    private void showModulesMenu(View anchor) {
+        Context wrapper = new ContextThemeWrapper(this, R.style.ThemeOverlay_PopupMAGI);
+        androidx.appcompat.widget.PopupMenu popup =
+                new androidx.appcompat.widget.PopupMenu(wrapper, anchor);
+        popup.inflate(R.menu.menu_dashboard);
+        for (int i = 0; i < popup.getMenu().size(); i++) {
+            MenuItem item = popup.getMenu().getItem(i);
+            if (item.getIcon() != null) {
+                item.getIcon().setTint(ContextCompat.getColor(this, R.color.amarillo_magi));
+            }
+        }
+        popup.setOnMenuItemClickListener(this::onOptionsItemSelected);
+        popup.show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -438,9 +456,13 @@ public class AddFaltaActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (id == R.id.nav_informes) {
-            Intent intent = new Intent(this, InformesActivity.class);
-            intent.putExtras(getIntent().getExtras());
-            startActivity(intent);
+            if (isAdmin) {
+                Intent intent = new Intent(this, InformesActivity.class);
+                intent.putExtras(getIntent().getExtras());
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Solo accesible por el administrador", Toast.LENGTH_SHORT).show();
+            }
             return true;
         } else if (id == R.id.nav_logout) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -469,3 +491,4 @@ public class AddFaltaActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+

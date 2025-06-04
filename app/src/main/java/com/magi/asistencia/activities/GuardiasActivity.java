@@ -135,19 +135,22 @@ public class GuardiasActivity extends AppCompatActivity {
         new CargarAusenciasTask().execute();
     }
 
+    // MENU DESPLEGABLE
     private void showModulesMenu(View anchor) {
         Context wrapper = new ContextThemeWrapper(this, R.style.ThemeOverlay_PopupMAGI);
         androidx.appcompat.widget.PopupMenu popup =
                 new androidx.appcompat.widget.PopupMenu(wrapper, anchor);
         popup.inflate(R.menu.menu_dashboard);
         for (int i = 0; i < popup.getMenu().size(); i++) {
-            MenuItem mi = popup.getMenu().getItem(i);
-            if (mi.getIcon() != null)
-                mi.getIcon().setTint(ContextCompat.getColor(this, R.color.amarillo_magi));
+            MenuItem item = popup.getMenu().getItem(i);
+            if (item.getIcon() != null) {
+                item.getIcon().setTint(ContextCompat.getColor(this, R.color.amarillo_magi));
+            }
         }
         popup.setOnMenuItemClickListener(this::onOptionsItemSelected);
         popup.show();
     }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -162,9 +165,13 @@ public class GuardiasActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (id == R.id.nav_informes) {
-            Intent intent = new Intent(this, InformesActivity.class);
-            intent.putExtras(getIntent().getExtras());
-            startActivity(intent);
+            if (isAdmin) {
+                Intent intent = new Intent(this, InformesActivity.class);
+                intent.putExtras(getIntent().getExtras());
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Solo accesible por el administrador", Toast.LENGTH_SHORT).show();
+            }
             return true;
         } else if (id == R.id.nav_logout) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -194,7 +201,7 @@ public class GuardiasActivity extends AppCompatActivity {
     }
 
 
-    private class CargarAusenciasTask extends AsyncTask<Void, Void, List<SessionHorario>> {
+private class CargarAusenciasTask extends AsyncTask<Void, Void, List<SessionHorario>> {
         private String errorMsg;
 
         @Override

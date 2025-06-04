@@ -281,9 +281,13 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (id == R.id.nav_informes) {
-            Intent intent = new Intent(this, InformesActivity.class);
-            intent.putExtras(getIntent().getExtras());
-            startActivity(intent);
+            if (isAdmin) {
+                Intent intent = new Intent(this, InformesActivity.class);
+                intent.putExtras(getIntent().getExtras());
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Solo accesible por el administrador", Toast.LENGTH_SHORT).show();
+            }
             return true;
         } else if (id == R.id.nav_logout) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -299,6 +303,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             AlertDialog dialog = builder.create();
             dialog.show();
+
 
             Button btnSi = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             btnSi.setTextColor(ContextCompat.getColor(this, R.color.amarillo_magi));
