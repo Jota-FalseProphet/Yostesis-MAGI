@@ -3,7 +3,12 @@ package com.magi.asistencia.activities;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
@@ -94,21 +99,36 @@ public class HistoricoGuardiasActivity extends AppCompatActivity {
         });
         toolbar.findViewById(R.id.ic_menu_toolbar).setOnClickListener(this::showModulesMenu);
 
+        //alert asi guapete hardcodeado porque tiempo no hay
         RecyclerView rv = findViewById(R.id.recyclerHistorico);
         rv.setLayoutManager(new LinearLayoutManager(this));
         adapter = new HistoricoAdapter(g -> {
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle("Guardia de " + g.getFechaGuardia())
-                    .setMessage(
-                            "Asignada: " + g.getDniAsignat() + "\n" +
-                                    "Ausente:  " + g.getDniAbsent()  + "\n" +
-                                    "Grupo:    " + g.getGrupo()       + "\n" +
-                                    "Aula:     " + g.getAula()
-                    )
+            int grisOscuro = Color.parseColor("#333333");
+            String titulo = "Guardia de " + g.getFechaGuardia();
+            SpannableString tituloColoreado = new SpannableString(titulo);
+            tituloColoreado.setSpan(new ForegroundColorSpan(grisOscuro), 0, titulo.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            String mensaje =
+                    "Asignada: " + g.getDniAsignat() + "\n" +
+                            "Ausente:  " + g.getDniAbsent()  + "\n" +
+                            "Grupo:    " + g.getGrupo()       + "\n" +
+                            "Aula:     " + g.getAula();
+            SpannableString mensajeColoreado = new SpannableString(mensaje);
+            mensajeColoreado.setSpan(new ForegroundColorSpan(grisOscuro), 0, mensaje.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            androidx.appcompat.app.AlertDialog dialog = new MaterialAlertDialogBuilder(this)
+                    .setTitle(tituloColoreado)
+                    .setMessage(mensajeColoreado)
                     .setPositiveButton("OK", null)
                     .show();
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+            }
+            Button btnPositivo = dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
+            if (btnPositivo != null) {
+                btnPositivo.setTextColor(Color.parseColor("#ffc913"));
+            }
         });
         rv.setAdapter(adapter);
+
 
         String endpoint;
         if (isAdmin) {
